@@ -14,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             min-height: 100vh;
             padding: 20px;
         }
@@ -27,41 +27,39 @@
         .header {
             background: white;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             margin-bottom: 20px;
-            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .header h1 {
-            color: #667eea;
-            font-size: 28px;
+            color: #333;
+            font-size: 24px;
             margin-bottom: 10px;
+            font-weight: 600;
         }
 
         .version-badge {
             display: inline-block;
-            background: #28a745;
+            background: #000;
             color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
             margin-left: 10px;
         }
 
         .workflow-info {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: #f9f9f9;
+            border-left: 2px solid #000;
             padding: 15px;
             margin: 15px 0;
-            border-radius: 8px;
         }
 
         .workflow-info h4 {
-            color: #856404;
+            color: #333;
             margin-bottom: 8px;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .workflow-steps {
@@ -74,10 +72,9 @@
         .workflow-step {
             background: white;
             padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #333;
-            border: 1px solid #ffc107;
+            font-size: 12px;
+            color: #666;
+            border: 1px solid #e0e0e0;
         }
 
         .tab-buttons {
@@ -90,28 +87,35 @@
         .tab-btn {
             flex: 1;
             min-width: 120px;
-            padding: 12px 20px;
-            border: none;
-            background: #f0f0f0;
-            color: #666;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            color: #333;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             color: white;
+            border-color: #000;
+        }
+
+        .tab-btn:hover {
+            background: #f9f9f9;
+        }
+
+        .tab-btn.active:hover {
+            background: #000;
         }
 
         .tab-content {
             display: none;
             background: white;
             padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-top: 1px solid #e0e0e0;
         }
 
         .tab-content.active {
@@ -119,20 +123,17 @@
         }
 
         .save-load-section {
-            background: #f8f9ff;
+            background: #f9f9f9;
             padding: 15px;
-            border-radius: 10px;
             margin-bottom: 20px;
-            border: 2px solid #667eea;
+            border: 1px solid #e0e0e0;
         }
 
         .save-load-section h3 {
-            color: #667eea;
-            font-size: 16px;
+            color: #333;
+            font-size: 14px;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-weight: 600;
         }
 
         .save-load-buttons {
@@ -150,24 +151,22 @@
         .draft-item {
             background: white;
             padding: 15px;
-            border-radius: 8px;
             margin-bottom: 10px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.2s;
+            border: 1px solid #e0e0e0;
+            transition: all 0.15s;
         }
 
         .draft-item:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            border-color: #000;
         }
 
         .draft-item.field-draft {
-            border-left: 5px solid #ffc107;
-            background: #fffbf0;
+            border-left: 3px solid #666;
+            background: #fafafa;
         }
 
         .draft-item.completed-draft {
-            border-left: 5px solid #28a745;
+            border-left: 3px solid #333;
         }
 
         .draft-header {
@@ -187,18 +186,17 @@
         .draft-status {
             display: inline-block;
             padding: 4px 10px;
-            border-radius: 12px;
             font-size: 11px;
             font-weight: 600;
         }
 
         .status-field {
-            background: #ffc107;
+            background: #f0f0f0;
             color: #333;
         }
 
         .status-office {
-            background: #28a745;
+            background: #666;
             color: white;
         }
 
@@ -220,49 +218,46 @@
 
         .form-section {
             margin-bottom: 25px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border: 1px solid #e0e0e0;
             padding: 20px;
-            background: #fafafa;
+            background: white;
         }
 
         .form-section.field-section {
-            background: #fff9e6;
-            border-color: #ffc107;
+            background: #fafafa;
+            border-color: #e0e0e0;
         }
 
         .form-section.office-section {
-            background: #e8f5e9;
-            border-color: #28a745;
+            background: #fafafa;
+            border-color: #e0e0e0;
         }
 
         .form-section h3 {
-            color: #667eea;
-            font-size: 18px;
+            color: #333;
+            font-size: 16px;
             margin-bottom: 15px;
             padding-bottom: 8px;
-            border-bottom: 2px solid #667eea;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
         }
 
         .section-badge {
-            background: #667eea;
+            background: #000;
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 3px 8px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .section-badge.field-badge {
-            background: #ffc107;
-            color: #333;
+            background: #666;
+            color: white;
         }
 
         .section-badge.office-badge {
-            background: #28a745;
+            background: #333;
+            color: white;
         }
 
         .form-grid {
@@ -287,8 +282,7 @@
         .form-group select,
         .form-group textarea {
             padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1px solid #d0d0d0;
             font-size: 14px;
             transition: border-color 0.3s;
         }
@@ -301,52 +295,47 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             color: white;
             padding: 15px 30px;
             border: none;
-            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             margin-top: 20px;
-            transition: transform 0.2s;
+            transition: background 0.15s;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #333;
         }
 
         .btn-secondary {
-            background: #28a745;
+            background: #666;
             color: white;
             padding: 12px 25px;
             border: none;
-            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             margin: 5px;
-            transition: all 0.2s;
+            transition: background 0.15s;
         }
 
         .btn-secondary:hover {
-            background: #218838;
-            transform: translateY(-2px);
+            background: #333;
         }
 
         .btn-warning {
-            background: #ffc107;
-            color: #333;
+            background: #888;
+            color: white;
             padding: 10px 20px;
             border: none;
-            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.15s;
         }
 
         .btn-warning:hover {
@@ -354,34 +343,32 @@
         }
 
         .btn-danger {
-            background: #dc3545;
+            background: #999;
             color: white;
             padding: 8px 15px;
             border: none;
-            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.15s;
         }
 
         .btn-danger:hover {
-            background: #c82333;
+            background: #666;
         }
 
         .btn-info {
-            background: #17a2b8;
+            background: #666;
             color: white;
             padding: 8px 15px;
             border: none;
-            border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.15s;
             margin-right: 5px;
         }
 
         .btn-info:hover {
-            background: #138496;
+            background: #333;
         }
 
         .data-table {
@@ -412,7 +399,7 @@
         }
 
         tr:hover {
-            background: #f8f9ff;
+            background: #f9f9f9;
         }
 
         .stats {
@@ -423,10 +410,10 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #f0f0f0;
+            color: #333;
             padding: 20px;
-            border-radius: 10px;
+            border: 1px solid #e0e0e0;
             text-align: center;
         }
 
@@ -445,11 +432,9 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #28a745;
+            background: #000;
             color: white;
             padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             display: none;
             z-index: 1000;
             animation: slideIn 0.3s ease-out;
@@ -497,22 +482,20 @@
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 15px;
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #e0e0e0;
         }
 
         .modal-content h3 {
-            color: #667eea;
+            color: #000;
             margin-bottom: 20px;
         }
 
         .modal-content input {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1px solid #d0d0d0;
             font-size: 14px;
             margin-bottom: 20px;
         }
@@ -546,7 +529,31 @@
         }
 
         .required {
-            color: #dc3545;
+            color: #999;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.15s;
+            font-size: 13px;
+        }
+
+        .lang-btn.active {
+            border: 2px solid #000;
+            background: #000;
+            color: white;
+        }
+
+        .lang-btn:hover {
+            background: #f9f9f9;
+        }
+
+        .lang-btn.active:hover {
+            background: #000;
         }
 
         .badge {
@@ -559,18 +566,17 @@
         }
 
         .badge-draft {
-            background: #ffc107;
+            background: #e0e0e0;
             color: #333;
         }
 
         .progress-info {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+            background: #f9f9f9;
+            border-left: 2px solid #000;
             padding: 12px;
             margin: 10px 0;
-            border-radius: 6px;
             font-size: 13px;
-            color: #1565c0;
+            color: #333;
         }
     </style>
 </head>
@@ -583,9 +589,9 @@
                     <p id="app-subtitle">현장 품질 검사 데이터 입력 및 관리</p>
                 </div>
                 <div class="language-selector" style="display: flex; gap: 8px;">
-                    <button type="button" class="lang-btn" data-lang="ko" style="padding: 8px 16px; border: 2px solid #667eea; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">한국어</button>
-                    <button type="button" class="lang-btn" data-lang="en" style="padding: 8px 16px; border: 2px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">English</button>
-                    <button type="button" class="lang-btn" data-lang="zh" style="padding: 8px 16px; border: 2px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">繁體中文</button>
+                    <button type="button" class="lang-btn active" data-lang="ko">한국어</button>
+                    <button type="button" class="lang-btn" data-lang="en">English</button>
+                    <button type="button" class="lang-btn" data-lang="zh">繁體中文</button>
                 </div>
             </div>
             
@@ -617,7 +623,7 @@
                     <button type="button" class="btn-warning" id="save-draft-btn">🏭 새 임시저장 만들기</button>
                     <button type="button" class="btn-warning" id="update-draft-btn" style="display:none;">💾 현재 작업 업데이트</button>
                     <button type="button" class="btn-secondary" id="load-draft-btn">📂 임시저장 불러오기</button>
-                    <button type="button" class="btn-secondary" id="clear-form-btn" style="background: #6c757d;">🔄 폼 초기화</button>
+                    <button type="button" class="btn-secondary" id="clear-form-btn">🔄 폼 초기화</button>
                 </div>
                 <div id="current-draft-info" style="margin-top: 10px;"></div>
             </div>
@@ -630,7 +636,7 @@
                         ℹ️ 현장에서 기본 정보와 제품 정보를 입력한 후 <strong>"현장 작업 임시저장"</strong> 버튼을 눌러주세요.
                     </div>
 
-                    <h4 style="color: #856404; margin: 20px 0 15px 0; font-size: 16px;">📅 기본 정보</h4>
+                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">📅 기본 정보</h4>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>DATE 日期 <span class="required">*</span></label>
@@ -658,9 +664,21 @@
                             <label>QC inspector 檢驗員 <span class="required">*</span></label>
                             <input type="text" name="QC inspector 檢驗員" required>
                         </div>
+                        <div class="form-group">
+                            <label>원료명</label>
+                            <input type="text" name="원료명">
+                        </div>
+                        <div class="form-group">
+                            <label>원료 Lot</label>
+                            <input type="text" name="원료 Lot">
+                        </div>
+                        <div class="form-group">
+                            <label>원료 ETC</label>
+                            <input type="text" name="원료 ETC">
+                        </div>
                     </div>
 
-                    <h4 style="color: #856404; margin: 20px 0 15px 0; font-size: 16px;">📦 제품 정보</h4>
+                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">📦 제품 정보</h4>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Description 料號</label>
@@ -692,7 +710,7 @@
                         ℹ️ 사무실에서 <strong>"임시저장 불러오기"</strong>로 현장 데이터를 불러온 후, 측정 항목을 입력하고 최종 저장해주세요.
                     </div>
 
-                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">🔬 기본 검사 항목</h4>
+                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">🔬 기본 검사 항목</h4>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>VISUAL外觀</label>
@@ -736,7 +754,7 @@
                         </div>
                     </div>
 
-                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">🏭 고객별 특수 검사</h4>
+                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">🏭 고객별 특수 검사</h4>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>TSMC EL 3點 最大值</label>
@@ -788,7 +806,7 @@
                         </div>
                     </div>
 
-                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">✅ 검사 결과</h4>
+                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">✅ 검사 결과</h4>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>RESULT結果 <span class="required">*</span></label>
@@ -817,9 +835,9 @@
         <!-- 임시저장함 탭 -->
         <div id="drafts-tab" class="tab-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #667eea; margin: 0;">📂 임시 저장된 현장 작업</h2>
-                <div style="background: #f0f0f0; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
-                    <span id="draft-count-display">0</span> / <span style="color: #667eea;" id="max-drafts-display">50</span> 개
+                <h2 style="margin: 0;">📂 임시 저장된 현장 작업</h2>
+                <div style="background: #f0f0f0; padding: 10px 20px; font-weight: 600;">
+                    <span id="draft-count-display">0</span> / <span id="max-drafts-display">50</span> 개
                 </div>
             </div>
             <div class="progress-info" style="margin-bottom: 20px;">
@@ -833,7 +851,7 @@
         <div id="view-tab" class="tab-content">
             <div class="action-buttons">
                 <button class="btn-secondary" onclick="exportToExcel()">📥 엑셀로 내보내기</button>
-                <button class="btn-secondary" onclick="clearAllData()" style="background: #dc3545;">🗑️ 모든 데이터 삭제</button>
+                <button class="btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
             </div>
             <div class="data-table">
                 <table id="data-table">
@@ -862,15 +880,15 @@
                     <h4>총 검사 건수</h4>
                     <div class="number" id="total-count">0</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                <div class="stat-card">
                     <h4>OK 건수</h4>
                     <div class="number" id="ok-count">0</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                <div class="stat-card">
                     <h4>NG 건수</h4>
                     <div class="number" id="ng-count">0</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+                <div class="stat-card">
                     <h4>HOLD 건수</h4>
                     <div class="number" id="hold-count">0</div>
                 </div>
@@ -923,54 +941,183 @@
                 version: 'v3.0 현장/사무실',
                 subtitle: '현장 품질 검사 데이터 입력 및 관리',
                 workflowTitle: '작업 프로세스',
-                step1: '현장에서 기본정보 입력',
-                step2: '임시저장',
-                step3: '사무실에서 불러오기',
-                step4: '검사항목 측정/입력',
-                step5: '최종저장',
+                step1: '1단계: 현장에서 기본정보 입력',
+                step2: '2단계: 임시저장',
+                step3: '3단계: 사무실에서 불러오기',
+                step4: '4단계: 검사항목 측정/입력',
+                step5: '5단계: 최종저장',
                 inputTab: '데이터 입력',
                 draftsTab: '임시저장함',
                 viewTab: '데이터 조회',
                 statsTab: '통계',
+                workManagement: '작업 관리',
                 saveDraft: '새 임시저장 만들기',
+                updateDraft: '현재 작업 업데이트',
                 loadDraft: '임시저장 불러오기',
-                clearForm: '폼 초기화'
+                clearForm: '폼 초기화',
+                fieldWork: '현장 작업',
+                step1Badge: 'STEP 1',
+                fieldInfo: '현장에서 기본 정보와 제품 정보를 입력한 후',
+                fieldSaveBtn: '"현장 작업 임시저장"',
+                fieldInfoEnd: '버튼을 눌러주세요.',
+                basicInfo: '기본 정보',
+                productInfo: '제품 정보',
+                officeWork: '사무실 작업',
+                step2Badge: 'STEP 2',
+                officeInfo: '사무실에서 임시저장된 데이터를 불러온 후 검사 항목을 측정/입력하세요.',
+                inspectionItems: '기본 검사 항목',
+                specialInspection: '고객별 특수 검사',
+                inspectionResult: '검사 결과',
+                finalSave: '최종 저장 (완료)',
+                draftListTitle: '임시 저장된 현장 작업',
+                draftCount: '개',
+                draftTip: 'Tip:',
+                draftTipText: '현장에서 입력한 데이터를 불러와서 사무실에서 측정 항목을 입력하세요.',
+                draftWarning: '최대',
+                draftWarningEnd: '까지 저장 가능합니다. 50개 초과 시 가장 오래된 항목이 자동 삭제됩니다.',
+                exportExcel: '엑셀로 내보내기',
+                deleteAll: '모든 데이터 삭제',
+                tableNo: '순번',
+                tableDate: '날짜',
+                tableTime: '시간',
+                tableInspector: '검사원',
+                tableMachine: '기계',
+                tableCustomer: '고객',
+                tableResult: '결과',
+                tableAction: '작업',
+                deleteBtn: '삭제',
+                totalCount: '총 검사 건수',
+                okCount: 'OK 건수',
+                ngCount: 'NG 건수',
+                holdCount: 'HOLD 건수',
+                select: '선택',
+                required: '필수',
+                materialName: '원료명',
+                materialLot: '원료 Lot',
+                materialETC: '원료 ETC',
+                remarks: '비고'
             },
             en: {
                 appTitle: 'IPQC Quality Management System',
                 version: 'v3.0 Field/Office',
                 subtitle: 'On-site Quality Inspection Data Entry and Management',
                 workflowTitle: 'Workflow Process',
-                step1: 'Enter basic info at field',
-                step2: 'Temporary save',
-                step3: 'Load in office',
-                step4: 'Measure & input inspection items',
-                step5: 'Final save',
+                step1: 'Step 1: Enter basic info at field',
+                step2: 'Step 2: Temporary save',
+                step3: 'Step 3: Load in office',
+                step4: 'Step 4: Measure & input inspection items',
+                step5: 'Step 5: Final save',
                 inputTab: 'Data Input',
                 draftsTab: 'Drafts',
                 viewTab: 'Data View',
                 statsTab: 'Statistics',
+                workManagement: 'Work Management',
                 saveDraft: 'Create New Draft',
+                updateDraft: 'Update Current Work',
                 loadDraft: 'Load Draft',
-                clearForm: 'Clear Form'
+                clearForm: 'Clear Form',
+                fieldWork: 'Field Work',
+                step1Badge: 'STEP 1',
+                fieldInfo: 'After entering basic and product information at the field, click',
+                fieldSaveBtn: '"Field Work Temp Save"',
+                fieldInfoEnd: 'button.',
+                basicInfo: 'Basic Information',
+                productInfo: 'Product Information',
+                officeWork: 'Office Work',
+                step2Badge: 'STEP 2',
+                officeInfo: 'Load temporarily saved data in office and measure/input inspection items.',
+                inspectionItems: 'Basic Inspection Items',
+                specialInspection: 'Customer Special Inspection',
+                inspectionResult: 'Inspection Result',
+                finalSave: 'Final Save (Complete)',
+                draftListTitle: 'Temporarily Saved Field Work',
+                draftCount: 'items',
+                draftTip: 'Tip:',
+                draftTipText: 'Load data entered at field and input measurement items in office.',
+                draftWarning: 'Maximum',
+                draftWarningEnd: 'items can be saved. Oldest item will be auto-deleted when exceeding 50.',
+                exportExcel: 'Export to Excel',
+                deleteAll: 'Delete All Data',
+                tableNo: 'No.',
+                tableDate: 'Date',
+                tableTime: 'Time',
+                tableInspector: 'Inspector',
+                tableMachine: 'Machine',
+                tableCustomer: 'Customer',
+                tableResult: 'Result',
+                tableAction: 'Action',
+                deleteBtn: 'Delete',
+                totalCount: 'Total Inspections',
+                okCount: 'OK Count',
+                ngCount: 'NG Count',
+                holdCount: 'HOLD Count',
+                select: 'Select',
+                required: 'Required',
+                materialName: 'Material Name',
+                materialLot: 'Material Lot',
+                materialETC: 'Material ETC',
+                remarks: 'Remarks'
             },
             zh: {
                 appTitle: 'IPQC 品質管理系統',
                 version: 'v3.0 現場/辦公室',
                 subtitle: '現場品質檢查資料輸入及管理',
                 workflowTitle: '作業流程',
-                step1: '現場輸入基本資訊',
-                step2: '臨時儲存',
-                step3: '辦公室載入',
-                step4: '測量檢查項目輸入',
-                step5: '最終儲存',
+                step1: '步驟1: 現場輸入基本資訊',
+                step2: '步驟2: 臨時儲存',
+                step3: '步驟3: 辦公室載入',
+                step4: '步驟4: 測量檢查項目輸入',
+                step5: '步驟5: 最終儲存',
                 inputTab: '資料輸入',
                 draftsTab: '臨時儲存庫',
                 viewTab: '資料查詢',
                 statsTab: '統計',
+                workManagement: '作業管理',
                 saveDraft: '建立新臨時儲存',
+                updateDraft: '更新目前作業',
                 loadDraft: '載入臨時儲存',
-                clearForm: '清除表單'
+                clearForm: '清除表單',
+                fieldWork: '現場作業',
+                step1Badge: 'STEP 1',
+                fieldInfo: '在現場輸入基本資訊和產品資訊後，請按',
+                fieldSaveBtn: '「現場作業臨時儲存」',
+                fieldInfoEnd: '按鈕。',
+                basicInfo: '基本資訊',
+                productInfo: '產品資訊',
+                officeWork: '辦公室作業',
+                step2Badge: 'STEP 2',
+                officeInfo: '在辦公室載入臨時儲存的資料後，測量/輸入檢查項目。',
+                inspectionItems: '基本檢查項目',
+                specialInspection: '客戶特殊檢查',
+                inspectionResult: '檢查結果',
+                finalSave: '最終儲存（完成）',
+                draftListTitle: '臨時儲存的現場作業',
+                draftCount: '個',
+                draftTip: '提示：',
+                draftTipText: '載入現場輸入的資料，在辦公室輸入測量項目。',
+                draftWarning: '最多可儲存',
+                draftWarningEnd: '個。超過50個時，最舊的項目將自動刪除。',
+                exportExcel: '匯出至Excel',
+                deleteAll: '刪除所有資料',
+                tableNo: '序號',
+                tableDate: '日期',
+                tableTime: '時間',
+                tableInspector: '檢驗員',
+                tableMachine: '機台',
+                tableCustomer: '客戶',
+                tableResult: '結果',
+                tableAction: '操作',
+                deleteBtn: '刪除',
+                totalCount: '總檢查數',
+                okCount: 'OK 數量',
+                ngCount: 'NG 數量',
+                holdCount: 'HOLD 數量',
+                select: '選擇',
+                required: '必填',
+                materialName: '原料名稱',
+                materialLot: '原料 Lot',
+                materialETC: '原料 ETC',
+                remarks: '備註'
             }
         };
         
@@ -986,13 +1133,9 @@
             // 버튼 스타일 업데이트
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if (btn.getAttribute('data-lang') === lang) {
-                    btn.style.borderColor = '#667eea';
-                    btn.style.background = '#f0f0ff';
-                    btn.style.color = '#667eea';
+                    btn.classList.add('active');
                 } else {
-                    btn.style.borderColor = '#e0e0e0';
-                    btn.style.background = 'white';
-                    btn.style.color = '#666';
+                    btn.classList.remove('active');
                 }
             });
             
@@ -1014,14 +1157,27 @@
                 subtitleEl.textContent = t.subtitle;
             }
             
+            // 워크플로우
+            const workflowTitle = document.querySelector('.workflow-info h4');
+            if (workflowTitle) {
+                workflowTitle.innerHTML = `📋 ${t.workflowTitle}`;
+            }
+            
+            const workflowSteps = document.querySelectorAll('.workflow-step');
+            if (workflowSteps.length >= 5) {
+                workflowSteps[0].innerHTML = `🏭 ${t.step1}`;
+                workflowSteps[1].innerHTML = `💾 ${t.step2}`;
+                workflowSteps[2].innerHTML = `🏢 ${t.step3}`;
+                workflowSteps[3].innerHTML = `🔬 ${t.step4}`;
+                workflowSteps[4].innerHTML = `✅ ${t.step5}`;
+            }
+            
             // 탭 버튼
             const inputTab = document.getElementById('tab-input');
             if (inputTab) inputTab.childNodes[0].textContent = t.inputTab;
             
             const draftsTab = document.getElementById('tab-drafts');
             if (draftsTab) {
-                // 배지는 유지하고 텍스트만 변경
-                const badge = draftsTab.querySelector('.badge');
                 draftsTab.childNodes[0].textContent = t.draftsTab + ' ';
             }
             
@@ -1031,15 +1187,106 @@
             const statsTab = document.getElementById('tab-stats');
             if (statsTab) statsTab.textContent = t.statsTab;
             
-            // 버튼
+            // 작업 관리 섹션
+            const workMgmt = document.querySelector('.save-load-section h3');
+            if (workMgmt) workMgmt.innerHTML = `💾 ${t.workManagement}`;
+            
             const saveDraftBtn = document.getElementById('save-draft-btn');
             if (saveDraftBtn) saveDraftBtn.innerHTML = `🏭 ${t.saveDraft}`;
+            
+            const updateDraftBtn = document.getElementById('update-draft-btn');
+            if (updateDraftBtn) updateDraftBtn.innerHTML = `💾 ${t.updateDraft}`;
             
             const loadDraftBtn = document.getElementById('load-draft-btn');
             if (loadDraftBtn) loadDraftBtn.innerHTML = `📂 ${t.loadDraft}`;
             
             const clearFormBtn = document.getElementById('clear-form-btn');
             if (clearFormBtn) clearFormBtn.innerHTML = `🔄 ${t.clearForm}`;
+            
+            // 현장 작업 섹션
+            const fieldWorkTitle = document.querySelector('.field-section h3');
+            if (fieldWorkTitle) {
+                fieldWorkTitle.innerHTML = `🏭 ${t.fieldWork} <span class="section-badge field-badge">${t.step1Badge}</span>`;
+            }
+            
+            const fieldInfo = document.querySelector('.field-section .progress-info');
+            if (fieldInfo) {
+                fieldInfo.innerHTML = `ℹ️ ${t.fieldInfo} <strong>${t.fieldSaveBtn}</strong> ${t.fieldInfoEnd}`;
+            }
+            
+            const basicInfoTitle = document.querySelectorAll('.field-section h4')[0];
+            if (basicInfoTitle) basicInfoTitle.innerHTML = `📅 ${t.basicInfo}`;
+            
+            const productInfoTitle = document.querySelectorAll('.field-section h4')[1];
+            if (productInfoTitle) productInfoTitle.innerHTML = `📦 ${t.productInfo}`;
+            
+            // 사무실 작업 섹션
+            const officeWorkTitle = document.querySelector('.office-section h3');
+            if (officeWorkTitle) {
+                officeWorkTitle.innerHTML = `🏢 ${t.officeWork} <span class="section-badge office-badge">${t.step2Badge}</span>`;
+            }
+            
+            const officeInfo = document.querySelector('.office-section .progress-info');
+            if (officeInfo) {
+                officeInfo.innerHTML = `ℹ️ ${t.officeInfo}`;
+            }
+            
+            const inspectionTitle = document.querySelectorAll('.office-section h4')[0];
+            if (inspectionTitle) inspectionTitle.innerHTML = `🔬 ${t.inspectionItems}`;
+            
+            const specialTitle = document.querySelectorAll('.office-section h4')[1];
+            if (specialTitle) specialTitle.innerHTML = `🏭 ${t.specialInspection}`;
+            
+            const resultTitle = document.querySelectorAll('.office-section h4')[2];
+            if (resultTitle) resultTitle.innerHTML = `✅ ${t.inspectionResult}`;
+            
+            // 최종 저장 버튼
+            const finalSaveBtn = document.querySelector('.btn-primary');
+            if (finalSaveBtn) finalSaveBtn.innerHTML = `✅ ${t.finalSave}`;
+            
+            // 임시저장함 탭
+            const draftListTitle = document.querySelector('#drafts-tab h2');
+            if (draftListTitle) {
+                draftListTitle.innerHTML = `📂 ${t.draftListTitle}`;
+            }
+            
+            const draftProgressInfo = document.querySelector('#drafts-tab .progress-info');
+            if (draftProgressInfo) {
+                draftProgressInfo.innerHTML = `💡 <strong>${t.draftTip}</strong> ${t.draftTipText}<br>⚠️ ${t.draftWarning} <strong>50</strong>${t.draftWarningEnd}`;
+            }
+            
+            // 데이터 조회 탭
+            const exportBtn = document.querySelector('.action-buttons .btn-secondary');
+            if (exportBtn && exportBtn.textContent.includes('엑셀') || exportBtn.textContent.includes('Excel') || exportBtn.textContent.includes('Excel')) {
+                exportBtn.innerHTML = `📥 ${t.exportExcel}`;
+            }
+            
+            const deleteAllBtn = document.querySelector('.btn-danger');
+            if (deleteAllBtn && (deleteAllBtn.textContent.includes('모든') || deleteAllBtn.textContent.includes('All') || deleteAllBtn.textContent.includes('所有'))) {
+                deleteAllBtn.innerHTML = `🗑️ ${t.deleteAll}`;
+            }
+            
+            // 테이블 헤더
+            const tableHeaders = document.querySelectorAll('#data-table thead th');
+            if (tableHeaders.length >= 8) {
+                tableHeaders[0].textContent = t.tableNo;
+                tableHeaders[1].textContent = t.tableDate;
+                tableHeaders[2].textContent = t.tableTime;
+                tableHeaders[3].textContent = t.tableInspector;
+                tableHeaders[4].textContent = t.tableMachine;
+                tableHeaders[5].textContent = t.tableCustomer;
+                tableHeaders[6].textContent = t.tableResult;
+                tableHeaders[7].textContent = t.tableAction;
+            }
+            
+            // 통계 카드
+            const statCards = document.querySelectorAll('.stat-card h4');
+            if (statCards.length >= 4) {
+                statCards[0].textContent = t.totalCount;
+                statCards[1].textContent = t.okCount;
+                statCards[2].textContent = t.ngCount;
+                statCards[3].textContent = t.holdCount;
+            }
             
             console.log('UI 텍스트 업데이트 완료');
         }
@@ -1553,7 +1800,7 @@
                     <td>${item['QC inspector 檢驗員'] || '-'}</td>
                     <td>${item['M/C 機台'] || '-'}</td>
                     <td>${item['Customer'] || '-'}</td>
-                    <td><span style="padding: 5px 10px; border-radius: 5px; background: ${item['RESULT結果'] === 'OK' ? '#28a745' : item['RESULT結果'] === 'NG' ? '#dc3545' : '#ffc107'}; color: white; font-weight: bold;">${item['RESULT結果'] || '-'}</span></td>
+                    <td><span style="padding: 5px 10px; background: ${item['RESULT結果'] === 'OK' ? '#666' : item['RESULT結果'] === 'NG' ? '#999' : '#ccc'}; color: ${item['RESULT結果'] === 'HOLD' ? '#333' : 'white'}; font-weight: bold;">${item['RESULT結果'] || '-'}</span></td>
                     <td><button class="btn-danger" onclick="deleteItem(${item._id})">삭제</button></td>
                 `;
             });
@@ -1637,6 +1884,7 @@
 
             const ws_data = [
                 ['DATE 日期', 'TIME 時間', 'M/C 機台', 'SHIFT 班別', 'QC inspector 檢驗員', 
+                 '원료명', '원료 Lot', '원료 ETC',
                  'Description 料號', 'Customer', 'MOLD 模號', 'Datecode', 'LTC No. 批號',
                  'VISUAL外觀', 'OL總長', 'OW總寬', 'ST外疊合高', 'Warpage彎度', 'Where 位置',
                  'C/C 凹凸度', 'SR表面電阻', 'Weight重量', 'RESULT結果', 'Approval 審核者',
@@ -1654,6 +1902,9 @@
                     item['M/C 機台'] || '',
                     item['SHIFT 班別'] || '',
                     item['QC inspector 檢驗員'] || '',
+                    item['원료명'] || '',
+                    item['원료 Lot'] || '',
+                    item['원료 ETC'] || '',
                     item['Description 料號'] || '',
                     item['Customer'] || '',
                     item['MOLD 模號'] || '',
@@ -1726,15 +1977,14 @@
                 
                 // 현재 언어 버튼 강조
                 if (btn.getAttribute('data-lang') === currentLanguage) {
-                    btn.style.borderColor = '#667eea';
-                    btn.style.background = '#f0f0ff';
-                    btn.style.color = '#667eea';
+                    btn.classList.add('active');
                 } else {
-                    btn.style.borderColor = '#e0e0e0';
-                    btn.style.background = 'white';
-                    btn.style.color = '#666';
+                    btn.classList.remove('active');
                 }
             });
+            
+            // 초기 언어 UI 업데이트
+            updateLanguageUI();
             
             // 버튼 이벤트 리스너 등록
             const saveDraftBtn = document.getElementById('save-draft-btn');
