@@ -605,7 +605,8 @@
             <div class="save-load-section">
                 <h3>💾 작업 관리</h3>
                 <div class="save-load-buttons">
-                    <button type="button" class="btn-warning" onclick="saveFieldDraft()">🏭 현장 작업 임시저장</button>
+                    <button type="button" class="btn-warning" onclick="saveFieldDraft()">🏭 새 임시저장 만들기</button>
+                    <button type="button" class="btn-warning" onclick="saveCurrentDraft()" style="display:none;" id="update-draft-btn">💾 현재 작업 업데이트</button>
                     <button type="button" class="btn-secondary" onclick="showDraftModal()">📂 임시저장 불러오기</button>
                     <button type="button" class="btn-secondary" onclick="clearForm()" style="background: #6c757d;">🔄 폼 초기화</button>
                 </div>
@@ -806,9 +807,15 @@
 
         <!-- 임시저장함 탭 -->
         <div id="drafts-tab" class="tab-content">
-            <h2 style="color: #667eea; margin-bottom: 20px;">📂 임시 저장된 현장 작업</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color: #667eea; margin: 0;">📂 임시 저장된 현장 작업</h2>
+                <div style="background: #f0f0f0; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
+                    <span id="draft-count-display">0</span> / <span style="color: #667eea;">${MAX_DRAFTS}</span> 개
+                </div>
+            </div>
             <div class="progress-info" style="margin-bottom: 20px;">
                 💡 <strong>Tip:</strong> 현장에서 입력한 데이터를 불러와서 사무실에서 측정 항목을 입력하세요.
+                <br>⚠️ 최대 <strong>50개</strong>까지 저장 가능합니다. 50개 초과 시 가장 오래된 항목이 자동 삭제됩니다.
             </div>
             <div id="drafts-list" class="draft-list"></div>
         </div>
@@ -881,6 +888,9 @@
         <div class="modal-content">
             <h3>💾 현장 작업 임시저장</h3>
             <p style="margin-bottom: 15px; color: #666;">현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.</p>
+            <div id="draft-capacity-info" style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-size: 14px;">
+                현재: <strong id="current-draft-count">0</strong> / <strong>50</strong> 개
+            </div>
             <input type="text" id="draft-name-input" placeholder="저장 이름 (예: A기계-고객사명)">
             <div class="modal-buttons">
                 <button type="button" class="btn-secondary" onclick="closeSaveDraftModal()" style="background: #6c757d;">취소</button>
@@ -893,6 +903,7 @@
         // LocalStorage 키
         const STORAGE_KEY = 'ipqc_data';
         const DRAFT_KEY = 'ipqc_drafts';
+        const MAX_DRAFTS = 50; // 최대 임시저장 개수
         let currentDraftId = null;
 
         // 데이터 로드
@@ -914,6 +925,12 @@
 
         // 임시저장 목록 저장
         function saveDrafts(drafts) {
+            // 최대 개수 제한 (최신 50개만 보관)
+            if (drafts.length > MAX_DRAFTS) {
+                // 오래된 것부터 삭제 (저장 시간 기준)
+                drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                drafts = drafts.slice(0, MAX_DRAFTS);
+            }
             localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
             updateDraftCount();
         }
@@ -921,7 +938,21 @@
         // 임시저장 개수 업데이트
         function updateDraftCount() {
             const drafts = loadDrafts();
-            document.getElementById('draft-count').textContent = drafts.length;
+            const count = drafts.length;
+            const countElement = document.getElementById('draft-count');
+            countElement.textContent = count;
+            
+            // 최대 개수에 가까우면 경고 색상
+            if (count >= MAX_DRAFTS) {
+                countElement.style.background = '#dc3545'; // 빨간색
+                countElement.style.color = 'white';
+            } else if (count >= MAX_DRAFTS * 0.8) {
+                countElement.style.background = '#ff9800'; // 주황색
+                countElement.style.color = 'white';
+            } else {
+                countElement.style.background = '#ffc107'; // 노란색
+                countElement.style.color = '#333';
+            }
         }
 
         // 토스트 메시지 표시
@@ -994,10 +1025,63 @@
             }
         }
 
+        // 현재 작업 업데이트 (기존 임시저장 수정)
+        function saveCurrentDraft() {
+            if (!currentDraftId) {
+                alert('불러온 임시저장이 없습니다.');
+                return;
+            }
+
+            try {
+                const drafts = loadDrafts();
+                const formData = getFormData();
+                const index = drafts.findIndex(d => d.id === currentDraftId);
+                
+                if (index !== -1) {
+                    drafts[index] = {
+                        id: currentDraftId,
+                        name: drafts[index].name, // 기존 이름 유지
+                        data: formData,
+                        savedAt: new Date().toISOString()
+                    };
+                    saveDrafts(drafts);
+                    updateCurrentDraftInfo();
+                    showToast('💾 현재 작업이 업데이트되었습니다!', 'success');
+                }
+            } catch (error) {
+                console.error('업데이트 오류:', error);
+                alert('업데이트 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
         // 현장 작업 임시저장
         function saveFieldDraft() {
+            // 새로운 임시저장을 만들기 위해 currentDraftId 초기화
+            currentDraftId = null;
+            
             document.getElementById('save-draft-modal').classList.add('show');
             const input = document.getElementById('draft-name-input');
+            
+            // 현재 저장 개수 표시
+            const drafts = loadDrafts();
+            const countElement = document.getElementById('current-draft-count');
+            if (countElement) {
+                countElement.textContent = drafts.length;
+                const infoElement = document.getElementById('draft-capacity-info');
+                if (drafts.length >= MAX_DRAFTS) {
+                    infoElement.style.background = '#ffebee';
+                    infoElement.style.color = '#c62828';
+                    infoElement.innerHTML = `<strong>⚠️ 최대 저장 개수에 도달!</strong><br>저장 시 가장 오래된 항목이 자동 삭제됩니다.`;
+                } else if (drafts.length >= MAX_DRAFTS * 0.8) {
+                    infoElement.style.background = '#fff3e0';
+                    infoElement.style.color = '#e65100';
+                    infoElement.innerHTML = `현재: <strong>${drafts.length}</strong> / <strong>50</strong> 개 (남은 저장: <strong>${MAX_DRAFTS - drafts.length}</strong>개)`;
+                } else {
+                    infoElement.style.background = '#e3f2fd';
+                    infoElement.style.color = '#1565c0';
+                    infoElement.innerHTML = `현재: <strong>${drafts.length}</strong> / <strong>50</strong> 개`;
+                }
+            }
             
             // 자동 제안 이름
             const formData = getFormData();
@@ -1027,7 +1111,7 @@
                     <div class="draft-item ${statusClass}">
                         <div class="draft-header">
                             <div>
-                                <div class="draft-title">${draft.name}</div>
+                                <div class="draft-title">#${index + 1} ${draft.name}</div>
                                 <span class="draft-status ${statusBadge}">${statusText}</span>
                             </div>
                         </div>
@@ -1066,6 +1150,13 @@
                 const drafts = loadDrafts();
                 const formData = getFormData();
                 
+                // 최대 개수 체크
+                if (drafts.length >= MAX_DRAFTS && !currentDraftId) {
+                    if (!confirm(`임시저장이 최대 ${MAX_DRAFTS}개에 도달했습니다.\n가장 오래된 임시저장을 삭제하고 새로 저장하시겠습니까?`)) {
+                        return;
+                    }
+                }
+                
                 if (currentDraftId) {
                     // 기존 임시저장 수정
                     const index = drafts.findIndex(d => d.id === currentDraftId);
@@ -1092,7 +1183,13 @@
                 saveDrafts(drafts);
                 closeSaveDraftModal();
                 updateCurrentDraftInfo();
-                showToast('💾 현장 작업이 임시저장되었습니다!', 'warning');
+                
+                const remaining = MAX_DRAFTS - loadDrafts().length;
+                let message = '💾 현장 작업이 임시저장되었습니다!';
+                if (remaining <= 5) {
+                    message += ` (남은 저장 가능: ${remaining}개)`;
+                }
+                showToast(message, 'warning');
             } catch (error) {
                 console.error('임시저장 오류:', error);
                 alert('임시저장 중 오류가 발생했습니다: ' + error.message);
@@ -1171,12 +1268,22 @@
             const drafts = loadDrafts();
             const listDiv = document.getElementById('drafts-list');
             
+            // 저장 개수 표시 업데이트
+            const displayElement = document.getElementById('draft-count-display');
+            if (displayElement) {
+                displayElement.textContent = drafts.length;
+                displayElement.style.color = drafts.length >= MAX_DRAFTS ? '#dc3545' : drafts.length >= MAX_DRAFTS * 0.8 ? '#ff9800' : '#333';
+            }
+            
             if (drafts.length === 0) {
                 listDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">저장된 임시 작업이 없습니다.</p>';
                 return;
             }
+            
+            // 저장 시간 기준 내림차순 정렬 (최신 것이 위로)
+            drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
 
-            listDiv.innerHTML = drafts.map(draft => {
+            listDiv.innerHTML = drafts.map((draft, index) => {
                 const hasInspection = draft.data['RESULT結果'] || draft.data['OL總長'] || draft.data['Weight重量'];
                 const statusClass = hasInspection ? 'completed-draft' : 'field-draft';
                 const statusBadge = hasInspection ? 'status-office' : 'status-field';
