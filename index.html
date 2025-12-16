@@ -577,8 +577,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 IPQC 품질관리 시스템 <span class="version-badge">v3.0 현장/사무실</span></h1>
-            <p>현장 품질 검사 데이터 입력 및 관리</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <h1 id="app-title">🔍 IPQC 품질관리 시스템 <span class="version-badge">v3.0 현장/사무실</span></h1>
+                    <p id="app-subtitle">현장 품질 검사 데이터 입력 및 관리</p>
+                </div>
+                <div class="language-selector" style="display: flex; gap: 8px;">
+                    <button type="button" class="lang-btn" data-lang="ko" style="padding: 8px 16px; border: 2px solid #667eea; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">한국어</button>
+                    <button type="button" class="lang-btn" data-lang="en" style="padding: 8px 16px; border: 2px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">English</button>
+                    <button type="button" class="lang-btn" data-lang="zh" style="padding: 8px 16px; border: 2px solid #e0e0e0; background: white; border-radius: 6px; cursor: pointer; font-weight: 600;">繁體中文</button>
+                </div>
+            </div>
             
             <div class="workflow-info">
                 <h4>📋 작업 프로세스</h4>
@@ -605,10 +614,10 @@
             <div class="save-load-section">
                 <h3>💾 작업 관리</h3>
                 <div class="save-load-buttons">
-                    <button type="button" class="btn-warning" onclick="saveFieldDraft()">🏭 새 임시저장 만들기</button>
-                    <button type="button" class="btn-warning" onclick="saveCurrentDraft()" style="display:none;" id="update-draft-btn">💾 현재 작업 업데이트</button>
-                    <button type="button" class="btn-secondary" onclick="showDraftModal()">📂 임시저장 불러오기</button>
-                    <button type="button" class="btn-secondary" onclick="clearForm()" style="background: #6c757d;">🔄 폼 초기화</button>
+                    <button type="button" class="btn-warning" id="save-draft-btn">🏭 새 임시저장 만들기</button>
+                    <button type="button" class="btn-warning" id="update-draft-btn" style="display:none;">💾 현재 작업 업데이트</button>
+                    <button type="button" class="btn-secondary" id="load-draft-btn">📂 임시저장 불러오기</button>
+                    <button type="button" class="btn-secondary" id="clear-form-btn" style="background: #6c757d;">🔄 폼 초기화</button>
                 </div>
                 <div id="current-draft-info" style="margin-top: 10px;"></div>
             </div>
@@ -905,6 +914,77 @@
         const DRAFT_KEY = 'ipqc_drafts';
         const MAX_DRAFTS = 50; // 최대 임시저장 개수
         let currentDraftId = null;
+        let currentLanguage = localStorage.getItem('ipqc_language') || 'ko'; // 기본 한국어
+        
+        // 다국어 텍스트
+        const translations = {
+            ko: {
+                appTitle: 'IPQC 품질관리 시스템',
+                version: 'v3.0 현장/사무실',
+                subtitle: '현장 품질 검사 데이터 입력 및 관리',
+                workflowTitle: '작업 프로세스',
+                step1: '현장에서 기본정보 입력',
+                step2: '임시저장',
+                step3: '사무실에서 불러오기',
+                step4: '검사항목 측정/입력',
+                step5: '최종저장',
+                inputTab: '데이터 입력',
+                draftsTab: '임시저장함',
+                viewTab: '데이터 조회',
+                statsTab: '통계',
+                saveDraft: '새 임시저장 만들기',
+                loadDraft: '임시저장 불러오기',
+                clearForm: '폼 초기화'
+            },
+            en: {
+                appTitle: 'IPQC Quality Management System',
+                version: 'v3.0 Field/Office',
+                subtitle: 'On-site Quality Inspection Data Entry and Management',
+                workflowTitle: 'Workflow Process',
+                step1: 'Enter basic info at field',
+                step2: 'Temporary save',
+                step3: 'Load in office',
+                step4: 'Measure & input inspection items',
+                step5: 'Final save',
+                inputTab: 'Data Input',
+                draftsTab: 'Drafts',
+                viewTab: 'Data View',
+                statsTab: 'Statistics',
+                saveDraft: 'Create New Draft',
+                loadDraft: 'Load Draft',
+                clearForm: 'Clear Form'
+            },
+            zh: {
+                appTitle: 'IPQC 品質管理系統',
+                version: 'v3.0 現場/辦公室',
+                subtitle: '現場品質檢查資料輸入及管理',
+                workflowTitle: '作業流程',
+                step1: '現場輸入基本資訊',
+                step2: '臨時儲存',
+                step3: '辦公室載入',
+                step4: '測量檢查項目輸入',
+                step5: '最終儲存',
+                inputTab: '資料輸入',
+                draftsTab: '臨時儲存庫',
+                viewTab: '資料查詢',
+                statsTab: '統計',
+                saveDraft: '建立新臨時儲存',
+                loadDraft: '載入臨時儲存',
+                clearForm: '清除表單'
+            }
+        };
+        
+        // 언어 변경 함수
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('ipqc_language', lang);
+            location.reload(); // 페이지 새로고침
+        }
+        
+        // 텍스트 가져오기
+        function t(key) {
+            return translations[currentLanguage][key] || translations['ko'][key] || key;
+        }
 
         // 데이터 로드
         function loadData() {
@@ -1120,13 +1200,18 @@
 
         // 임시저장 모달 열기
         function showDraftModal() {
+            console.log('임시저장 불러오기 모달 열기');
             const drafts = loadDrafts();
             const modalList = document.getElementById('modal-draft-list');
+            console.log(`불러온 임시저장: ${drafts.length}개`);
             
             if (drafts.length === 0) {
                 modalList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">저장된 임시 작업이 없습니다.</p>';
             } else {
-                modalList.innerHTML = drafts.map(draft => {
+                // 저장 시간 기준 내림차순 정렬
+                drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                
+                modalList.innerHTML = drafts.map((draft, index) => {
                     const hasInspection = draft.data['RESULT結果'] || draft.data['OL總長'] || draft.data['Weight重量'];
                     const statusClass = hasInspection ? 'completed-draft' : 'field-draft';
                     const statusBadge = hasInspection ? 'status-office' : 'status-field';
@@ -1155,7 +1240,13 @@
                 }).join('');
             }
             
-            document.getElementById('draft-modal').classList.add('show');
+            const modal = document.getElementById('draft-modal');
+            if (modal) {
+                modal.classList.add('show');
+                console.log('모달 표시 완료');
+            } else {
+                console.error('모달 요소를 찾을 수 없음!');
+            }
         }
 
         // 임시저장 모달 닫기
@@ -1561,6 +1652,63 @@
             console.log(`현재 임시저장: ${drafts.length}개`);
             console.log(`최대 저장 가능: ${MAX_DRAFTS}개`);
             console.log(`남은 저장: ${MAX_DRAFTS - drafts.length}개`);
+            
+            // 언어 버튼 이벤트 리스너
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    console.log('언어 변경:', lang);
+                    changeLanguage(lang);
+                });
+                
+                // 현재 언어 버튼 강조
+                if (btn.getAttribute('data-lang') === currentLanguage) {
+                    btn.style.borderColor = '#667eea';
+                    btn.style.background = '#f0f0ff';
+                    btn.style.color = '#667eea';
+                } else {
+                    btn.style.borderColor = '#e0e0e0';
+                    btn.style.background = 'white';
+                    btn.style.color = '#666';
+                }
+            });
+            
+            // 버튼 이벤트 리스너 등록
+            const saveDraftBtn = document.getElementById('save-draft-btn');
+            const loadDraftBtn = document.getElementById('load-draft-btn');
+            const updateDraftBtn = document.getElementById('update-draft-btn');
+            const clearFormBtn = document.getElementById('clear-form-btn');
+            
+            if (saveDraftBtn) {
+                saveDraftBtn.addEventListener('click', function() {
+                    console.log('새 임시저장 버튼 클릭');
+                    saveFieldDraft();
+                });
+            }
+            
+            if (loadDraftBtn) {
+                loadDraftBtn.addEventListener('click', function() {
+                    console.log('임시저장 불러오기 버튼 클릭!');
+                    showDraftModal();
+                });
+            }
+            
+            if (updateDraftBtn) {
+                updateDraftBtn.addEventListener('click', function() {
+                    console.log('현재 작업 업데이트 버튼 클릭');
+                    saveCurrentDraft();
+                });
+            }
+            
+            if (clearFormBtn) {
+                clearFormBtn.addEventListener('click', function() {
+                    console.log('폼 초기화 버튼 클릭');
+                    clearForm();
+                });
+            }
+            
+            console.log('모든 이벤트 리스너 등록 완료');
+            console.log('불러오기 버튼:', loadDraftBtn ? '찾음' : '없음');
         });
 
         // 모달 외부 클릭시 닫기
