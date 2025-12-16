@@ -810,7 +810,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="color: #667eea; margin: 0;">📂 임시 저장된 현장 작업</h2>
                 <div style="background: #f0f0f0; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
-                    <span id="draft-count-display">0</span> / <span style="color: #667eea;">${MAX_DRAFTS}</span> 개
+                    <span id="draft-count-display">0</span> / <span style="color: #667eea;" id="max-drafts-display">50</span> 개
                 </div>
             </div>
             <div class="progress-info" style="margin-bottom: 20px;">
@@ -919,20 +919,44 @@
 
         // 임시저장 목록 로드
         function loadDrafts() {
-            const drafts = localStorage.getItem(DRAFT_KEY);
-            return drafts ? JSON.parse(drafts) : [];
+            try {
+                const drafts = localStorage.getItem(DRAFT_KEY);
+                const result = drafts ? JSON.parse(drafts) : [];
+                console.log(`불러온 임시저장: ${result.length}개`);
+                return result;
+            } catch (e) {
+                console.error('임시저장 로드 실패:', e);
+                return [];
+            }
         }
 
         // 임시저장 목록 저장
         function saveDrafts(drafts) {
-            // 최대 개수 제한 (최신 50개만 보관)
-            if (drafts.length > MAX_DRAFTS) {
-                // 오래된 것부터 삭제 (저장 시간 기준)
-                drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
-                drafts = drafts.slice(0, MAX_DRAFTS);
+            try {
+                // 최대 개수 제한 (최신 50개만 보관)
+                if (drafts.length > MAX_DRAFTS) {
+                    // 오래된 것부터 삭제 (저장 시간 기준)
+                    drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                    drafts = drafts.slice(0, MAX_DRAFTS);
+                    console.log(`최대 개수 초과: ${MAX_DRAFTS}개로 제한`);
+                }
+                
+                const dataStr = JSON.stringify(drafts);
+                const dataSize = new Blob([dataStr]).size;
+                console.log(`저장 시도: ${drafts.length}개, 크기: ${(dataSize/1024).toFixed(2)}KB`);
+                
+                localStorage.setItem(DRAFT_KEY, dataStr);
+                console.log('저장 성공!');
+                updateDraftCount();
+            } catch (e) {
+                console.error('localStorage 저장 실패:', e);
+                if (e.name === 'QuotaExceededError') {
+                    alert('\u26a0\ufe0f 저장 공간이 부족합니다.\n\uc624래된 임시저장을 삭제해주세요.');
+                } else {
+                    alert('저장 중 오류가 발생했습니다: ' + e.message);
+                }
+                throw e;
             }
-            localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
-            updateDraftCount();
         }
 
         // 임시저장 개수 업데이트
@@ -958,13 +982,14 @@
         // 토스트 메시지 표시
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
+            // \n을 <br>로 변환
+            toast.innerHTML = message.replace(/\n/g, '<br>');
             toast.style.background = type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#dc3545';
             if (type === 'warning') toast.style.color = '#333';
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3000);
+            }, 4000); // 4초로 연장
         }
 
         // 탭 전환
@@ -1184,12 +1209,14 @@
                 closeSaveDraftModal();
                 updateCurrentDraftInfo();
                 
-                const remaining = MAX_DRAFTS - loadDrafts().length;
-                let message = '💾 현장 작업이 임시저장되었습니다!';
-                if (remaining <= 5) {
-                    message += ` (남은 저장 가능: ${remaining}개)`;
+                const savedDrafts = loadDrafts();
+                const remaining = MAX_DRAFTS - savedDrafts.length;
+                let message = `💾 현장 작업이 임시저장되었습니다! (현재: ${savedDrafts.length}개)`;
+                if (remaining <= 10) {
+                    message += `\n남은 저장 가능: ${remaining}개`;
                 }
                 showToast(message, 'warning');
+                console.log(`현재 임시저장 개수: ${savedDrafts.length}/${MAX_DRAFTS}`);
             } catch (error) {
                 console.error('임시저장 오류:', error);
                 alert('임시저장 중 오류가 발생했습니다: ' + error.message);
@@ -1527,6 +1554,13 @@
             refreshStats();
             updateDraftCount();
             updateCurrentDraftInfo();
+            
+            // 초기 로드 시 저장 개수 확인
+            const drafts = loadDrafts();
+            console.log(`=== IPQC 시스템 로드 ===`);
+            console.log(`현재 임시저장: ${drafts.length}개`);
+            console.log(`최대 저장 가능: ${MAX_DRAFTS}개`);
+            console.log(`남은 저장: ${MAX_DRAFTS - drafts.length}개`);
         });
 
         // 모달 외부 클릭시 닫기
