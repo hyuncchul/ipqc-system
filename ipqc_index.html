@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPQC 품질관리 시스템 v3</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .workflow-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .workflow-info h4 {
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #333;
+            border: 1px solid #ffc107;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: none;
+            background: #f0f0f0;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .save-load-section {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .save-load-section h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .save-load-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .draft-list {
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .draft-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+
+        .draft-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .draft-item.field-draft {
+            border-left: 5px solid #ffc107;
+            background: #fffbf0;
+        }
+
+        .draft-item.completed-draft {
+            border-left: 5px solid #28a745;
+        }
+
+        .draft-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .draft-title {
+            font-weight: 700;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .draft-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-field {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .status-office {
+            background: #28a745;
+            color: white;
+        }
+
+        .draft-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .draft-meta-row {
+            margin: 3px 0;
+        }
+
+        .draft-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .form-section.field-section {
+            background: #fff9e6;
+            border-color: #ffc107;
+        }
+
+        .form-section.office-section {
+            background: #e8f5e9;
+            border-color: #28a745;
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .section-badge.field-badge {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .section-badge.office-badge {
+            background: #28a745;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 5px;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .data-table {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .tab-btn {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .badge-draft {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .progress-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 IPQC 품질관리 시스템 <span class="version-badge">v3.0 현장/사무실</span></h1>
+            <p>현장 품질 검사 데이터 입력 및 관리</p>
+            
+            <div class="workflow-info">
+                <h4>📋 작업 프로세스</h4>
+                <div class="workflow-steps">
+                    <div class="workflow-step">🏭 1단계: 현장에서 기본정보 입력</div>
+                    <div class="workflow-step">💾 2단계: 임시저장</div>
+                    <div class="workflow-step">🏢 3단계: 사무실에서 불러오기</div>
+                    <div class="workflow-step">🔬 4단계: 검사항목 측정/입력</div>
+                    <div class="workflow-step">✅ 5단계: 최종저장</div>
+                </div>
+            </div>
+
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('input')">데이터 입력</button>
+                <button class="tab-btn" onclick="switchTab('drafts')">임시저장함 <span class="badge badge-draft" id="draft-count">0</span></button>
+                <button class="tab-btn" onclick="switchTab('view')">데이터 조회</button>
+                <button class="tab-btn" onclick="switchTab('stats')">통계</button>
+            </div>
+        </div>
+
+        <!-- 데이터 입력 탭 -->
+        <div id="input-tab" class="tab-content active">
+            <!-- 임시저장 섹션 -->
+            <div class="save-load-section">
+                <h3>💾 작업 관리</h3>
+                <div class="save-load-buttons">
+                    <button type="button" class="btn-warning" onclick="saveFieldDraft()">🏭 현장 작업 임시저장</button>
+                    <button type="button" class="btn-secondary" onclick="showDraftModal()">📂 임시저장 불러오기</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()" style="background: #6c757d;">🔄 폼 초기화</button>
+                </div>
+                <div id="current-draft-info" style="margin-top: 10px;"></div>
+            </div>
+
+            <form id="ipqc-form">
+                <!-- 현장 작업 섹션 -->
+                <div class="form-section field-section">
+                    <h3>🏭 현장 작업 <span class="section-badge field-badge">STEP 1</span></h3>
+                    <div class="progress-info">
+                        ℹ️ 현장에서 기본 정보와 제품 정보를 입력한 후 <strong>"현장 작업 임시저장"</strong> 버튼을 눌러주세요.
+                    </div>
+
+                    <h4 style="color: #856404; margin: 20px 0 15px 0; font-size: 16px;">📅 기본 정보</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>DATE 日期 <span class="required">*</span></label>
+                            <input type="date" name="DATE 日期" required>
+                        </div>
+                        <div class="form-group">
+                            <label>TIME 時間 <span class="required">*</span></label>
+                            <input type="time" name="TIME 時間" required>
+                        </div>
+                        <div class="form-group">
+                            <label>M/C 機台</label>
+                            <input type="text" name="M/C 機台">
+                        </div>
+                        <div class="form-group">
+                            <label>SHIFT 班別</label>
+                            <select name="SHIFT 班別">
+                                <option value="">선택</option>
+                                <option value="A">A班</option>
+                                <option value="B">B班</option>
+                                <option value="C">C班</option>
+                                <option value="D">D班</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>QC inspector 檢驗員 <span class="required">*</span></label>
+                            <input type="text" name="QC inspector 檢驗員" required>
+                        </div>
+                    </div>
+
+                    <h4 style="color: #856404; margin: 20px 0 15px 0; font-size: 16px;">📦 제품 정보</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Description 料號</label>
+                            <input type="text" name="Description 料號">
+                        </div>
+                        <div class="form-group">
+                            <label>Customer</label>
+                            <input type="text" name="Customer">
+                        </div>
+                        <div class="form-group">
+                            <label>MOLD 模號</label>
+                            <input type="text" name="MOLD 模號">
+                        </div>
+                        <div class="form-group">
+                            <label>Datecode</label>
+                            <input type="text" name="Datecode">
+                        </div>
+                        <div class="form-group">
+                            <label>LTC No. 批號</label>
+                            <input type="text" name="LTC No. 批號">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사무실 작업 섹션 -->
+                <div class="form-section office-section">
+                    <h3>🏢 사무실 작업 <span class="section-badge office-badge">STEP 2</span></h3>
+                    <div class="progress-info">
+                        ℹ️ 사무실에서 <strong>"임시저장 불러오기"</strong>로 현장 데이터를 불러온 후, 측정 항목을 입력하고 최종 저장해주세요.
+                    </div>
+
+                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">🔬 기본 검사 항목</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>VISUAL外觀</label>
+                            <select name="VISUAL外觀">
+                                <option value="">선택</option>
+                                <option value="OK">OK</option>
+                                <option value="NG">NG</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>OL總長</label>
+                            <input type="number" step="0.01" name="OL總長">
+                        </div>
+                        <div class="form-group">
+                            <label>OW總寬</label>
+                            <input type="number" step="0.01" name="OW總寬">
+                        </div>
+                        <div class="form-group">
+                            <label>ST外疊合高</label>
+                            <input type="number" step="0.01" name="ST外疊合高">
+                        </div>
+                        <div class="form-group">
+                            <label>Warpage彎度</label>
+                            <input type="number" step="0.01" name="Warpage彎度">
+                        </div>
+                        <div class="form-group">
+                            <label>Where 位置</label>
+                            <input type="text" name="Where 位置">
+                        </div>
+                        <div class="form-group">
+                            <label>C/C 凹凸度</label>
+                            <input type="number" step="0.01" name="C/C 凹凸度">
+                        </div>
+                        <div class="form-group">
+                            <label>SR表面電阻</label>
+                            <input type="number" step="0.01" name="SR表面電阻">
+                        </div>
+                        <div class="form-group">
+                            <label>Weight重量</label>
+                            <input type="number" step="0.01" name="Weight重量">
+                        </div>
+                    </div>
+
+                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">🏭 고객별 특수 검사</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>TSMC EL 3點 最大值</label>
+                            <input type="number" step="0.01" name="TSMC EL 3點 最大值">
+                        </div>
+                        <div class="form-group">
+                            <label>一般客戶 EL</label>
+                            <input type="number" step="0.01" name="一般客戶 EL">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC SKH 量測10點結果</label>
+                            <input type="text" name="TSMC SKH 量測10點結果">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC SKH 量測4點結果</label>
+                            <input type="text" name="TSMC SKH 量測4點結果">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC 20片 ST 量測4點 最大值</label>
+                            <input type="number" step="0.01" name="TSMC 20片 ST 量測4點 最大值">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC 20片 ST 量測4點 最小值</label>
+                            <input type="number" step="0.01" name="TSMC 20片 ST 量測4點 最小值">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC 單片ST 量測4點 最大值</label>
+                            <input type="number" step="0.01" name="TTSMC 單片ST  量測4點 最大值">
+                        </div>
+                        <div class="form-group">
+                            <label>TSMC 單片ST 量測4點 最小值</label>
+                            <input type="number" step="0.01" name="TSMC 單片ST  量測4點 最小值">
+                        </div>
+                        <div class="form-group">
+                            <label>ASE / SPIL SKH 量測 4點結果</label>
+                            <input type="text" name="ASE / SPIL SKH 量測 4點結果">
+                        </div>
+                        <div class="form-group">
+                            <label>ASEK SR表面電阻 (2pin)</label>
+                            <input type="number" step="0.01" name="AASEK SR表面電阻 (2pin)">
+                        </div>
+                        <div class="form-group">
+                            <label>SESS SR表面電阻 (Trek 152-1) 10V</label>
+                            <input type="number" step="0.01" name="SESS SR表面電阻 (Trek 152-1) 10V">
+                        </div>
+                        <div class="form-group">
+                            <label>SESS SR表面電阻 (Trek 152-1) 100V</label>
+                            <input type="number" step="0.01" name="SESS SR表面電阻 (Trek 152-1) 100V">
+                        </div>
+                    </div>
+
+                    <h4 style="color: #1b5e20; margin: 20px 0 15px 0; font-size: 16px;">✅ 검사 결과</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>RESULT結果 <span class="required">*</span></label>
+                            <select name="RESULT結果" required>
+                                <option value="">선택</option>
+                                <option value="OK">OK</option>
+                                <option value="NG">NG</option>
+                                <option value="HOLD">HOLD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Approval 審核者</label>
+                            <input type="text" name="Approval 審核者">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>備註</label>
+                            <textarea name="備註" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">✅ 최종 저장 (완료)</button>
+            </form>
+        </div>
+
+        <!-- 임시저장함 탭 -->
+        <div id="drafts-tab" class="tab-content">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📂 임시 저장된 현장 작업</h2>
+            <div class="progress-info" style="margin-bottom: 20px;">
+                💡 <strong>Tip:</strong> 현장에서 입력한 데이터를 불러와서 사무실에서 측정 항목을 입력하세요.
+            </div>
+            <div id="drafts-list" class="draft-list"></div>
+        </div>
+
+        <!-- 데이터 조회 탭 -->
+        <div id="view-tab" class="tab-content">
+            <div class="action-buttons">
+                <button class="btn-secondary" onclick="exportToExcel()">📥 엑셀로 내보내기</button>
+                <button class="btn-secondary" onclick="clearAllData()" style="background: #dc3545;">🗑️ 모든 데이터 삭제</button>
+            </div>
+            <div class="data-table">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>순번</th>
+                            <th>날짜</th>
+                            <th>시간</th>
+                            <th>검사원</th>
+                            <th>기계</th>
+                            <th>고객</th>
+                            <th>결과</th>
+                            <th>작업</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 통계 탭 -->
+        <div id="stats-tab" class="tab-content">
+            <div class="stats">
+                <div class="stat-card">
+                    <h4>총 검사 건수</h4>
+                    <div class="number" id="total-count">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h4>OK 건수</h4>
+                    <div class="number" id="ok-count">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                    <h4>NG 건수</h4>
+                    <div class="number" id="ng-count">0</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);">
+                    <h4>HOLD 건수</h4>
+                    <div class="number" id="hold-count">0</div>
+                </div>
+            </div>
+            <div id="stats-detail"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- 임시저장 불러오기 모달 -->
+    <div id="draft-modal" class="modal">
+        <div class="modal-content">
+            <h3>📂 임시저장 불러오기</h3>
+            <div id="modal-draft-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" onclick="closeDraftModal()" style="background: #6c757d;">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 임시저장 이름 입력 모달 -->
+    <div id="save-draft-modal" class="modal">
+        <div class="modal-content">
+            <h3>💾 현장 작업 임시저장</h3>
+            <p style="margin-bottom: 15px; color: #666;">현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.</p>
+            <input type="text" id="draft-name-input" placeholder="저장 이름 (예: A기계-고객사명)">
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" onclick="closeSaveDraftModal()" style="background: #6c757d;">취소</button>
+                <button type="button" class="btn-warning" onclick="confirmSaveDraft()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LocalStorage 키
+        const STORAGE_KEY = 'ipqc_data';
+        const DRAFT_KEY = 'ipqc_drafts';
+        let currentDraftId = null;
+
+        // 데이터 로드
+        function loadData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        // 데이터 저장
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // 임시저장 목록 로드
+        function loadDrafts() {
+            const drafts = localStorage.getItem(DRAFT_KEY);
+            return drafts ? JSON.parse(drafts) : [];
+        }
+
+        // 임시저장 목록 저장
+        function saveDrafts(drafts) {
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+            updateDraftCount();
+        }
+
+        // 임시저장 개수 업데이트
+        function updateDraftCount() {
+            const drafts = loadDrafts();
+            document.getElementById('draft-count').textContent = drafts.length;
+        }
+
+        // 토스트 메시지 표시
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#dc3545';
+            if (type === 'warning') toast.style.color = '#333';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 탭 전환
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            if (tabName === 'view') {
+                refreshTable();
+            } else if (tabName === 'stats') {
+                refreshStats();
+            } else if (tabName === 'drafts') {
+                refreshDraftsList();
+            }
+        }
+
+        // 폼 데이터 가져오기 (필수 검증 우회)
+        function getFormData() {
+            const form = document.getElementById('ipqc-form');
+            const data = {};
+            
+            // 모든 input, select, textarea 요소에서 직접 값 가져오기
+            const elements = form.querySelectorAll('input, select, textarea');
+            elements.forEach(element => {
+                if (element.name) {
+                    data[element.name] = element.value || '';
+                }
+            });
+            
+            return data;
+        }
+
+        // 폼에 데이터 채우기
+        function fillForm(data) {
+            const form = document.getElementById('ipqc-form');
+            Object.keys(data).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = data[key] || '';
+                }
+            });
+        }
+
+        // 폼 초기화
+        function clearForm() {
+            if (confirm('현재 작성 중인 내용이 모두 지워집니다. 계속하시겠습니까?')) {
+                document.getElementById('ipqc-form').reset();
+                const today = new Date().toISOString().split('T')[0];
+                const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+                document.querySelector('input[name="DATE 日期"]').value = today;
+                document.querySelector('input[name="TIME 時間"]').value = now;
+                currentDraftId = null;
+                updateCurrentDraftInfo();
+                showToast('🔄 폼이 초기화되었습니다.');
+            }
+        }
+
+        // 현장 작업 임시저장
+        function saveFieldDraft() {
+            document.getElementById('save-draft-modal').classList.add('show');
+            const input = document.getElementById('draft-name-input');
+            
+            // 자동 제안 이름
+            const formData = getFormData();
+            const machine = formData['M/C 機台'] || '기계';
+            const customer = formData['Customer'] || '고객';
+            const time = new Date().toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'});
+            const suggestedName = `${machine}-${customer} (${time})`;
+            input.value = suggestedName;
+            input.select();
+        }
+
+        // 임시저장 모달 열기
+        function showDraftModal() {
+            const drafts = loadDrafts();
+            const modalList = document.getElementById('modal-draft-list');
+            
+            if (drafts.length === 0) {
+                modalList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">저장된 임시 작업이 없습니다.</p>';
+            } else {
+                modalList.innerHTML = drafts.map(draft => {
+                    const hasInspection = draft.data['RESULT結果'] || draft.data['OL總長'] || draft.data['Weight重量'];
+                    const statusClass = hasInspection ? 'completed-draft' : 'field-draft';
+                    const statusBadge = hasInspection ? 'status-office' : 'status-field';
+                    const statusText = hasInspection ? '🏢 사무실 작업중' : '🏭 현장 작업완료';
+                    
+                    return `
+                    <div class="draft-item ${statusClass}">
+                        <div class="draft-header">
+                            <div>
+                                <div class="draft-title">${draft.name}</div>
+                                <span class="draft-status ${statusBadge}">${statusText}</span>
+                            </div>
+                        </div>
+                        <div class="draft-meta">
+                            <div class="draft-meta-row">📅 ${draft.data['DATE 日期'] || '-'} ${draft.data['TIME 時間'] || ''}</div>
+                            <div class="draft-meta-row">👤 검사원: ${draft.data['QC inspector 檢驗員'] || '-'} | 🏭 기계: ${draft.data['M/C 機台'] || '-'}</div>
+                            <div class="draft-meta-row">🏢 고객: ${draft.data['Customer'] || '-'} | 📦 품번: ${draft.data['Description 料號'] || '-'}</div>
+                            <div class="draft-meta-row" style="font-size: 11px; color: #999;">💾 저장: ${new Date(draft.savedAt).toLocaleString('ko-KR')}</div>
+                        </div>
+                        <div class="draft-actions">
+                            <button class="btn-info" onclick="loadDraft(${draft.id})">📂 불러오기</button>
+                            <button class="btn-danger" onclick="deleteDraft(${draft.id})">삭제</button>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+            
+            document.getElementById('draft-modal').classList.add('show');
+        }
+
+        // 임시저장 모달 닫기
+        function closeDraftModal() {
+            document.getElementById('draft-modal').classList.remove('show');
+        }
+
+        // 임시저장 확인
+        function confirmSaveDraft() {
+            const name = document.getElementById('draft-name-input').value.trim();
+            if (!name) {
+                alert('저장 이름을 입력해주세요.');
+                return;
+            }
+
+            try {
+                const drafts = loadDrafts();
+                const formData = getFormData();
+                
+                if (currentDraftId) {
+                    // 기존 임시저장 수정
+                    const index = drafts.findIndex(d => d.id === currentDraftId);
+                    if (index !== -1) {
+                        drafts[index] = {
+                            id: currentDraftId,
+                            name: name,
+                            data: formData,
+                            savedAt: new Date().toISOString()
+                        };
+                    }
+                } else {
+                    // 새 임시저장
+                    const draft = {
+                        id: Date.now(),
+                        name: name,
+                        data: formData,
+                        savedAt: new Date().toISOString()
+                    };
+                    drafts.push(draft);
+                    currentDraftId = draft.id;
+                }
+
+                saveDrafts(drafts);
+                closeSaveDraftModal();
+                updateCurrentDraftInfo();
+                showToast('💾 현장 작업이 임시저장되었습니다!', 'warning');
+            } catch (error) {
+                console.error('임시저장 오류:', error);
+                alert('임시저장 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+
+        // 임시저장 모달 닫기
+        function closeSaveDraftModal() {
+            document.getElementById('save-draft-modal').classList.remove('show');
+        }
+
+        // 임시저장 불러오기
+        function loadDraft(id) {
+            const drafts = loadDrafts();
+            const draft = drafts.find(d => d.id === id);
+            
+            if (draft) {
+                fillForm(draft.data);
+                currentDraftId = id;
+                updateCurrentDraftInfo();
+                closeDraftModal();
+                showToast('📂 임시저장을 불러왔습니다! 사무실 작업을 진행하세요.', 'success');
+                
+                // 입력 탭으로 이동
+                document.querySelector('.tab-btn').click();
+                
+                // 사무실 섹션으로 스크롤
+                setTimeout(() => {
+                    document.querySelector('.office-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        }
+
+        // 임시저장 삭제
+        function deleteDraft(id) {
+            if (!confirm('이 임시저장을 삭제하시겠습니까?')) return;
+            
+            let drafts = loadDrafts();
+            drafts = drafts.filter(d => d.id !== id);
+            saveDrafts(drafts);
+            
+            if (currentDraftId === id) {
+                currentDraftId = null;
+                updateCurrentDraftInfo();
+            }
+            
+            showDraftModal(); // 모달 새로고침
+            refreshDraftsList();
+            showToast('🗑️ 임시저장이 삭제되었습니다.');
+        }
+
+        // 현재 임시저장 정보 업데이트
+        function updateCurrentDraftInfo() {
+            const infoDiv = document.getElementById('current-draft-info');
+            if (currentDraftId) {
+                const drafts = loadDrafts();
+                const draft = drafts.find(d => d.id === currentDraftId);
+                if (draft) {
+                    infoDiv.innerHTML = `
+                        <div class="progress-info">
+                            📌 현재 작업: <strong>${draft.name}</strong><br>
+                            💾 저장시간: ${new Date(draft.savedAt).toLocaleString('ko-KR')}<br>
+                            ℹ️ 사무실 작업 완료 후 <strong>"최종 저장"</strong> 버튼을 눌러주세요.
+                        </div>
+                    `;
+                } else {
+                    infoDiv.innerHTML = '';
+                }
+            } else {
+                infoDiv.innerHTML = '';
+            }
+        }
+
+        // 임시저장함 목록 새로고침
+        function refreshDraftsList() {
+            const drafts = loadDrafts();
+            const listDiv = document.getElementById('drafts-list');
+            
+            if (drafts.length === 0) {
+                listDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">저장된 임시 작업이 없습니다.</p>';
+                return;
+            }
+
+            listDiv.innerHTML = drafts.map(draft => {
+                const hasInspection = draft.data['RESULT結果'] || draft.data['OL總長'] || draft.data['Weight重量'];
+                const statusClass = hasInspection ? 'completed-draft' : 'field-draft';
+                const statusBadge = hasInspection ? 'status-office' : 'status-field';
+                const statusText = hasInspection ? '🏢 사무실 작업중' : '🏭 현장 작업완료';
+                
+                return `
+                <div class="draft-item ${statusClass}">
+                    <div class="draft-header">
+                        <div>
+                            <div class="draft-title">${draft.name}</div>
+                            <span class="draft-status ${statusBadge}">${statusText}</span>
+                        </div>
+                    </div>
+                    <div class="draft-meta">
+                        <div class="draft-meta-row">📅 ${draft.data['DATE 日期'] || '-'} ${draft.data['TIME 時間'] || ''}</div>
+                        <div class="draft-meta-row">👤 검사원: ${draft.data['QC inspector 檢驗員'] || '-'} | 🏭 기계: ${draft.data['M/C 機台'] || '-'}</div>
+                        <div class="draft-meta-row">🏢 고객: ${draft.data['Customer'] || '-'} | 📦 품번: ${draft.data['Description 料號'] || '-'}</div>
+                        <div class="draft-meta-row" style="font-size: 11px; color: #999;">💾 저장: ${new Date(draft.savedAt).toLocaleString('ko-KR')}</div>
+                    </div>
+                    <div class="draft-actions">
+                        <button class="btn-info" onclick="loadDraft(${draft.id})">📂 불러오기</button>
+                        <button class="btn-danger" onclick="deleteDraft(${draft.id})">삭제</button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // 폼 제출 처리
+        document.getElementById('ipqc-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            data['_timestamp'] = new Date().toISOString();
+            data['_id'] = Date.now();
+
+            const allData = loadData();
+            allData.push(data);
+            saveData(allData);
+
+            // 임시저장 삭제 (최종 저장되었으므로)
+            if (currentDraftId) {
+                let drafts = loadDrafts();
+                drafts = drafts.filter(d => d.id !== currentDraftId);
+                saveDrafts(drafts);
+                currentDraftId = null;
+            }
+
+            this.reset();
+            
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+            document.querySelector('input[name="DATE 日期"]').value = today;
+            document.querySelector('input[name="TIME 時間"]').value = now;
+
+            updateCurrentDraftInfo();
+            showToast('✅ 검사 데이터가 최종 저장되었습니다!');
+            
+            // 상단으로 스크롤
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 테이블 새로고침
+        function refreshTable() {
+            const data = loadData();
+            const tbody = document.getElementById('data-body');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">저장된 데이터가 없습니다.</td></tr>';
+                return;
+            }
+
+            data.reverse().forEach((item, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${data.length - index}</td>
+                    <td>${item['DATE 日期'] || '-'}</td>
+                    <td>${item['TIME 時間'] || '-'}</td>
+                    <td>${item['QC inspector 檢驗員'] || '-'}</td>
+                    <td>${item['M/C 機台'] || '-'}</td>
+                    <td>${item['Customer'] || '-'}</td>
+                    <td><span style="padding: 5px 10px; border-radius: 5px; background: ${item['RESULT結果'] === 'OK' ? '#28a745' : item['RESULT結果'] === 'NG' ? '#dc3545' : '#ffc107'}; color: white; font-weight: bold;">${item['RESULT結果'] || '-'}</span></td>
+                    <td><button class="btn-danger" onclick="deleteItem(${item._id})">삭제</button></td>
+                `;
+            });
+        }
+
+        // 항목 삭제
+        function deleteItem(id) {
+            if (!confirm('이 데이터를 삭제하시겠습니까?')) return;
+            
+            let data = loadData();
+            data = data.filter(item => item._id !== id);
+            saveData(data);
+            refreshTable();
+            showToast('🗑️ 데이터가 삭제되었습니다.');
+        }
+
+        // 모든 데이터 삭제
+        function clearAllData() {
+            if (!confirm('정말로 모든 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!')) return;
+            
+            localStorage.removeItem(STORAGE_KEY);
+            refreshTable();
+            refreshStats();
+            showToast('🗑️ 모든 데이터가 삭제되었습니다.');
+        }
+
+        // 통계 새로고침
+        function refreshStats() {
+            const data = loadData();
+            const total = data.length;
+            const ok = data.filter(item => item['RESULT結果'] === 'OK').length;
+            const ng = data.filter(item => item['RESULT結果'] === 'NG').length;
+            const hold = data.filter(item => item['RESULT結果'] === 'HOLD').length;
+
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('ok-count').textContent = ok;
+            document.getElementById('ng-count').textContent = ng;
+            document.getElementById('hold-count').textContent = hold;
+
+            const inspectorStats = {};
+            data.forEach(item => {
+                const inspector = item['QC inspector 檢驗員'] || '미지정';
+                if (!inspectorStats[inspector]) {
+                    inspectorStats[inspector] = { total: 0, ok: 0, ng: 0, hold: 0 };
+                }
+                inspectorStats[inspector].total++;
+                if (item['RESULT結果'] === 'OK') inspectorStats[inspector].ok++;
+                if (item['RESULT結果'] === 'NG') inspectorStats[inspector].ng++;
+                if (item['RESULT結果'] === 'HOLD') inspectorStats[inspector].hold++;
+            });
+
+            const detailDiv = document.getElementById('stats-detail');
+            let detailHTML = '<h3 style="color: #667eea; margin: 20px 0;">검사원별 통계</h3><div class="data-table"><table><thead><tr><th>검사원</th><th>총 검사</th><th>OK</th><th>NG</th><th>HOLD</th><th>합격률</th></tr></thead><tbody>';
+            
+            for (const [inspector, stats] of Object.entries(inspectorStats)) {
+                const passRate = ((stats.ok / stats.total) * 100).toFixed(1);
+                detailHTML += `
+                    <tr>
+                        <td>${inspector}</td>
+                        <td>${stats.total}</td>
+                        <td style="color: #28a745; font-weight: bold;">${stats.ok}</td>
+                        <td style="color: #dc3545; font-weight: bold;">${stats.ng}</td>
+                        <td style="color: #ffc107; font-weight: bold;">${stats.hold}</td>
+                        <td>${passRate}%</td>
+                    </tr>
+                `;
+            }
+            
+            detailHTML += '</tbody></table></div>';
+            detailDiv.innerHTML = detailHTML;
+        }
+
+        // 엑셀로 내보내기
+        function exportToExcel() {
+            const data = loadData();
+            
+            if (data.length === 0) {
+                alert('내보낼 데이터가 없습니다.');
+                return;
+            }
+
+            const ws_data = [
+                ['DATE 日期', 'TIME 時間', 'M/C 機台', 'SHIFT 班別', 'QC inspector 檢驗員', 
+                 'Description 料號', 'Customer', 'MOLD 模號', 'Datecode', 'LTC No. 批號',
+                 'VISUAL外觀', 'OL總長', 'OW總寬', 'ST外疊合高', 'Warpage彎度', 'Where 位置',
+                 'C/C 凹凸度', 'SR表面電阻', 'Weight重量', 'RESULT結果', 'Approval 審核者',
+                 'TSMC EL 3點 最大值', '一般客戶 EL', 'TSMC SKH 量測10點結果', 'TSMC SKH 量測4點結果',
+                 'TSMC 20片 ST 量測4點 最大值', 'TSMC 20片 ST 量測4點 最小值', 
+                 'TTSMC 單片ST  量測4點 最大值', 'TSMC 單片ST  量測4點 最小值',
+                 'ASE / SPIL SKH 量測 4點結果', 'AASEK SR表面電阻 (2pin)', '備註',
+                 'SESS SR表面電阻 (Trek 152-1) 10V', 'SESS SR表面電阻 (Trek 152-1) 100V']
+            ];
+
+            data.forEach(item => {
+                ws_data.push([
+                    item['DATE 日期'] || '',
+                    item['TIME 時間'] || '',
+                    item['M/C 機台'] || '',
+                    item['SHIFT 班別'] || '',
+                    item['QC inspector 檢驗員'] || '',
+                    item['Description 料號'] || '',
+                    item['Customer'] || '',
+                    item['MOLD 模號'] || '',
+                    item['Datecode'] || '',
+                    item['LTC No. 批號'] || '',
+                    item['VISUAL外觀'] || '',
+                    item['OL總長'] || '',
+                    item['OW總寬'] || '',
+                    item['ST外疊合高'] || '',
+                    item['Warpage彎度'] || '',
+                    item['Where 位置'] || '',
+                    item['C/C 凹凸度'] || '',
+                    item['SR表面電阻'] || '',
+                    item['Weight重量'] || '',
+                    item['RESULT結果'] || '',
+                    item['Approval 審核者'] || '',
+                    item['TSMC EL 3點 最大值'] || '',
+                    item['一般客戶 EL'] || '',
+                    item['TSMC SKH 量測10點結果'] || '',
+                    item['TSMC SKH 量測4點結果'] || '',
+                    item['TSMC 20片 ST 量測4點 最大值'] || '',
+                    item['TSMC 20片 ST 量測4點 最小值'] || '',
+                    item['TTSMC 單片ST  量測4點 最大值'] || '',
+                    item['TSMC 單片ST  量測4點 最小值'] || '',
+                    item['ASE / SPIL SKH 量測 4點結果'] || '',
+                    item['AASEK SR表面電阻 (2pin)'] || '',
+                    item['備註'] || '',
+                    item['SESS SR表面電阻 (Trek 152-1) 10V'] || '',
+                    item['SESS SR表面電阻 (Trek 152-1) 100V'] || ''
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+            const today = new Date().toISOString().split('T')[0];
+            const filename = `IPQC_${today}.xlsx`;
+
+            XLSX.writeFile(wb, filename);
+            showToast('📥 엑셀 파일이 다운로드되었습니다!');
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+            document.querySelector('input[name="DATE 日期"]').value = today;
+            document.querySelector('input[name="TIME 時間"]').value = now;
+
+            refreshTable();
+            refreshStats();
+            updateDraftCount();
+            updateCurrentDraftInfo();
+        });
+
+        // 모달 외부 클릭시 닫기
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
