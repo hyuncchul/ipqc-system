@@ -285,13 +285,30 @@
             border: 1px solid #d0d0d0;
             font-size: 14px;
             transition: border-color 0.3s;
+            min-height: 42px;
+            height: 42px;
+            line-height: 1.5;
+        }
+        
+        .form-group textarea {
+            height: auto;
+            min-height: 80px;
+        }
+        
+        .form-group select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            padding-right: 35px;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #000;
         }
 
         .btn-primary {
@@ -1884,7 +1901,6 @@
 
             const ws_data = [
                 ['DATE 日期', 'TIME 時間', 'M/C 機台', 'SHIFT 班別', 'QC inspector 檢驗員', 
-                 '원료명', '원료 Lot', '원료 ETC',
                  'Description 料號', 'Customer', 'MOLD 模號', 'Datecode', 'LTC No. 批號',
                  'VISUAL外觀', 'OL總長', 'OW總寬', 'ST外疊合高', 'Warpage彎度', 'Where 位置',
                  'C/C 凹凸度', 'SR表面電阻', 'Weight重量', 'RESULT結果', 'Approval 審核者',
@@ -1892,7 +1908,8 @@
                  'TSMC 20片 ST 量測4點 最大值', 'TSMC 20片 ST 量測4點 最小值', 
                  'TTSMC 單片ST  量測4點 最大值', 'TSMC 單片ST  量測4點 最小值',
                  'ASE / SPIL SKH 量測 4點結果', 'AASEK SR表面電阻 (2pin)', '備註',
-                 'SESS SR表面電阻 (Trek 152-1) 10V', 'SESS SR表面電阻 (Trek 152-1) 100V']
+                 'SESS SR表面電阻 (Trek 152-1) 10V', 'SESS SR表面電阻 (Trek 152-1) 100V',
+                 '원료명', '원료 Lot', '원료 ETC']
             ];
 
             data.forEach(item => {
@@ -1902,9 +1919,6 @@
                     item['M/C 機台'] || '',
                     item['SHIFT 班別'] || '',
                     item['QC inspector 檢驗員'] || '',
-                    item['원료명'] || '',
-                    item['원료 Lot'] || '',
-                    item['원료 ETC'] || '',
                     item['Description 料號'] || '',
                     item['Customer'] || '',
                     item['MOLD 模號'] || '',
@@ -1933,7 +1947,10 @@
                     item['AASEK SR表面電阻 (2pin)'] || '',
                     item['備註'] || '',
                     item['SESS SR表面電阻 (Trek 152-1) 10V'] || '',
-                    item['SESS SR表面電阻 (Trek 152-1) 100V'] || ''
+                    item['SESS SR表面電阻 (Trek 152-1) 100V'] || '',
+                    item['원료명'] || '',
+                    item['원료 Lot'] || '',
+                    item['원료 ETC'] || ''
                 ]);
             });
 
