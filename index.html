@@ -601,10 +601,10 @@
             </div>
 
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('input')">데이터 입력</button>
-                <button class="tab-btn" onclick="switchTab('drafts')">임시저장함 <span class="badge badge-draft" id="draft-count">0</span></button>
-                <button class="tab-btn" onclick="switchTab('view')">데이터 조회</button>
-                <button class="tab-btn" onclick="switchTab('stats')">통계</button>
+                <button class="tab-btn active" id="tab-input" onclick="switchTab('input')">데이터 입력</button>
+                <button class="tab-btn" id="tab-drafts" onclick="switchTab('drafts')">임시저장함 <span class="badge badge-draft" id="draft-count">0</span></button>
+                <button class="tab-btn" id="tab-view" onclick="switchTab('view')">데이터 조회</button>
+                <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">통계</button>
             </div>
         </div>
 
@@ -976,9 +976,72 @@
         
         // 언어 변경 함수
         function changeLanguage(lang) {
+            console.log('언어 변경 시도:', currentLanguage, '->', lang);
             currentLanguage = lang;
             localStorage.setItem('ipqc_language', lang);
-            location.reload(); // 페이지 새로고침
+            
+            // UI 업데이트
+            updateLanguageUI();
+            
+            // 버튼 스타일 업데이트
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.style.borderColor = '#667eea';
+                    btn.style.background = '#f0f0ff';
+                    btn.style.color = '#667eea';
+                } else {
+                    btn.style.borderColor = '#e0e0e0';
+                    btn.style.background = 'white';
+                    btn.style.color = '#666';
+                }
+            });
+            
+            console.log('언어 변경 완료:', lang);
+        }
+        
+        // UI 텍스트 업데이트
+        function updateLanguageUI() {
+            const t = translations[currentLanguage];
+            
+            // 헤더
+            const titleEl = document.getElementById('app-title');
+            if (titleEl) {
+                titleEl.innerHTML = `🔍 ${t.appTitle} <span class="version-badge">${t.version}</span>`;
+            }
+            
+            const subtitleEl = document.getElementById('app-subtitle');
+            if (subtitleEl) {
+                subtitleEl.textContent = t.subtitle;
+            }
+            
+            // 탭 버튼
+            const inputTab = document.getElementById('tab-input');
+            if (inputTab) inputTab.childNodes[0].textContent = t.inputTab;
+            
+            const draftsTab = document.getElementById('tab-drafts');
+            if (draftsTab) {
+                // 배지는 유지하고 텍스트만 변경
+                const badge = draftsTab.querySelector('.badge');
+                draftsTab.childNodes[0].textContent = t.draftsTab + ' ';
+            }
+            
+            const viewTab = document.getElementById('tab-view');
+            if (viewTab) viewTab.textContent = t.viewTab;
+            
+            const statsTab = document.getElementById('tab-stats');
+            if (statsTab) statsTab.textContent = t.statsTab;
+            
+            // 버튼
+            const saveDraftBtn = document.getElementById('save-draft-btn');
+            if (saveDraftBtn) saveDraftBtn.innerHTML = `🏭 ${t.saveDraft}`;
+            
+            const loadDraftBtn = document.getElementById('load-draft-btn');
+            if (loadDraftBtn) loadDraftBtn.innerHTML = `📂 ${t.loadDraft}`;
+            
+            const clearFormBtn = document.getElementById('clear-form-btn');
+            if (clearFormBtn) clearFormBtn.innerHTML = `🔄 ${t.clearForm}`;
+            
+            console.log('UI 텍스트 업데이트 완료');
         }
         
         // 텍스트 가져오기
@@ -1709,6 +1772,10 @@
             
             console.log('모든 이벤트 리스너 등록 완료');
             console.log('불러오기 버튼:', loadDraftBtn ? '찾음' : '없음');
+            
+            // 현재 언어로 UI 초기화
+            console.log('현재 언어:', currentLanguage);
+            updateLanguageUI();
         });
 
         // 모달 외부 클릭시 닫기
