@@ -617,9 +617,9 @@
             <!-- 워크플로우 제거됨: 통합 입력으로 변경 -->
 
             <div class="tab-buttons">
-                <button class="tab-btn active" id="tab-input" onclick="switchTab('input', event)">데이터 입력</button>
-                <button class="tab-btn" id="tab-view" onclick="switchTab('view', event)">데이터 조회</button>
-                <button class="tab-btn" id="tab-stats" onclick="switchTab('stats', event)">통계</button>
+                <button class="tab-btn active" id="tab-input" data-tab="input"><span class="tab-text">데이터 입력</span></button>
+                <button class="tab-btn" id="tab-view" data-tab="view"><span class="tab-text">데이터 조회</span></button>
+                <button class="tab-btn" id="tab-stats" data-tab="stats"><span class="tab-text">통계</span></button>
             </div>
         </div>
 
@@ -1274,20 +1274,30 @@
                 workflowSteps[4].innerHTML = `✅ ${t.step5}`;
             }
             
-            // 탭 버튼
-            const inputTab = document.getElementById('tab-input');
-            if (inputTab) inputTab.childNodes[0].textContent = t.inputTab;
+            // 탭 버튼 - span 내부 텍스트 변경
+            const inputTabText = document.querySelector('#tab-input .tab-text');
+            if (inputTabText) {
+                inputTabText.textContent = t.inputTab;
+                console.log('Input tab 언어 변경:', t.inputTab);
+            }
             
             const draftsTab = document.getElementById('tab-drafts');
             if (draftsTab) {
-                draftsTab.childNodes[0].textContent = t.draftsTab + ' ';
+                const draftsText = draftsTab.querySelector('.tab-text');
+                if (draftsText) draftsText.textContent = t.draftsTab;
             }
             
-            const viewTab = document.getElementById('tab-view');
-            if (viewTab) viewTab.textContent = t.viewTab;
+            const viewTabText = document.querySelector('#tab-view .tab-text');
+            if (viewTabText) {
+                viewTabText.textContent = t.viewTab;
+                console.log('View tab 언어 변경:', t.viewTab);
+            }
             
-            const statsTab = document.getElementById('tab-stats');
-            if (statsTab) statsTab.textContent = t.statsTab;
+            const statsTabText = document.querySelector('#tab-stats .tab-text');
+            if (statsTabText) {
+                statsTabText.textContent = t.statsTab;
+                console.log('Stats tab 언어 변경:', t.statsTab);
+            }
             
             // 작업 관리 섹션
             const workMgmt = document.querySelector('.save-load-section h3');
@@ -1586,20 +1596,32 @@
         // 탭 전환
         function switchTab(tabName, evt) {
             console.log('탭 전환:', tabName);
+            
+            // 모든 탭 버튼과 컨텐츠의 active 클래스 제거
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
+            // 클릭한 버튼에 active 추가
+            let clickedBtn = null;
             if (evt && evt.target) {
-                evt.target.classList.add('active');
-            } else {
-                const targetBtn = document.getElementById(`tab-${tabName}`);
-                if (targetBtn) targetBtn.classList.add('active');
+                // 클릭한 요소가 span일 수 있으므로 부모 button 찾기
+                clickedBtn = evt.target.closest('.tab-btn');
             }
             
+            if (!clickedBtn) {
+                // fallback: ID로 버튼 찾기
+                clickedBtn = document.getElementById(`tab-${tabName}`);
+            }
+            
+            if (clickedBtn) {
+                clickedBtn.classList.add('active');
+            }
+            
+            // 탭 컨텐츠 표시
             const targetTab = document.getElementById(`${tabName}-tab`);
             if (targetTab) {
                 targetTab.classList.add('active');
-                console.log('탭 표시:', tabName);
+                console.log('탭 표시 성공:', tabName);
             } else {
                 console.error('탭을 찾을 수 없음:', tabName);
             }
@@ -3117,6 +3139,16 @@ function applyDateFilter() {
                     clearForm();
                 });
             }
+            
+            // 탭 버튼 클릭 이벤트 등록
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const tabName = this.getAttribute('data-tab');
+                    if (tabName) {
+                        switchTab(tabName, e);
+                    }
+                });
+            });
             
             console.log('모든 이벤트 리스너 등록 완료');
             console.log('불러오기 버튼:', loadDraftBtn ? '찾음' : '없음');
