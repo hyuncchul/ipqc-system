@@ -1604,17 +1604,22 @@
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
             // 클릭한 버튼에 active 추가
-            const clickedBtn = document.getElementById(`tab-${tabName}`);
+            const clickedBtn = document.getElementById('tab-' + tabName);
             if (clickedBtn) {
                 clickedBtn.classList.add('active');
+                alert('버튼 active 추가됨: tab-' + tabName);
+            } else {
+                alert('버튼을 찾을 수 없음: tab-' + tabName);
             }
             
             // 탭 컨텐츠 표시
-            const targetTab = document.getElementById(`${tabName}-tab`);
+            const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) {
                 targetTab.classList.add('active');
+                alert('탭 컨텐츠 active 추가됨: ' + tabName + '-tab');
                 console.log('탭 표시 성공:', tabName);
             } else {
+                alert('탭 컨텐츠를 찾을 수 없음: ' + tabName + '-tab');
                 console.error('탭을 찾을 수 없음:', tabName);
             }
 
