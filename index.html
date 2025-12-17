@@ -2051,10 +2051,45 @@
             }
             
             const allData = loadData();
+            
+            // 날짜 정규화 함수 (YYYY-MM-DD 형식으로 변환)
+            const normalizeDate = (dateStr) => {
+                if (!dateStr) return '';
+                // 이미 YYYY-MM-DD 형식인 경우
+                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                    return dateStr;
+                }
+                // YYYY/MM/DD 형식인 경우
+                if (/^\d{4}\/\d{2}\/\d{2}$/.test(dateStr)) {
+                    return dateStr.replace(/\//g, '-');
+                }
+                // Date 객체로 변환 시도
+                try {
+                    const date = new Date(dateStr);
+                    if (isNaN(date.getTime())) return '';
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                } catch(e) {
+                    return '';
+                }
+            };
+            
             filteredData = allData.filter(item => {
-                const itemDate = item['DATE 日期'];
+                const itemDate = normalizeDate(item['DATE 日期']);
                 if (!itemDate) return false;
                 return itemDate >= startDate && itemDate <= endDate;
+            });
+            
+            // 디버그: 필터링 과정 로그
+            console.log('필터링 전 전체 데이터:', allData.length);
+            console.log('필터 조건:', startDate, '~', endDate);
+            console.log('필터링 후 데이터:', filteredData.length);
+            allData.forEach((item, idx) => {
+                const normalizedDate = normalizeDate(item['DATE 日期']);
+                const included = normalizedDate >= startDate && normalizedDate <= endDate;
+                console.log(`[${idx}] 원본: ${item['DATE 日期']} -> 정규화: ${normalizedDate} -> 포함: ${included}`);
             });
             
             dateFilterActive = true;
