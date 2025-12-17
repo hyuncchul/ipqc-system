@@ -875,7 +875,6 @@
         <div id="view-tab" class="tab-content">
             <div class="action-buttons">
                 <button class="btn-secondary" onclick="openSheetsSettings()">📋 Google Sheets 설정</button>
-                <button class="btn-secondary" id="sync-sheets-btn" onclick="syncToGoogleSheets()" style="display: none;">☁️ Sheets에 동기화</button>
                 <button class="btn-secondary" id="load-sheets-btn" onclick="loadFromGoogleSheets()" style="display: none;">📂 Sheets에서 불러오기</button>
                 <button class="btn-secondary" onclick="exportToExcel()">📥 엑셀로 내보내기</button>
                 <button class="btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
@@ -957,7 +956,7 @@
     <div id="sheets-settings-modal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <h3>📋 Google Sheets 연동 설정</h3>
-            <p style="margin-bottom: 15px; color: #666;">모든 기기에서 데이터를 공유하려면 Google Sheets를 연동하세요.</p>
+            <p style="margin-bottom: 15px; color: #666;">모든 기기에서 데이터를 공유하려면 Google Sheets를 연동하세요.<br><strong>✅ Final Save 버튼 클릭 시 자동으로 Google Sheets에 저장됩니다.</strong></p>
             
             <div style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-left: 3px solid #000;">
                 <strong>📌 설정 방법:</strong>
@@ -972,13 +971,6 @@
             <label style="display: block; margin-bottom: 5px; font-weight: 600;">Google Sheets Web App URL:</label>
             <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/.../exec" 
                    style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; margin-bottom: 15px;">
-            
-            <div style="background: #f0f0f0; padding: 10px; margin-bottom: 15px;">
-                <label style="display: flex; align-items: center; cursor: pointer;">
-                    <input type="checkbox" id="auto-sync-checkbox" style="margin-right: 8px;">
-                    <span>자동 동기화 활성화 (저장 시 Google Sheets에 자동 저장)</span>
-                </label>
-            </div>
             
             <div class="modal-buttons">
                 <button type="button" class="btn-secondary" onclick="closeSheetsSettings()">취소</button>
@@ -2106,7 +2098,6 @@
         function openSheetsSettings() {
             const config = loadSheetsConfig();
             document.getElementById('sheets-url-input').value = config.url || '';
-            document.getElementById('auto-sync-checkbox').checked = config.autoSync || false;
             document.getElementById('sheets-settings-modal').classList.add('show');
         }
 
@@ -2118,7 +2109,6 @@
         // Google Sheets 설정 저장
         function saveSheetsSettings() {
             const url = document.getElementById('sheets-url-input').value.trim();
-            const autoSync = document.getElementById('auto-sync-checkbox').checked;
             
             if (!url) {
                 alert('경고: Google Sheets Web App URL을 입력해주세요.');
@@ -2130,23 +2120,20 @@
                 return;
             }
             
-            saveSheetsConfig(url, autoSync);
+            saveSheetsConfig(url, true); // autoSync는 항상 true로 설정
             closeSheetsSettings();
             updateSheetsButtons();
-            showToast('✅ Google Sheets 설정이 저장되었습니다!');
+            showToast('✅ Google Sheets 설정이 저장되었습니다! Final Save 시 자동으로 동기화됩니다.');
         }
 
         // Google Sheets 버튼 표시 업데이트
         function updateSheetsButtons() {
             const config = loadSheetsConfig();
-            const syncBtn = document.getElementById('sync-sheets-btn');
             const loadBtn = document.getElementById('load-sheets-btn');
             
             if (config.url) {
-                syncBtn.style.display = 'inline-block';
                 loadBtn.style.display = 'inline-block';
             } else {
-                syncBtn.style.display = 'none';
                 loadBtn.style.display = 'none';
             }
         }
@@ -2226,10 +2213,11 @@
             }
         }
 
-        // 데이터 저장 시 자동 동기화
+        // 데이터 저장 시 자동 동기화 (Google Sheets URL이 설정되어 있으면 항상 동기화)
         function autoSyncIfEnabled() {
             const config = loadSheetsConfig();
-            if (config.url && config.autoSync) {
+            if (config.url) {
+                // Google Sheets URL이 설정되어 있으면 Final Save 시 자동 동기화
                 syncToGoogleSheets();
             }
         }
