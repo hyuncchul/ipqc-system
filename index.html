@@ -2052,74 +2052,92 @@
             
             const allData = loadData();
             
-            // 날짜 정규화 함수 (YYYY-MM-DD 형식으로 변환)
+            // 날짜 정규화 함수
             const normalizeDate = (dateStr) => {
-                if (!dateStr) return '';
-                // 이미 YYYY-MM-DD 형식인 경우
-                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                    return dateStr;
+                if (!dateStr) return null;
+                dateStr = String(dateStr).trim();
+                
+                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+                if (/^\d{4}\/\d{2}\/\d{2}$/.test(dateStr)) return dateStr.replace(/\//g, '-');
+                
+                if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)) {
+                    const parts = dateStr.split('/');
+                    return parts[2] + '-' + parts[0].padStart(2, '0') + '-' + parts[1].padStart(2, '0');
                 }
-                // YYYY/MM/DD 형식인 경우
-                if (/^\d{4}\/\d{2}\/\d{2}$/.test(dateStr)) {
-                    return dateStr.replace(/\//g, '-');
-                }
-                // Date 객체로 변환 시도
+                
                 try {
                     const date = new Date(dateStr);
-                    if (isNaN(date.getTime())) return '';
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
+                    if (isNaN(date.getTime())) return null;
+                    const y = date.getFullYear();
+                    const m = String(date.getMonth() + 1).padStart(2, '0');
+                    const d = String(date.getDate()).padStart(2, '0');
+                    return y + '-' + m + '-' + d;
                 } catch(e) {
-                    return '';
+                    return null;
                 }
             };
             
+            // 날짜 비교 함수
+            const isDateInRange = (itemDateStr, startDateStr, endDateStr) => {
+                try {
+                    const itemDate = new Date(itemDateStr);
+                    const start = new Date(startDateStr);
+                    const end = new Date(endDateStr);
+                    
+                    if (isNaN(itemDate.getTime()) || isNaN(start.getTime()) || isNaN(end.getTime())) {
+                        return false;
+                    }
+                    
+                    itemDate.setHours(0, 0, 0, 0);
+                    start.setHours(0, 0, 0, 0);
+                    end.setHours(0, 0, 0, 0);
+                    
+                    return itemDate >= start && itemDate <= end;
+                } catch(e) {
+                    return false;
+                }
+            };
+            
+            console.log('=== 필터링 시작 ===');
+            console.log('전체 데이터:', allData.length);
+            console.log('필터 범위:', startDate, '~', endDate);
+            
             filteredData = allData.filter(item => {
-                const itemDate = normalizeDate(item['DATE 日期']);
-                if (!itemDate) return false;
-                return itemDate >= startDate && itemDate <= endDate;
+                const rawDate = item['DATE 日期'];
+                const normalizedDate = normalizeDate(rawDate);
+                
+                if (!normalizedDate) {
+                    console.log('❌ 변환 실패:', rawDate);
+                    return false;
+                }
+                
+                const included = isDateInRange(normalizedDate, startDate, endDate);
+                console.log('원본:', rawDate, '| 정규화:', normalizedDate, '| 포함:', included);
+                
+                return included;
             });
             
-            // 디버그: 필터링 과정 로그
-            console.log('필터링 전 전체 데이터:', allData.length);
-            console.log('필터 조건:', startDate, '~', endDate);
-            console.log('필터링 후 데이터:', filteredData.length);
-            allData.forEach((item, idx) => {
-                const normalizedDate = normalizeDate(item['DATE 日期']);
-                const included = normalizedDate >= startDate && normalizedDate <= endDate;
-                console.log(`[${idx}] 원본: ${item['DATE 日期']} -> 정규화: ${normalizedDate} -> 포함: ${included}`);
-            });
+            console.log('필터링 결과:', filteredData.length, '건');
+            console.log('=== 필터링 종료 ===');
             
             dateFilterActive = true;
             refreshTable(filteredData);
             
-            // 상태 표시
             const filterStatus = document.getElementById('filter-status');
-            const countLabel = {
-                ko: '총',
-                en: 'Total',
-                zh: '共'
-            };
-            const itemLabel = {
-                ko: '건',
-                en: 'items',
-                zh: '筆'
-            };
-            filterStatus.textContent = `📅 ${startDate} ~ ${endDate} (${countLabel[currentLanguage]} ${filteredData.length}${itemLabel[currentLanguage]})`;
+            const countLabel = { ko: '총', en: 'Total', zh: '共' };
+            const itemLabel = { ko: '건', en: 'items', zh: '筆' };
+            filterStatus.textContent = '📅 ' + startDate + ' ~ ' + endDate + ' (' + countLabel[currentLanguage] + ' ' + filteredData.length + itemLabel[currentLanguage] + ')';
             filterStatus.style.color = '#333';
             filterStatus.style.fontWeight = 'bold';
             
             const searchMsg = {
-                ko: `🔍 ${filteredData.length}건의 데이터가 검색되었습니다.`,
-                en: `🔍 ${filteredData.length} items found.`,
-                zh: `🔍 找到 ${filteredData.length} 筆資料。`
+                ko: '🔍 ' + filteredData.length + '건의 데이터가 검색되었습니다.',
+                en: '🔍 ' + filteredData.length + ' items found.',
+                zh: '🔍 找到 ' + filteredData.length + ' 筆資料。'
             };
             showToast(searchMsg[currentLanguage] || searchMsg.ko);
         }
         
-        // 날짜 필터 해제
         function clearDateFilter() {
             document.getElementById('filter-start-date').value = '';
             document.getElementById('filter-end-date').value = '';
