@@ -1081,7 +1081,10 @@
                 filterAlert1: '시작일과 종료일을 모두 입력해주세요.',
                 filterAlert2: '시작일이 종료일보다 늦을 수 없습니다.',
                 filterStatus: '총',
-                filterStatusEnd: '건'
+                filterStatusEnd: '건',
+                // 버튼 관련
+                sheetsSettings: 'Google Sheets 설정',
+                loadFromSheets: 'Sheets에서 불러오기'
             },
             en: {
                 appTitle: 'IPQC Quality Management System',
@@ -1160,7 +1163,10 @@
                 filterAlert1: 'Please enter both start and end dates.',
                 filterAlert2: 'Start date cannot be later than end date.',
                 filterStatus: 'Total',
-                filterStatusEnd: 'items'
+                filterStatusEnd: 'items',
+                // Button related
+                sheetsSettings: 'Google Sheets Settings',
+                loadFromSheets: 'Load from Sheets'
             },
             zh: {
                 appTitle: 'IPQC 品質管理系統',
@@ -1231,7 +1237,10 @@
                 filterAlert2: '開始日期不能晚於結束日期。',
                 filterStatus: '共',
                 filterStatusEnd: '筆',
-                // 모달 관련
+                // 按鈕相關
+                sheetsSettings: 'Google Sheets 設定',
+                loadFromSheets: '從Sheets載入',
+                // 模擬相關
                 saveDraftModalTitle: '現場作業臨時儲存',
                 saveDraftModalDesc: '在現場輸入的基本資訊儲存。在辦公室載入後輸入檢查項目。',
                 saveDraftCapacityInfo: '目前：',
@@ -1239,13 +1248,7 @@
                 loadDraftModalTitle: '載入臨時儲存',
                 cancel: '取消',
                 save: '儲存',
-                fieldWorkSaveBtn: '現場作業臨時儲存',
-                // 기간 필터
-                filterPeriod: '查詢期間',
-                filterSearch: '搜尋',
-                filterShowAll: '顯示全部',
-                filterNoData: '該期間無資料。',
-                filterNoDataAll: '無儲存資料。'
+                fieldWorkSaveBtn: '現場作業臨時儲存'
             }
         };
         
@@ -1420,6 +1423,27 @@
             const fieldWorkSaveBtn = document.getElementById('save-field-draft-btn');
             if (fieldWorkSaveBtn) {
                 fieldWorkSaveBtn.innerHTML = `🏭 ${t.fieldWorkSaveBtn}`;
+            }
+            
+            // 데이터 조회 탭 버튼
+            const sheetsSettingsBtn = document.querySelector('button[onclick="openSheetsSettings()"]');
+            if (sheetsSettingsBtn) {
+                sheetsSettingsBtn.innerHTML = `📋 ${t.sheetsSettings}`;
+            }
+            
+            const loadSheetsBtn = document.getElementById('load-sheets-btn');
+            if (loadSheetsBtn) {
+                loadSheetsBtn.innerHTML = `📂 ${t.loadFromSheets}`;
+            }
+            
+            const exportExcelBtn = document.querySelector('button[onclick="exportToExcel()"]');
+            if (exportExcelBtn) {
+                exportExcelBtn.innerHTML = `📥 ${t.exportExcel}`;
+            }
+            
+            const deleteAllDataBtn = document.querySelector('button[onclick="clearAllData()"]');
+            if (deleteAllDataBtn) {
+                deleteAllDataBtn.innerHTML = `🗑️ ${t.deleteAll}`;
             }
             
             // 필터 섹션
