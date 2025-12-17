@@ -1225,6 +1225,7 @@
         
         // 언어 변경 함수
         function changeLanguage(lang) {
+            alert('언어 변경 호출: ' + lang);  // 테스트용
             console.log('언어 변경 시도:', currentLanguage, '->', lang);
             currentLanguage = lang;
             localStorage.setItem('ipqc_language', lang);
@@ -1595,6 +1596,7 @@
 
         // 탭 전환
         function switchTab(tabName) {
+            alert('탭 전환 호출: ' + tabName);  // 테스트용
             console.log('탭 전환:', tabName);
             
             // 모든 탭 버튼과 컨텐츠의 active 클래스 제거
