@@ -729,108 +729,57 @@
                     </div>
                 </div>
 
-                <!-- 사무실 작업 섹션 -->
+                <!-- 사무실 작업 섹션 (일괄 입력 방식) -->
                 <div class="form-section office-section">
                     <h3>🏢 사무실 작업 <span class="section-badge office-badge">STEP 2</span></h3>
                     <div class="progress-info">
-                        ℹ️ 사무실에서 <strong>"임시저장 불러오기"</strong>로 현장 데이터를 불러온 후, 측정 항목을 입력하고 최종 저장해주세요.
+                        ℹ️ 사무실에서 <strong>"임시저장 불러오기"</strong>로 현장 데이터를 불러온 후, Tray 수량을 선택하고 측정 항목별로 일괄 입력해주세요.
                     </div>
 
-                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">🔬 기본 검사 항목</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>VISUAL外觀</label>
-                            <select name="VISUAL外觀">
-                                <option value="">선택</option>
-                                <option value="OK">OK</option>
-                                <option value="NG">NG</option>
-                                <option value="Waive">Waive</option>
+                    <!-- Tray 수량 선택 -->
+                    <div style="background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #ddd;">
+                        <h4 style="margin: 0 0 15px 0; font-size: 16px;">📦 측정 Tray 수량</h4>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <label style="font-weight: bold; font-size: 14px;">Tray 개수:</label>
+                            <select id="tray-count-select" onchange="generateBatchInputFields()" style="padding: 10px; font-size: 16px; border: 1px solid #d0d0d0; border-radius: 3px; min-width: 120px;">
+                                <option value="1">1개</option>
+                                <option value="2">2개</option>
+                                <option value="3">3개</option>
+                                <option value="4">4개</option>
+                                <option value="5">5개</option>
+                                <option value="6">6개</option>
+                                <option value="7">7개</option>
+                                <option value="8">8개</option>
+                                <option value="9">9개</option>
+                                <option value="10" selected>10개</option>
+                                <option value="11">11개</option>
+                                <option value="12">12개</option>
+                                <option value="13">13개</option>
+                                <option value="14">14개</option>
+                                <option value="15">15개</option>
+                                <option value="16">16개</option>
+                                <option value="17">17개</option>
+                                <option value="18">18개</option>
+                                <option value="19">19개</option>
+                                <option value="20">20개</option>
+                                <option value="21">21개</option>
+                                <option value="22">22개</option>
+                                <option value="23">23개</option>
+                                <option value="24">24개</option>
+                                <option value="25">25개</option>
+                                <option value="26">26개</option>
+                                <option value="27">27개</option>
+                                <option value="28">28개</option>
+                                <option value="29">29개</option>
+                                <option value="30">30개</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label>OL總長</label>
-                            <input type="number" step="0.01" name="OL總長">
-                        </div>
-                        <div class="form-group">
-                            <label>OW總寬</label>
-                            <input type="number" step="0.01" name="OW總寬">
-                        </div>
-                        <div class="form-group">
-                            <label>ST外疊合高</label>
-                            <input type="number" step="0.01" name="ST外疊合高">
-                        </div>
-                        <div class="form-group">
-                            <label>Warpage彎度</label>
-                            <input type="number" step="0.01" name="Warpage彎度">
-                        </div>
-                        <div class="form-group">
-                            <label>Where 位置</label>
-                            <input type="text" name="Where 位置">
-                        </div>
-                        <div class="form-group">
-                            <label>C/C 凹凸度</label>
-                            <input type="number" step="0.01" name="C/C 凹凸度">
-                        </div>
-                        <div class="form-group">
-                            <label>SR表面電阻</label>
-                            <input type="number" step="0.01" name="SR表面電阻">
-                        </div>
-                        <div class="form-group">
-                            <label>Weight重量</label>
-                            <input type="number" step="0.01" name="Weight重量">
+                            <span style="color: #666; font-size: 14px;">선택한 개수만큼 각 항목별 입력 필드가 생성됩니다.</span>
                         </div>
                     </div>
 
-                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">🏭 고객별 특수 검사</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>TSMC EL 3點 最大值</label>
-                            <input type="number" step="0.01" name="TSMC EL 3點 最大值">
-                        </div>
-                        <div class="form-group">
-                            <label>一般客戶 EL</label>
-                            <input type="number" step="0.01" name="一般客戶 EL">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC SKH 量測10點結果</label>
-                            <input type="text" name="TSMC SKH 量測10點結果">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC SKH 量測4點結果</label>
-                            <input type="text" name="TSMC SKH 量測4點結果">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC 20片 ST 量測4點 最大值</label>
-                            <input type="number" step="0.01" name="TSMC 20片 ST 量測4點 最大值">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC 20片 ST 量測4點 最小值</label>
-                            <input type="number" step="0.01" name="TSMC 20片 ST 量測4點 最小值">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC 單片ST 量測4點 最大值</label>
-                            <input type="number" step="0.01" name="TTSMC 單片ST  量測4點 最大值">
-                        </div>
-                        <div class="form-group">
-                            <label>TSMC 單片ST 量測4點 最小值</label>
-                            <input type="number" step="0.01" name="TSMC 單片ST  量測4點 最小值">
-                        </div>
-                        <div class="form-group">
-                            <label>ASE / SPIL SKH 量測 4點結果</label>
-                            <input type="text" name="ASE / SPIL SKH 量測 4點結果">
-                        </div>
-                        <div class="form-group">
-                            <label>ASEK SR表面電阻 (2pin)</label>
-                            <input type="number" step="0.01" name="AASEK SR表面電阻 (2pin)">
-                        </div>
-                        <div class="form-group">
-                            <label>SESS SR表面電阻 (Trek 152-1) 10V</label>
-                            <input type="number" step="0.01" name="SESS SR表面電阻 (Trek 152-1) 10V">
-                        </div>
-                        <div class="form-group">
-                            <label>SESS SR表面電阻 (Trek 152-1) 100V</label>
-                            <input type="number" step="0.01" name="SESS SR表面電阻 (Trek 152-1) 100V">
-                        </div>
+                    <!-- 일괄 입력 컨테이너 -->
+                    <div id="batch-input-container">
+                        <!-- JavaScript로 동적 생성 -->
                     </div>
 
                     <h4 style="margin: 20px 0 15px 0; font-size: 16px;">✅ 검사 결과</h4>
@@ -849,16 +798,16 @@
                             <label>Approval 審核者</label>
                             <input type="text" name="Approval 審核者">
                         </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
+                        <div class="form-group">
                             <label>備註</label>
-                            <textarea name="備註" rows="3"></textarea>
+                            <textarea name="備註" rows="3" style="resize: vertical;"></textarea>
                         </div>
                     </div>
-                </div>
 
-                <button type="submit" class="btn-primary">✅ 최종 저장 (완료)</button>
-            </form>
-        </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button type="submit" class="btn-primary">✅ 최종 저장 (완료)</button>
+                    </div>
+                </div>
 
         <!-- 임시저장함 탭 -->
         <div id="drafts-tab" class="tab-content">
@@ -1008,6 +957,7 @@
         const SHEETS_CONFIG_KEY = 'ipqc_sheets_config';
         const MAX_DRAFTS = 50; // 최대 임시저장 개수
         let currentDraftId = null;
+        let batchLoadedDrafts = []; // 일괄 불러온 임시저장 배열
         let currentLanguage = localStorage.getItem('ipqc_language') || 'ko'; // 기본 한국어
         
         // 다국어 텍스트
@@ -1923,33 +1873,59 @@
                 // 저장 시간 기준 내림차순 정렬
                 drafts.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
                 
-                modalList.innerHTML = drafts.map((draft, index) => {
+                // 일괄 불러오기 버튼 추가
+                let html = `
+                    <div style="background: #f0f0f0; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 2px solid #333;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <strong>📦 일괄 불러오기 모드</strong>
+                                <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">
+                                    여러 개 선택 → 항목별 일괄 입력 → 개별 데이터 저장
+                                </p>
+                            </div>
+                            <div>
+                                <button class="btn-primary" onclick="loadSelectedDrafts()" style="padding: 10px 20px; white-space: nowrap;">
+                                    ✅ 선택한 <span id="selected-count">0</span>개 일괄 불러오기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                html += drafts.map((draft, index) => {
                     const hasInspection = draft.data['RESULT結果'] || draft.data['OL總長'] || draft.data['Weight重量'];
                     const statusClass = hasInspection ? 'completed-draft' : 'field-draft';
                     const statusBadge = hasInspection ? 'status-office' : 'status-field';
                     const statusText = hasInspection ? '🏢 사무실 작업중' : '🏭 현장 작업완료';
                     
                     return `
-                    <div class="draft-item ${statusClass}">
-                        <div class="draft-header">
-                            <div>
-                                <div class="draft-title">#${index + 1} ${draft.name}</div>
-                                <span class="draft-status ${statusBadge}">${statusText}</span>
+                    <div class="draft-item ${statusClass}" style="position: relative;">
+                        <input type="checkbox" class="draft-checkbox" data-draft-id="${draft.id}" 
+                               onchange="updateSelectedCount()" 
+                               style="position: absolute; top: 15px; left: 15px; width: 20px; height: 20px; cursor: pointer;">
+                        <div style="margin-left: 40px;">
+                            <div class="draft-header">
+                                <div>
+                                    <div class="draft-title">#${index + 1} ${draft.name}</div>
+                                    <span class="draft-status ${statusBadge}">${statusText}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="draft-meta">
-                            <div class="draft-meta-row">📅 ${draft.data['DATE 日期'] || '-'} ${draft.data['TIME 時間'] || ''}</div>
-                            <div class="draft-meta-row">👤 검사원: ${draft.data['QC inspector 檢驗員'] || '-'} | 🏭 기계: ${draft.data['M/C 機台'] || '-'}</div>
-                            <div class="draft-meta-row">🏢 고객: ${draft.data['Customer'] || '-'} | 📦 품번: ${draft.data['Description 料號'] || '-'}</div>
-                            <div class="draft-meta-row" style="font-size: 11px; color: #999;">💾 저장: ${new Date(draft.savedAt).toLocaleString('ko-KR')}</div>
-                        </div>
-                        <div class="draft-actions">
-                            <button class="btn-info" onclick="loadDraft(${draft.id})">📂 불러오기</button>
-                            <button class="btn-danger" onclick="deleteDraft(${draft.id})">삭제</button>
+                            <div class="draft-meta">
+                                <div class="draft-meta-row">📅 ${draft.data['DATE 日期'] || '-'} ${draft.data['TIME 時間'] || ''}</div>
+                                <div class="draft-meta-row">👤 검사원: ${draft.data['QC inspector 檢驗員'] || '-'} | 🏭 기계: ${draft.data['M/C 機台'] || '-'}</div>
+                                <div class="draft-meta-row">🏢 고객: ${draft.data['Customer'] || '-'} | 📦 품번: ${draft.data['Description 料號'] || '-'}</div>
+                                <div class="draft-meta-row" style="font-size: 11px; color: #999;">💾 저장: ${new Date(draft.savedAt).toLocaleString('ko-KR')}</div>
+                            </div>
+                            <div class="draft-actions">
+                                <button class="btn-info" onclick="loadDraft(${draft.id})">📂 개별 불러오기</button>
+                                <button class="btn-danger" onclick="deleteDraft(${draft.id})">삭제</button>
+                            </div>
                         </div>
                     </div>
                 `;
                 }).join('');
+                
+                modalList.innerHTML = html;
             }
             
             const modal = document.getElementById('draft-modal');
@@ -1964,6 +1940,73 @@
         // 임시저장 모달 닫기
         function closeDraftModal() {
             document.getElementById('draft-modal').classList.remove('show');
+        }
+
+        // 선택된 개수 업데이트
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.draft-checkbox:checked');
+            const count = checkboxes.length;
+            const countSpan = document.getElementById('selected-count');
+            if (countSpan) {
+                countSpan.textContent = count;
+            }
+        }
+
+        // 선택된 임시저장 일괄 불러오기
+        function loadSelectedDrafts() {
+            const checkboxes = document.querySelectorAll('.draft-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert('불러올 임시저장을 선택해주세요.');
+                return;
+            }
+            
+            if (checkboxes.length > 30) {
+                alert('최대 30개까지만 선택 가능합니다.');
+                return;
+            }
+            
+            console.log(`✅ ${checkboxes.length}개 임시저장 일괄 불러오기 시작`);
+            
+            // 선택된 임시저장 데이터 로드
+            const drafts = loadDrafts();
+            batchLoadedDrafts = [];
+            
+            checkboxes.forEach(checkbox => {
+                const draftId = parseInt(checkbox.getAttribute('data-draft-id'));
+                const draft = drafts.find(d => d.id === draftId);
+                if (draft) {
+                    batchLoadedDrafts.push(draft);
+                }
+            });
+            
+            console.log('불러온 임시저장:', batchLoadedDrafts);
+            
+            // Tray 개수 자동 설정
+            const trayCount = batchLoadedDrafts.length;
+            document.getElementById('tray-count-select').value = trayCount;
+            
+            // 입력 탭으로 전환
+            switchTab('input');
+            
+            // 사무실 섹션으로 스크롤
+            setTimeout(() => {
+                const officeSection = document.querySelector('.office-section');
+                if (officeSection) {
+                    officeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+            
+            // 일괄 입력 필드 생성
+            generateBatchInputFields();
+            
+            // 모달 닫기
+            closeDraftModal();
+            
+            // 안내 메시지
+            alert(`✅ ${trayCount}개 Tray 일괄 불러오기 완료!\n\n항목별로 측정값을 입력한 후 "최종 저장"을 클릭하면\n${trayCount}개의 개별 데이터가 생성됩니다.`);
+            
+            console.log(`✅ 일괄 불러오기 완료: ${trayCount}개 Tray`);
         }
 
         // 임시저장 확인
@@ -2146,51 +2189,142 @@
         document.getElementById('ipqc-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = new FormData(this);
-            const data = {};
+            const formElement = this;
+            const formData = new FormData(formElement);
             
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
+            // 일괄 불러오기 모드인지 확인
+            if (batchLoadedDrafts.length > 0) {
+                console.log(`🔄 일괄 저장 모드: ${batchLoadedDrafts.length}개 Tray`);
+                
+                // RESULT結果 확인
+                const result = formData.get('RESULT結果');
+                if (!result) {
+                    alert('검사 결과를 선택해주세요.');
+                    return;
+                }
+                
+                const approval = formData.get('Approval 審核者') || '';
+                const remarks = formData.get('備註') || '';
+                
+                // 각 Tray별 데이터 생성
+                const savedData = [];
+                const existingData = loadData();
+                
+                batchLoadedDrafts.forEach((draft, index) => {
+                    const trayNum = index + 1;
+                    
+                    // 기본 정보 (현장에서 입력한 정보)
+                    const baseData = {
+                        _id: Date.now() + index,
+                        _timestamp: new Date().toISOString(),
+                        ...draft.data // 현장 입력 데이터
+                    };
+                    
+                    // 측정 데이터 추가 (각 Tray별)
+                    measurementItems.forEach(item => {
+                        const fieldName = `${item.name}_tray${trayNum}`;
+                        const value = formData.get(fieldName);
+                        if (value !== null && value !== '') {
+                            baseData[item.name] = value;
+                        }
+                    });
+                    
+                    // 검사 결과 추가
+                    baseData['RESULT結果'] = result;
+                    baseData['Approval 審核者'] = approval;
+                    baseData['備註'] = remarks;
+                    
+                    savedData.push(baseData);
+                });
+                
+                console.log('생성된 데이터:', savedData);
+                
+                // 데이터 저장
+                const newData = [...existingData, ...savedData];
+                saveData(newData);
+                
+                // 불러온 임시저장 삭제
+                const drafts = loadDrafts();
+                const draftIdsToDelete = batchLoadedDrafts.map(d => d.id);
+                const remainingDrafts = drafts.filter(d => !draftIdsToDelete.includes(d.id));
+                saveDrafts(remainingDrafts);
+                
+                console.log(`✅ ${savedData.length}개 데이터 저장 완료`);
+                console.log(`🗑️ ${draftIdsToDelete.length}개 임시저장 삭제`);
+                
+                // 초기화
+                batchLoadedDrafts = [];
+                formElement.reset();
+                
+                // 날짜/시간 재설정
+                const today = new Date().toISOString().split('T')[0];
+                const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+                document.querySelector('input[name="DATE 日期"]').value = today;
+                document.querySelector('input[name="TIME 時間"]').value = now;
+                
+                // UI 업데이트
+                updateDraftCount();
+                updateCurrentDraftInfo();
+                refreshTable();
+                refreshStats();
+                
+                // Google Sheets 자동 동기화
+                autoSyncIfEnabled();
+                
+                showToast(`✅ 최종 저장 완료! ${savedData.length}개 데이터 생성`);
+                alert(`✅ 최종 저장 완료!\n\n${savedData.length}개의 개별 데이터가 생성되었습니다.`);
+                
+                // 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } else {
+                // 기존 단일 저장 로직
+                console.log('📝 단일 저장 모드');
+                
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
 
-            data['_timestamp'] = new Date().toISOString();
-            data['_id'] = Date.now();
-            
-            // 날짜 디버깅 로그 추가
-            console.log('📝 저장 중인 데이터:');
-            console.log('  DATE 日期:', data['DATE 日期']);
-            console.log('  TIME 時間:', data['TIME 時間']);
-            console.log('  전체 데이터:', data);
+                data['_timestamp'] = new Date().toISOString();
+                data['_id'] = Date.now();
+                
+                // 날짜 디버깅 로그 추가
+                console.log('📝 저장 중인 데이터:');
+                console.log('  DATE 日期:', data['DATE 日期']);
+                console.log('  TIME 時間:', data['TIME 時間']);
+                console.log('  전체 데이터:', data);
 
-            const allData = loadData();
-            allData.push(data);
-            saveData(allData);
+                const allData = loadData();
+                allData.push(data);
+                saveData(allData);
 
-            // 임시저장 삭제 (최종 저장되었으므로)
-            if (currentDraftId) {
-                let drafts = loadDrafts();
-                drafts = drafts.filter(d => d.id !== currentDraftId);
-                saveDrafts(drafts);
-                currentDraftId = null;
+                // 임시저장 삭제 (최종 저장되었으므로)
+                if (currentDraftId) {
+                    let drafts = loadDrafts();
+                    drafts = drafts.filter(d => d.id !== currentDraftId);
+                    saveDrafts(drafts);
+                    currentDraftId = null;
+                }
+
+                formElement.reset();
+                
+                const today = new Date().toISOString().split('T')[0];
+                const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+                document.querySelector('input[name="DATE 日期"]').value = today;
+                document.querySelector('input[name="TIME 時間"]').value = now;
+
+                updateCurrentDraftInfo();
+                refreshTable();
+                refreshStats();
+                showToast('✅ 검사 데이터가 최종 저장되었습니다!');
+                
+                // Google Sheets 자동 동기화
+                autoSyncIfEnabled();
+                
+                // 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-
-            this.reset();
-            
-            const today = new Date().toISOString().split('T')[0];
-            const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
-            document.querySelector('input[name="DATE 日期"]').value = today;
-            document.querySelector('input[name="TIME 時間"]').value = now;
-
-            updateCurrentDraftInfo();
-            refreshTable();
-            refreshStats();
-            showToast('✅ 검사 데이터가 최종 저장되었습니다!');
-            
-            // Google Sheets 자동 동기화
-            autoSyncIfEnabled();
-            
-            // 상단으로 스크롤
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
         // 테이블 새로고침
         // 날짜 필터링 상태
@@ -2748,6 +2882,113 @@ function applyDateFilter() {
             }
         }
 
+        // 측정 항목 정의 (항목명, 타입, 카테고리)
+        const measurementItems = [
+            // 기본 검사 항목
+            { name: 'VISUAL外觀', type: 'select', category: '🔬 기본 검사 항목', options: ['', 'OK', 'NG', 'Waive'] },
+            { name: 'OL總長', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'OW總寬', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'ST外疊合高', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'Warpage彎度', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'Where 位置', type: 'text', category: '🔬 기본 검사 항목' },
+            { name: 'C/C 凹凸度', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'SR表面電阻', type: 'number', category: '🔬 기본 검사 항목' },
+            { name: 'Weight重量', type: 'number', category: '🔬 기본 검사 항목' },
+            
+            // 고객별 특수 검사
+            { name: 'TSMC EL 3點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: '一般客戶 EL', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'TSMC SKH 量測10點結果', type: 'text', category: '🏭 고객별 특수 검사' },
+            { name: 'TSMC SKH 量測4點結果', type: 'text', category: '🏭 고객별 특수 검사' },
+            { name: 'TSMC 20片 ST 量測4點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'TSMC 20片 ST 量測4點 最小值', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'TTSMC 單片ST  量測4點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'TSMC 單片ST  量測4點 最小值', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'ASE / SPIL SKH 量測 4點結果', type: 'text', category: '🏭 고객별 특수 검사' },
+            { name: 'AASEK SR表面電阻 (2pin)', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'number', category: '🏭 고객별 특수 검사' },
+            { name: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'number', category: '🏭 고객별 특수 검사' }
+        ];
+
+        // 일괄 입력 필드 생성
+        function generateBatchInputFields() {
+            const trayCount = parseInt(document.getElementById('tray-count-select').value);
+            const container = document.getElementById('batch-input-container');
+            
+            let html = '';
+            let currentCategory = '';
+            
+            measurementItems.forEach((item, itemIndex) => {
+                // 카테고리 헤더
+                if (item.category !== currentCategory) {
+                    currentCategory = item.category;
+                    html += `<h4 style="margin: 30px 0 15px 0; font-size: 16px; border-bottom: 2px solid #333; padding-bottom: 8px;">${currentCategory}</h4>`;
+                }
+                
+                // 항목별 입력 섹션
+                html += `
+                    <div class="batch-item-section" style="background: #fafafa; padding: 20px; margin: 15px 0; border-radius: 8px; border: 1px solid #ddd;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h5 style="margin: 0; font-size: 15px; font-weight: bold; color: #333;">
+                                📏 ${item.name}
+                            </h5>
+                            <span style="color: #666; font-size: 13px;">
+                                ${trayCount}개 Tray 측정
+                            </span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">
+                `;
+                
+                // Tray별 입력 필드
+                for (let i = 1; i <= trayCount; i++) {
+                    const fieldName = `${item.name}_tray${i}`;
+                    
+                    if (item.type === 'select') {
+                        html += `
+                            <div>
+                                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Tray ${i}</label>
+                                <select name="${fieldName}" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
+                                    ${item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    } else if (item.type === 'number') {
+                        html += `
+                            <div>
+                                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Tray ${i}</label>
+                                <input type="number" step="0.01" name="${fieldName}" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div>
+                                <label style="display: block; font-size: 12px; color: #666; margin-bottom: 4px;">Tray ${i}</label>
+                                <input type="text" name="${fieldName}" style="width: 100%; padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
+                            </div>
+                        `;
+                    }
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            console.log(`✅ ${trayCount}개 Tray용 일괄 입력 필드 생성 완료`);
+        }
+
+        // 페이지 로드 시 초기 필드 생성
+        window.addEventListener('load', function() {
+            // 기존 초기화 코드...
+            
+            // 일괄 입력 필드 생성
+            setTimeout(() => {
+                generateBatchInputFields();
+            }, 100);
+        });
+
         // 페이지 로드 시 초기화
         window.addEventListener('load', function() {
             const today = new Date().toISOString().split('T')[0];
@@ -2760,6 +3001,13 @@ function applyDateFilter() {
             updateDraftCount();
             updateCurrentDraftInfo();
             updateSheetsButtons();
+            
+            // 일괄 입력 필드 생성
+            setTimeout(() => {
+                if (document.getElementById('batch-input-container')) {
+                    generateBatchInputFields();
+                }
+            }, 100);
             
             // 초기 로드 시 저장 개수 확인
             const drafts = loadDrafts();
