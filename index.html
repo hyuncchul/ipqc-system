@@ -682,15 +682,15 @@
                             <input type="text" name="QC inspector 檢驗員" required>
                         </div>
                         <div class="form-group">
-                            <label>Material/原料</label>
+                            <label>원료명</label>
                             <input type="text" name="원료명">
                         </div>
                         <div class="form-group">
-                            <label>Material Lot/原料 Lot</label>
+                            <label>원료 Lot</label>
                             <input type="text" name="원료 Lot">
                         </div>
                         <div class="form-group">
-                            <label>Material ETC/原料 ETC</label>
+                            <label>원료 ETC</label>
                             <input type="text" name="원료 ETC">
                         </div>
                     </div>
@@ -867,6 +867,9 @@
         <!-- 데이터 조회 탭 -->
         <div id="view-tab" class="tab-content">
             <div class="action-buttons">
+                <button class="btn-secondary" onclick="openSheetsSettings()">📋 Google Sheets 설정</button>
+                <button class="btn-secondary" id="sync-sheets-btn" onclick="syncToGoogleSheets()" style="display: none;">☁️ Sheets에 동기화</button>
+                <button class="btn-secondary" id="load-sheets-btn" onclick="loadFromGoogleSheets()" style="display: none;">📂 Sheets에서 불러오기</button>
                 <button class="btn-secondary" onclick="exportToExcel()">📥 엑셀로 내보내기</button>
                 <button class="btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
             </div>
@@ -943,10 +946,45 @@
         </div>
     </div>
 
+    <!-- Google Sheets 설정 모달 -->
+    <div id="sheets-settings-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h3>📋 Google Sheets 연동 설정</h3>
+            <p style="margin-bottom: 15px; color: #666;">모든 기기에서 데이터를 공유하려면 Google Sheets를 연동하세요.</p>
+            
+            <div style="background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-left: 3px solid #000;">
+                <strong>📌 설정 방법:</strong>
+                <ol style="margin: 10px 0 0 20px; line-height: 1.8;">
+                    <li>Google Sheets에서 새 스프레드시트 생성</li>
+                    <li>확장 프로그램 > Apps Script 메뉴 클릭</li>
+                    <li>제공된 코드를 붙여넣기 후 배포</li>
+                    <li>Web App URL을 아래에 입력</li>
+                </ol>
+            </div>
+            
+            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Google Sheets Web App URL:</label>
+            <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/.../exec" 
+                   style="width: 100%; padding: 10px; border: 1px solid #d0d0d0; margin-bottom: 15px;">
+            
+            <div style="background: #f0f0f0; padding: 10px; margin-bottom: 15px;">
+                <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="auto-sync-checkbox" style="margin-right: 8px;">
+                    <span>자동 동기화 활성화 (저장 시 Google Sheets에 자동 저장)</span>
+                </label>
+            </div>
+            
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" onclick="closeSheetsSettings()">취소</button>
+                <button type="button" class="btn-primary" onclick="saveSheetsSettings()" style="margin-top: 0;">저장</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // LocalStorage 키
         const STORAGE_KEY = 'ipqc_data';
         const DRAFT_KEY = 'ipqc_drafts';
+        const SHEETS_CONFIG_KEY = 'ipqc_sheets_config';
         const MAX_DRAFTS = 50; // 최대 임시저장 개수
         let currentDraftId = null;
         let currentLanguage = localStorage.getItem('ipqc_language') || 'ko'; // 기본 한국어
@@ -1791,7 +1829,12 @@
             document.querySelector('input[name="TIME 時間"]').value = now;
 
             updateCurrentDraftInfo();
+            refreshTable();
+            refreshStats();
             showToast('✅ 검사 데이터가 최종 저장되었습니다!');
+            
+            // Google Sheets 자동 동기화
+            autoSyncIfEnabled();
             
             // 상단으로 스크롤
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1965,6 +2008,150 @@
             showToast('📥 엑셀 파일이 다운로드되었습니다!');
         }
 
+        // Google Sheets 설정 불러오기
+        function loadSheetsConfig() {
+            const config = localStorage.getItem(SHEETS_CONFIG_KEY);
+            return config ? JSON.parse(config) : { url: '', autoSync: false };
+        }
+
+        // Google Sheets 설정 저장
+        function saveSheetsConfig(url, autoSync) {
+            const config = { url, autoSync, lastSync: new Date().toISOString() };
+            localStorage.setItem(SHEETS_CONFIG_KEY, JSON.stringify(config));
+        }
+
+        // Google Sheets 설정 모달 열기
+        function openSheetsSettings() {
+            const config = loadSheetsConfig();
+            document.getElementById('sheets-url-input').value = config.url || '';
+            document.getElementById('auto-sync-checkbox').checked = config.autoSync || false;
+            document.getElementById('sheets-settings-modal').classList.add('show');
+        }
+
+        // Google Sheets 설정 모달 닫기
+        function closeSheetsSettings() {
+            document.getElementById('sheets-settings-modal').classList.remove('show');
+        }
+
+        // Google Sheets 설정 저장
+        function saveSheetsSettings() {
+            const url = document.getElementById('sheets-url-input').value.trim();
+            const autoSync = document.getElementById('auto-sync-checkbox').checked;
+            
+            if (!url) {
+                alert('경고: Google Sheets Web App URL을 입력해주세요.');
+                return;
+            }
+            
+            if (!url.includes('script.google.com')) {
+                alert('경고: 올바른 Google Apps Script URL을 입력해주세요.');
+                return;
+            }
+            
+            saveSheetsConfig(url, autoSync);
+            closeSheetsSettings();
+            updateSheetsButtons();
+            showToast('✅ Google Sheets 설정이 저장되었습니다!');
+        }
+
+        // Google Sheets 버튼 표시 업데이트
+        function updateSheetsButtons() {
+            const config = loadSheetsConfig();
+            const syncBtn = document.getElementById('sync-sheets-btn');
+            const loadBtn = document.getElementById('load-sheets-btn');
+            
+            if (config.url) {
+                syncBtn.style.display = 'inline-block';
+                loadBtn.style.display = 'inline-block';
+            } else {
+                syncBtn.style.display = 'none';
+                loadBtn.style.display = 'none';
+            }
+        }
+
+        // Google Sheets에 동기화
+        async function syncToGoogleSheets() {
+            const config = loadSheetsConfig();
+            if (!config.url) {
+                alert('경고: Google Sheets를 먼저 설정해주세요.');
+                openSheetsSettings();
+                return;
+            }
+
+            const data = loadData();
+            if (data.length === 0) {
+                alert('경고: 동기화할 데이터가 없습니다.');
+                return;
+            }
+
+            try {
+                showToast('⏳ Google Sheets에 동기화 중...');
+                
+                const response = await fetch(config.url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'save',
+                        data: data
+                    })
+                });
+
+                // no-cors 모드로 응답을 확인할 수 없으므로 성공으로 간주
+                saveSheetsConfig(config.url, config.autoSync);
+                showToast('✅ Google Sheets에 동기화 완료! (' + data.length + '건)');
+            } catch (error) {
+                console.error('Google Sheets 동기화 오류:', error);
+                showToast('❌ 동기화 실패: ' + error.message);
+            }
+        }
+
+        // Google Sheets에서 불러오기
+        async function loadFromGoogleSheets() {
+            const config = loadSheetsConfig();
+            if (!config.url) {
+                alert('경고: Google Sheets를 먼저 설정해주세요.');
+                openSheetsSettings();
+                return;
+            }
+
+            if (!confirm('현재 로컬 데이터가 Google Sheets 데이터로 교체됩니다. 계속하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                showToast('⏳ Google Sheets에서 불러오는 중...');
+                
+                const response = await fetch(config.url + '?action=load', {
+                    method: 'GET'
+                });
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    saveData(result.data);
+                    refreshTable();
+                    refreshStats();
+                    showToast('✅ Google Sheets에서 불러오기 완료! (' + result.data.length + '건)');
+                } else {
+                    showToast('❌ 불러오기 실패: ' + (result.message || '데이터 없음'));
+                }
+            } catch (error) {
+                console.error('Google Sheets 불러오기 오류:', error);
+                showToast('❌ 불러오기 실패: ' + error.message);
+            }
+        }
+
+        // 데이터 저장 시 자동 동기화
+        function autoSyncIfEnabled() {
+            const config = loadSheetsConfig();
+            if (config.url && config.autoSync) {
+                syncToGoogleSheets();
+            }
+        }
+
         // 페이지 로드 시 초기화
         window.addEventListener('load', function() {
             const today = new Date().toISOString().split('T')[0];
@@ -1976,6 +2163,7 @@
             refreshStats();
             updateDraftCount();
             updateCurrentDraftInfo();
+            updateSheetsButtons();
             
             // 초기 로드 시 저장 개수 확인
             const drafts = loadDrafts();
