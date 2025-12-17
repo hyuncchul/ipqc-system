@@ -718,6 +718,13 @@
                             <input type="text" name="LTC No. 批號">
                         </div>
                     </div>
+                    
+                    <!-- 현장 작업 임시저장 버튼 -->
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button type="button" class="btn-warning" id="save-field-draft-btn" onclick="saveFieldDraft()" style="width: 100%; max-width: 400px;">
+                            🏭 현장 작업 임시저장
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 사무실 작업 섹션 -->
@@ -922,10 +929,10 @@
     <!-- 임시저장 불러오기 모달 -->
     <div id="draft-modal" class="modal">
         <div class="modal-content">
-            <h3>📂 임시저장 불러오기</h3>
+            <h3 id="load-draft-modal-title">📂 임시저장 불러오기</h3>
             <div id="modal-draft-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
             <div class="modal-buttons">
-                <button type="button" class="btn-secondary" onclick="closeDraftModal()" style="background: #6c757d;">취소</button>
+                <button type="button" class="btn-secondary" id="load-draft-cancel-btn" onclick="closeDraftModal()">취소</button>
             </div>
         </div>
     </div>
@@ -933,15 +940,15 @@
     <!-- 임시저장 이름 입력 모달 -->
     <div id="save-draft-modal" class="modal">
         <div class="modal-content">
-            <h3>💾 현장 작업 임시저장</h3>
-            <p style="margin-bottom: 15px; color: #666;">현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.</p>
-            <div id="draft-capacity-info" style="background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-size: 14px;">
-                현재: <strong id="current-draft-count">0</strong> / <strong>50</strong> 개
+            <h3 id="save-draft-modal-title">💾 현장 작업 임시저장</h3>
+            <p id="save-draft-modal-desc" style="margin-bottom: 15px; color: #666;">현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.</p>
+            <div id="draft-capacity-info" style="background: #f0f0f0; padding: 10px; margin-bottom: 15px; text-align: center; font-size: 14px;">
+                <span id="save-draft-capacity-label">현재:</span> <strong id="current-draft-count">0</strong> / <strong>50</strong> 개
             </div>
             <input type="text" id="draft-name-input" placeholder="저장 이름 (예: A기계-고객사명)">
             <div class="modal-buttons">
-                <button type="button" class="btn-secondary" onclick="closeSaveDraftModal()" style="background: #6c757d;">취소</button>
-                <button type="button" class="btn-warning" onclick="confirmSaveDraft()">저장</button>
+                <button type="button" class="btn-secondary" id="save-draft-cancel-btn" onclick="closeSaveDraftModal()">취소</button>
+                <button type="button" class="btn-warning" id="save-draft-save-btn" onclick="confirmSaveDraft()">저장</button>
             </div>
         </div>
     </div>
@@ -1050,7 +1057,16 @@
                 materialName: '원료명',
                 materialLot: '원료 Lot',
                 materialETC: '원료 ETC',
-                remarks: '비고'
+                remarks: '비고',
+                // 모달 관련
+                saveDraftModalTitle: '현장 작업 임시저장',
+                saveDraftModalDesc: '현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.',
+                saveDraftCapacityInfo: '현재:',
+                saveDraftInputPlaceholder: '저장 이름 (예: A기계-고객사명)',
+                loadDraftModalTitle: '임시저장 불러오기',
+                cancel: '취소',
+                save: '저장',
+                fieldWorkSaveBtn: '현장 작업 임시저장'
             },
             en: {
                 appTitle: 'IPQC Quality Management System',
@@ -1111,7 +1127,16 @@
                 materialName: 'Material Name',
                 materialLot: 'Material Lot',
                 materialETC: 'Material ETC',
-                remarks: 'Remarks'
+                remarks: 'Remarks',
+                // 모달 관련
+                saveDraftModalTitle: 'Save Field Work Draft',
+                saveDraftModalDesc: 'Save basic information entered at field. Load in office to input inspection items.',
+                saveDraftCapacityInfo: 'Current:',
+                saveDraftInputPlaceholder: 'Draft name (e.g., MachineA-Customer)',
+                loadDraftModalTitle: 'Load Draft',
+                cancel: 'Cancel',
+                save: 'Save',
+                fieldWorkSaveBtn: 'Save Field Work Draft'
             },
             zh: {
                 appTitle: 'IPQC 品質管理系統',
@@ -1172,7 +1197,16 @@
                 materialName: '原料名稱',
                 materialLot: '原料 Lot',
                 materialETC: '原料 ETC',
-                remarks: '備註'
+                remarks: '備註',
+                // 모달 관련
+                saveDraftModalTitle: '現場作業臨時儲存',
+                saveDraftModalDesc: '在現場輸入的基本資訊儲存。在辦公室載入後輸入檢查項目。',
+                saveDraftCapacityInfo: '目前：',
+                saveDraftInputPlaceholder: '儲存名稱 (例：A機台-客戶名)',
+                loadDraftModalTitle: '載入臨時儲存',
+                cancel: '取消',
+                save: '儲存',
+                fieldWorkSaveBtn: '現場作業臨時儲存'
             }
         };
         
@@ -1341,6 +1375,54 @@
                 statCards[1].textContent = t.okCount;
                 statCards[2].textContent = t.ngCount;
                 statCards[3].textContent = t.holdCount;
+            }
+            
+            // 현장 작업 임시저장 버튼
+            const fieldWorkSaveBtn = document.getElementById('save-field-draft-btn');
+            if (fieldWorkSaveBtn) {
+                fieldWorkSaveBtn.innerHTML = `🏭 ${t.fieldWorkSaveBtn}`;
+            }
+            
+            // 임시저장 모달
+            const saveDraftModalTitle = document.getElementById('save-draft-modal-title');
+            if (saveDraftModalTitle) {
+                saveDraftModalTitle.innerHTML = `💾 ${t.saveDraftModalTitle}`;
+            }
+            
+            const saveDraftModalDesc = document.getElementById('save-draft-modal-desc');
+            if (saveDraftModalDesc) {
+                saveDraftModalDesc.textContent = t.saveDraftModalDesc;
+            }
+            
+            const saveDraftCapacityLabel = document.getElementById('save-draft-capacity-label');
+            if (saveDraftCapacityLabel) {
+                saveDraftCapacityLabel.textContent = t.saveDraftCapacityInfo;
+            }
+            
+            const draftNameInput = document.getElementById('draft-name-input');
+            if (draftNameInput) {
+                draftNameInput.placeholder = t.saveDraftInputPlaceholder;
+            }
+            
+            const saveDraftCancelBtn = document.getElementById('save-draft-cancel-btn');
+            if (saveDraftCancelBtn) {
+                saveDraftCancelBtn.textContent = t.cancel;
+            }
+            
+            const saveDraftSaveBtn = document.getElementById('save-draft-save-btn');
+            if (saveDraftSaveBtn) {
+                saveDraftSaveBtn.textContent = t.save;
+            }
+            
+            // 불러오기 모달
+            const loadDraftModalTitle = document.getElementById('load-draft-modal-title');
+            if (loadDraftModalTitle) {
+                loadDraftModalTitle.innerHTML = `📂 ${t.loadDraftModalTitle}`;
+            }
+            
+            const loadDraftCancelBtn = document.getElementById('load-draft-cancel-btn');
+            if (loadDraftCancelBtn) {
+                loadDraftCancelBtn.textContent = t.cancel;
             }
             
             console.log('UI 텍스트 업데이트 완료');
