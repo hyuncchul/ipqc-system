@@ -617,9 +617,9 @@
             <!-- 워크플로우 제거됨: 통합 입력으로 변경 -->
 
             <div class="tab-buttons">
-                <button class="tab-btn active" id="tab-input" onclick="switchTab('input')">데이터 입력</button>
-                <button class="tab-btn" id="tab-view" onclick="switchTab('view')">데이터 조회</button>
-                <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">통계</button>
+                <button class="tab-btn active" id="tab-input" onclick="switchTab('input', event)">데이터 입력</button>
+                <button class="tab-btn" id="tab-view" onclick="switchTab('view', event)">데이터 조회</button>
+                <button class="tab-btn" id="tab-stats" onclick="switchTab('stats', event)">통계</button>
             </div>
         </div>
 
@@ -1584,12 +1584,25 @@
         }
 
         // 탭 전환
-        function switchTab(tabName) {
+        function switchTab(tabName, evt) {
+            console.log('탭 전환:', tabName);
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-            event.target.classList.add('active');
-            document.getElementById(`${tabName}-tab`).classList.add('active');
+            if (evt && evt.target) {
+                evt.target.classList.add('active');
+            } else {
+                const targetBtn = document.getElementById(`tab-${tabName}`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+            
+            const targetTab = document.getElementById(`${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                console.log('탭 표시:', tabName);
+            } else {
+                console.error('탭을 찾을 수 없음:', tabName);
+            }
 
             if (tabName === 'view') {
                 // 데이터 조회 탭: 테이블 새로고침
