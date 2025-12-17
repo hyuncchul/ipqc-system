@@ -873,6 +873,19 @@
 
         <!-- 데이터 조회 탭 -->
         <div id="view-tab" class="tab-content">
+            <!-- 기간 필터 -->
+            <div class="filter-section" style="background: #f5f5f5; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #d0d0d0;">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label style="font-weight: bold; color: #333;">📅 조회 기간:</label>
+                    <input type="date" id="filter-start-date" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
+                    <span style="color: #666;">~</span>
+                    <input type="date" id="filter-end-date" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
+                    <button onclick="applyDateFilter()" style="padding: 8px 20px; background: #333; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">🔍 검색</button>
+                    <button onclick="clearDateFilter()" style="padding: 8px 20px; background: #999; color: white; border: none; border-radius: 3px; cursor: pointer;">↻ 전체 보기</button>
+                    <span id="filter-status" style="color: #666; font-size: 13px; margin-left: 10px;"></span>
+                </div>
+            </div>
+            
             <div class="action-buttons">
                 <button class="btn-secondary" onclick="openSheetsSettings()">📋 Google Sheets 설정</button>
                 <button class="btn-secondary" id="load-sheets-btn" onclick="loadFromGoogleSheets()" style="display: none;">📂 Sheets에서 불러오기</button>
@@ -1058,7 +1071,16 @@
                 loadDraftModalTitle: '임시저장 불러오기',
                 cancel: '취소',
                 save: '저장',
-                fieldWorkSaveBtn: '현장 작업 임시저장'
+                fieldWorkSaveBtn: '현장 작업 임시저장',
+                // 필터 관련
+                filterPeriod: '조회 기간:',
+                filterSearch: '검색',
+                filterViewAll: '전체 보기',
+                filterNoData: '해당 기간에 데이터가 없습니다.',
+                filterAlert1: '시작일과 종료일을 모두 입력해주세요.',
+                filterAlert2: '시작일이 종료일보다 늦을 수 없습니다.',
+                filterStatus: '총',
+                filterStatusEnd: '건'
             },
             en: {
                 appTitle: 'IPQC Quality Management System',
@@ -1128,7 +1150,16 @@
                 loadDraftModalTitle: 'Load Draft',
                 cancel: 'Cancel',
                 save: 'Save',
-                fieldWorkSaveBtn: 'Save Field Work Draft'
+                fieldWorkSaveBtn: 'Save Field Work Draft',
+                // Filter related
+                filterPeriod: 'Filter Period:',
+                filterSearch: 'Search',
+                filterViewAll: 'View All',
+                filterNoData: 'No data in this period.',
+                filterAlert1: 'Please enter both start and end dates.',
+                filterAlert2: 'Start date cannot be later than end date.',
+                filterStatus: 'Total',
+                filterStatusEnd: 'items'
             },
             zh: {
                 appTitle: 'IPQC 品質管理系統',
@@ -1190,6 +1221,15 @@
                 materialLot: '原料 Lot',
                 materialETC: '原料 ETC',
                 remarks: '備註',
+                // 篩選相關
+                filterPeriod: '查詢期間：',
+                filterSearch: '搜尋',
+                filterViewAll: '查看全部',
+                filterNoData: '此期間無資料。',
+                filterAlert1: '請輸入開始日期和結束日期。',
+                filterAlert2: '開始日期不能晚於結束日期。',
+                filterStatus: '共',
+                filterStatusEnd: '筆',
                 // 모달 관련
                 saveDraftModalTitle: '現場作業臨時儲存',
                 saveDraftModalDesc: '在現場輸入的基本資訊儲存。在辦公室載入後輸入檢查項目。',
@@ -1198,7 +1238,13 @@
                 loadDraftModalTitle: '載入臨時儲存',
                 cancel: '取消',
                 save: '儲存',
-                fieldWorkSaveBtn: '現場作業臨時儲存'
+                fieldWorkSaveBtn: '現場作業臨時儲存',
+                // 기간 필터
+                filterPeriod: '查詢期間',
+                filterSearch: '搜尋',
+                filterShowAll: '顯示全部',
+                filterNoData: '該期間無資料。',
+                filterNoDataAll: '無儲存資料。'
             }
         };
         
@@ -1375,6 +1421,22 @@
                 fieldWorkSaveBtn.innerHTML = `🏭 ${t.fieldWorkSaveBtn}`;
             }
             
+            // 필터 섹션
+            const filterSection = document.querySelector('.filter-section label');
+            if (filterSection) {
+                filterSection.innerHTML = `📅 ${t.filterPeriod}`;
+            }
+            
+            const filterSearchBtn = document.querySelector('button[onclick="applyDateFilter()"]');
+            if (filterSearchBtn) {
+                filterSearchBtn.innerHTML = `🔍 ${t.filterSearch}`;
+            }
+            
+            const filterViewAllBtn = document.querySelector('button[onclick="clearDateFilter()"]');
+            if (filterViewAllBtn) {
+                filterViewAllBtn.innerHTML = `↻ ${t.filterViewAll}`;
+            }
+            
             // 임시저장 모달
             const saveDraftModalTitle = document.getElementById('save-draft-modal-title');
             if (saveDraftModalTitle) {
@@ -1415,6 +1477,19 @@
             const loadDraftCancelBtn = document.getElementById('load-draft-cancel-btn');
             if (loadDraftCancelBtn) {
                 loadDraftCancelBtn.textContent = t.cancel;
+            }
+            
+            // 기간 필터 레이블
+            const filterLabel = document.querySelector('.filter-section label');
+            if (filterLabel) {
+                filterLabel.innerHTML = `📅 ${t.filterPeriod}:`;
+            }
+            
+            // 기간 필터 버튼
+            const filterButtons = document.querySelectorAll('.filter-section button');
+            if (filterButtons.length >= 2) {
+                filterButtons[0].innerHTML = `🔍 ${t.filterSearch}`;
+                filterButtons[1].innerHTML = `↻ ${t.filterShowAll}`;
             }
             
             console.log('UI 텍스트 업데이트 완료');
@@ -1915,17 +1990,27 @@
         });
 
         // 테이블 새로고침
-        function refreshTable() {
-            const data = loadData();
+        // 날짜 필터링 상태
+        let dateFilterActive = false;
+        let filteredData = [];
+
+        function refreshTable(dataToDisplay = null) {
+            const data = dataToDisplay || loadData();
             const tbody = document.getElementById('data-body');
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">저장된 데이터가 없습니다.</td></tr>';
+                const emptyMsg = dateFilterActive ? 
+                    translations[currentLanguage].filterNoData : 
+                    translations[currentLanguage].filterNoDataAll;
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">' + 
+                    emptyMsg + 
+                    '</td></tr>';
                 return;
             }
 
-            data.reverse().forEach((item, index) => {
+            const reversedData = [...data].reverse();
+            reversedData.forEach((item, index) => {
                 const row = tbody.insertRow();
                 row.innerHTML = `
                     <td>${data.length - index}</td>
@@ -1938,6 +2023,83 @@
                     <td><button class="btn-danger" onclick="deleteItem(${item._id})">삭제</button></td>
                 `;
             });
+        }
+
+        // 날짜 필터 적용
+        function applyDateFilter() {
+            const startDate = document.getElementById('filter-start-date').value;
+            const endDate = document.getElementById('filter-end-date').value;
+            
+            if (!startDate || !endDate) {
+                const msg = {
+                    ko: '시작일과 종료일을 모두 입력해주세요.',
+                    en: 'Please enter both start and end dates.',
+                    zh: '請輸入開始日期和結束日期。'
+                };
+                alert(msg[currentLanguage] || msg.ko);
+                return;
+            }
+            
+            if (startDate > endDate) {
+                const msg = {
+                    ko: '시작일이 종료일보다 늦을 수 없습니다.',
+                    en: 'Start date cannot be later than end date.',
+                    zh: '開始日期不能晚於結束日期。'
+                };
+                alert(msg[currentLanguage] || msg.ko);
+                return;
+            }
+            
+            const allData = loadData();
+            filteredData = allData.filter(item => {
+                const itemDate = item['DATE 日期'];
+                if (!itemDate) return false;
+                return itemDate >= startDate && itemDate <= endDate;
+            });
+            
+            dateFilterActive = true;
+            refreshTable(filteredData);
+            
+            // 상태 표시
+            const filterStatus = document.getElementById('filter-status');
+            const countLabel = {
+                ko: '총',
+                en: 'Total',
+                zh: '共'
+            };
+            const itemLabel = {
+                ko: '건',
+                en: 'items',
+                zh: '筆'
+            };
+            filterStatus.textContent = `📅 ${startDate} ~ ${endDate} (${countLabel[currentLanguage]} ${filteredData.length}${itemLabel[currentLanguage]})`;
+            filterStatus.style.color = '#333';
+            filterStatus.style.fontWeight = 'bold';
+            
+            const searchMsg = {
+                ko: `🔍 ${filteredData.length}건의 데이터가 검색되었습니다.`,
+                en: `🔍 ${filteredData.length} items found.`,
+                zh: `🔍 找到 ${filteredData.length} 筆資料。`
+            };
+            showToast(searchMsg[currentLanguage] || searchMsg.ko);
+        }
+        
+        // 날짜 필터 해제
+        function clearDateFilter() {
+            document.getElementById('filter-start-date').value = '';
+            document.getElementById('filter-end-date').value = '';
+            document.getElementById('filter-status').textContent = '';
+            
+            dateFilterActive = false;
+            filteredData = [];
+            refreshTable();
+            
+            const clearMsg = {
+                ko: '✅ 전체 데이터를 표시합니다.',
+                en: '✅ Showing all data.',
+                zh: '✅ 顯示全部資料。'
+            };
+            showToast(clearMsg[currentLanguage] || clearMsg.ko);
         }
 
         // 항목 삭제
