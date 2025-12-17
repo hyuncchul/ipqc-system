@@ -614,20 +614,10 @@
                 </div>
             </div>
             
-            <div class="workflow-info">
-                <h4>📋 작업 프로세스</h4>
-                <div class="workflow-steps">
-                    <div class="workflow-step">🏭 1단계: 현장에서 기본정보 입력</div>
-                    <div class="workflow-step">💾 2단계: 임시저장</div>
-                    <div class="workflow-step">🏢 3단계: 사무실에서 불러오기</div>
-                    <div class="workflow-step">🔬 4단계: 검사항목 측정/입력</div>
-                    <div class="workflow-step">✅ 5단계: 최종저장</div>
-                </div>
-            </div>
+            <!-- 워크플로우 제거됨: 통합 입력으로 변경 -->
 
             <div class="tab-buttons">
                 <button class="tab-btn active" id="tab-input" onclick="switchTab('input')">데이터 입력</button>
-                <button class="tab-btn" id="tab-drafts" onclick="switchTab('drafts')">임시저장함 <span class="badge badge-draft" id="draft-count">0</span></button>
                 <button class="tab-btn" id="tab-view" onclick="switchTab('view')">데이터 조회</button>
                 <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">통계</button>
             </div>
@@ -649,91 +639,13 @@
 
             <form id="ipqc-form">
                 <!-- 현장 작업 섹션 -->
-                <div class="form-section field-section">
-                    <h3>🏭 현장 작업 <span class="section-badge field-badge">STEP 1</span></h3>
-                    <div class="progress-info">
-                        ℹ️ 현장에서 기본 정보와 제품 정보를 입력한 후 <strong>"현장 작업 임시저장"</strong> 버튼을 눌러주세요.
-                    </div>
-
-                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">📅 기본 정보</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>DATE 日期 <span class="required">*</span></label>
-                            <input type="date" name="DATE 日期" required>
-                        </div>
-                        <div class="form-group">
-                            <label>TIME 時間 <span class="required">*</span></label>
-                            <input type="time" name="TIME 時間" required>
-                        </div>
-                        <div class="form-group">
-                            <label>M/C 機台</label>
-                            <input type="text" name="M/C 機台">
-                        </div>
-                        <div class="form-group">
-                            <label>SHIFT 班別</label>
-                            <select name="SHIFT 班別">
-                                <option value="">선택</option>
-                                <option value="A">A班</option>
-                                <option value="B">B班</option>
-                                <option value="C">C班</option>
-                                <option value="D">D班</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>QC inspector 檢驗員 <span class="required">*</span></label>
-                            <input type="text" name="QC inspector 檢驗員" required>
-                        </div>
-                        <div class="form-group">
-                            <label>원료명</label>
-                            <input type="text" name="원료명">
-                        </div>
-                        <div class="form-group">
-                            <label>원료 Lot</label>
-                            <input type="text" name="원료 Lot">
-                        </div>
-                        <div class="form-group">
-                            <label>원료 ETC</label>
-                            <input type="text" name="원료 ETC">
-                        </div>
-                    </div>
-
-                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">📦 제품 정보</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Description 料號</label>
-                            <input type="text" name="Description 料號">
-                        </div>
-                        <div class="form-group">
-                            <label>Customer</label>
-                            <input type="text" name="Customer">
-                        </div>
-                        <div class="form-group">
-                            <label>MOLD 模號</label>
-                            <input type="text" name="MOLD 模號">
-                        </div>
-                        <div class="form-group">
-                            <label>Datecode</label>
-                            <input type="text" name="Datecode">
-                        </div>
-                        <div class="form-group">
-                            <label>LTC No. 批號</label>
-                            <input type="text" name="LTC No. 批號">
-                        </div>
-                    </div>
-                    
-                    <!-- 현장 작업 임시저장 버튼 -->
-                    <div style="margin-top: 20px; text-align: center;">
-                        <button type="button" class="btn-warning" id="save-field-draft-btn" onclick="saveFieldDraft()" style="width: 100%; max-width: 400px;">
-                            🏭 현장 작업 임시저장
-                        </button>
-                    </div>
-                </div>
+                <!-- 현장/사무실 통합 섭션 제거 -->
 
                 <!-- 사무실 작업 섹션 (일괄 입력 방식) -->
                 <div class="form-section office-section">
-                    <h3>🏢 전체 입력 <span class="section-badge office-badge">가로 스프레드시트</span></h3>
+                    <h3>📊 IPQC 검사 입력 <span class="section-badge office-badge">가로 스프레드시트</span></h3>
                     <div class="progress-info">
-                        ℹ️ 검사 설비 수를 선택하면 가로 스프레드시트가 생성됩니다. Excel처럼 항목별로 입력하세요!
+                        ℹ️ 검사 설비 수를 선택하면 가로 스프레드시트가 생성됩니다. Excel처럼 항목별로 모든 정보를 입력하세요!
                     </div>
 
                     <!-- 설비 수 선택 -->
@@ -793,20 +705,7 @@
                     </div>
                 </div>
 
-        <!-- 임시저장함 탭 -->
-        <div id="drafts-tab" class="tab-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📂 임시 저장된 현장 작업</h2>
-                <div style="background: #f0f0f0; padding: 10px 20px; font-weight: 600;">
-                    <span id="draft-count-display">0</span> / <span id="max-drafts-display">50</span> 개
-                </div>
-            </div>
-            <div class="progress-info" style="margin-bottom: 20px;">
-                💡 <strong>Tip:</strong> 현장에서 입력한 데이터를 불러와서 사무실에서 측정 항목을 입력하세요.
-                <br>⚠️ 최대 <strong>50개</strong>까지 저장 가능합니다. 50개 초과 시 가장 오래된 항목이 자동 삭제됩니다.
-            </div>
-            <div id="drafts-list" class="draft-list"></div>
-        </div>
+        <!-- 임시저장함 탭 제거됨 -->
 
         <!-- 데이터 조회 탭 -->
         <div id="view-tab" class="tab-content">
@@ -881,31 +780,7 @@
     <div id="toast" class="toast"></div>
 
     <!-- 임시저장 불러오기 모달 -->
-    <div id="draft-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="load-draft-modal-title">📂 임시저장 불러오기</h3>
-            <div id="modal-draft-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px;"></div>
-            <div class="modal-buttons">
-                <button type="button" class="btn-secondary" id="load-draft-cancel-btn" onclick="closeDraftModal()">취소</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 임시저장 이름 입력 모달 -->
-    <div id="save-draft-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="save-draft-modal-title">💾 현장 작업 임시저장</h3>
-            <p id="save-draft-modal-desc" style="margin-bottom: 15px; color: #666;">현장에서 입력한 기본 정보를 저장합니다. 사무실에서 불러와서 검사 항목을 입력하세요.</p>
-            <div id="draft-capacity-info" style="background: #f0f0f0; padding: 10px; margin-bottom: 15px; text-align: center; font-size: 14px;">
-                <span id="save-draft-capacity-label">현재:</span> <strong id="current-draft-count">0</strong> / <strong>50</strong> 개
-            </div>
-            <input type="text" id="draft-name-input" placeholder="저장 이름 (예: A기계-고객사명)">
-            <div class="modal-buttons">
-                <button type="button" class="btn-secondary" id="save-draft-cancel-btn" onclick="closeSaveDraftModal()">취소</button>
-                <button type="button" class="btn-warning" id="save-draft-save-btn" onclick="confirmSaveDraft()">저장</button>
-            </div>
-        </div>
-    </div>
+    <!-- 임시저장 모달 제거됨 -->
 
     <!-- Google Sheets 설정 모달 -->
     <div id="sheets-settings-modal" class="modal">
