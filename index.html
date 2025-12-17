@@ -625,17 +625,7 @@
 
         <!-- 데이터 입력 탭 -->
         <div id="input-tab" class="tab-content active">
-            <!-- 임시저장 섹션 -->
-            <div class="save-load-section">
-                <h3>💾 작업 관리</h3>
-                <div class="save-load-buttons">
-                    <button type="button" class="btn-warning" id="save-draft-btn">🏭 새 임시저장 만들기</button>
-                    <button type="button" class="btn-warning" id="update-draft-btn" style="display:none;">💾 현재 작업 업데이트</button>
-                    <button type="button" class="btn-secondary" id="load-draft-btn">📂 임시저장 불러오기</button>
-                    <button type="button" class="btn-secondary" id="clear-form-btn">🔄 폼 초기화</button>
-                </div>
-                <div id="current-draft-info" style="margin-top: 10px;"></div>
-            </div>
+            <!-- 임시저장 기능 제거됨 -->
 
             <form id="ipqc-form">
                 <!-- 현장 작업 섹션 -->
@@ -653,6 +643,7 @@
                         <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                             <h4 style="margin: 0; font-size: 16px;">📊 검사 설비 수:</h4>
                             <select id="equipment-count-select" onchange="generateHorizontalTable()" style="padding: 10px 15px; font-size: 16px; border: 2px solid #333; border-radius: 5px; min-width: 120px; font-weight: bold;">
+                                <option value="0" selected>선택하세요</option>
                                 <option value="1">1개</option>
                                 <option value="2">2개</option>
                                 <option value="3">3개</option>
@@ -662,7 +653,7 @@
                                 <option value="7">7개</option>
                                 <option value="8">8개</option>
                                 <option value="9">9개</option>
-                                <option value="10" selected>10개</option>
+                                <option value="10">10개</option>
                                 <option value="11">11개</option>
                                 <option value="12">12개</option>
                                 <option value="13">13개</option>
@@ -1601,12 +1592,11 @@
             document.getElementById(`${tabName}-tab`).classList.add('active');
 
             if (tabName === 'view') {
-                // Data View 탭 열 때 자동으로 Google Sheets 동기화
-                autoLoadFromGoogleSheets();
+                // 데이터 조회 탭: 테이블 새로고침
+                refreshTable();
             } else if (tabName === 'stats') {
+                // 통계 탭: 통계 새로고침
                 refreshStats();
-            } else if (tabName === 'drafts') {
-                refreshDraftsList();
             }
         }
 
@@ -2249,8 +2239,16 @@
         let filteredData = [];
 
         function refreshTable(dataToDisplay = null) {
+            console.log('🔄 refreshTable 호출됨');
             const data = dataToDisplay || loadData();
+            console.log(`데이터 개수: ${data.length}`);
+            console.log('데이터:', data);
+            
             const tbody = document.getElementById('data-body');
+            if (!tbody) {
+                console.error('❌ data-body 요소를 찾을 수 없음!');
+                return;
+            }
             tbody.innerHTML = '';
 
             if (data.length === 0) {
@@ -2819,14 +2817,20 @@ function applyDateFilter() {
             const equipmentCount = parseInt(document.getElementById('equipment-count-select').value);
             const container = document.getElementById('horizontal-table-container');
             
+            // 0이면 빈 테이블 표시
+            if (equipmentCount === 0 || isNaN(equipmentCount)) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999; border: 2px dashed #ddd; border-radius: 8px;">📊 검사 설비 수를 선택하면 입력 테이블이 생성됩니다.</div>';
+                return;
+            }
+            
             console.log(`📊 가로 테이블 생성: ${equipmentCount}개 설비`);
             
             let html = `
                 <div style="overflow-x: auto; max-width: 100%; border: 2px solid #333; border-radius: 8px; background: white;">
-                    <table id="horizontal-input-table" style="width: auto; border-collapse: collapse; font-size: 13px;">
+                    <table id="horizontal-input-table" style="width: auto; border-collapse: collapse; font-size: 12px;">
                         <thead>
                             <tr style="background: #333; color: white; position: sticky; top: 0; z-index: 10;">
-                                <th style="position: sticky; left: 0; background: #333; color: white; padding: 12px; border: 1px solid #555; min-width: 200px; text-align: left; z-index: 11;">
+                                <th style="position: sticky; left: 0; background: #333; color: white; padding: 8px; border: 1px solid #555; min-width: 160px; text-align: left; z-index: 11; font-size: 12px;">
                                     항목 / Item
                                 </th>
             `;
@@ -2834,7 +2838,7 @@ function applyDateFilter() {
             // 헤더: Data 1, Data 2, ...
             for (let i = 1; i <= equipmentCount; i++) {
                 html += `
-                    <th style="padding: 12px; border: 1px solid #555; min-width: 150px; text-align: center; white-space: nowrap;">
+                    <th style="padding: 8px 6px; border: 1px solid #555; min-width: 95px; max-width: 95px; text-align: center; white-space: nowrap; font-size: 11px;">
                         <strong>Data ${i}</strong>
                     </th>
                 `;
@@ -2853,7 +2857,7 @@ function applyDateFilter() {
                 
                 html += `
                     <tr style="background: ${rowBg};">
-                        <td style="position: sticky; left: 0; background: ${rowBg}; padding: 10px; border: 1px solid #ddd; font-weight: 600; color: #333; z-index: 1;">
+                        <td style="position: sticky; left: 0; background: ${rowBg}; padding: 6px 8px; border: 1px solid #ddd; font-weight: 600; color: #333; z-index: 1; font-size: 11px;">
                             ${field.name}
                         </td>
                 `;
@@ -2865,36 +2869,36 @@ function applyDateFilter() {
                     
                     if (field.type === 'select') {
                         inputHtml = `
-                            <select id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                            <select id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 4px 2px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 11px;">
                                 ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                             </select>
                         `;
                     } else if (field.type === 'textarea') {
                         inputHtml = `
-                            <textarea id="${fieldId}" name="${fieldId}" rows="2" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px; resize: vertical;"></textarea>
+                            <textarea id="${fieldId}" name="${fieldId}" rows="2" style="width: 100%; padding: 4px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 11px; resize: vertical;"></textarea>
                         `;
                     } else if (field.type === 'number') {
                         inputHtml = `
-                            <input type="number" step="0.01" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                            <input type="number" step="0.01" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 4px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 11px;">
                         `;
                     } else if (field.type === 'date') {
                         const today = new Date().toISOString().split('T')[0];
                         inputHtml = `
-                            <input type="date" id="${fieldId}" name="${fieldId}" value="${today}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                            <input type="date" id="${fieldId}" name="${fieldId}" value="${today}" style="width: 100%; padding: 4px 2px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 10px;">
                         `;
                     } else if (field.type === 'time') {
                         const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
                         inputHtml = `
-                            <input type="time" id="${fieldId}" name="${fieldId}" value="${now}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                            <input type="time" id="${fieldId}" name="${fieldId}" value="${now}" style="width: 100%; padding: 4px 2px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 10px;">
                         `;
                     } else {
                         inputHtml = `
-                            <input type="text" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                            <input type="text" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 4px; border: 1px solid #d0d0d0; border-radius: 2px; font-size: 11px;">
                         `;
                     }
                     
                     html += `
-                        <td style="padding: 8px; border: 1px solid #ddd;">
+                        <td style="padding: 4px; border: 1px solid #ddd; min-width: 95px; max-width: 95px;">
                             ${inputHtml}
                         </td>
                     `;
@@ -3033,15 +3037,11 @@ function applyDateFilter() {
             updateSheetsButtons();
             
             // 가로 스프레드시트 테이블 초기화
+            // 초기 테이블은 설비 수 선택 시 생성
             setTimeout(() => {
+                // 0개로 초기화됨 - 사용자가 선택할 때까지 대기
                 if (document.getElementById('horizontal-table-container')) {
-                    generateHorizontalTable();
-                    console.log('✅ 가로 테이블 초기화 완료');
-                }
-                
-                // 일괄 입력 필드 생성 (호환성)
-                if (document.getElementById('batch-input-container')) {
-                    generateBatchInputFields();
+                    document.getElementById('horizontal-table-container').innerHTML = '<div style="text-align: center; padding: 40px; color: #999; border: 2px dashed #ddd; border-radius: 8px;">📊 검사 설비 수를 선택하면 입력 테이블이 생성됩니다.</div>';
                 }
             }, 100);
             
