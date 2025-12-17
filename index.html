@@ -1596,7 +1596,8 @@
             document.getElementById(`${tabName}-tab`).classList.add('active');
 
             if (tabName === 'view') {
-                refreshTable();
+                // Data View 탭 열 때 자동으로 Google Sheets 동기화
+                autoLoadFromGoogleSheets();
             } else if (tabName === 'stats') {
                 refreshStats();
             } else if (tabName === 'drafts') {
@@ -2468,6 +2469,41 @@ function applyDateFilter() {
         }
 
         // Google Sheets에서 불러오기
+        // Data View 탭 열 때 자동 동기화 (조용히)
+        async function autoLoadFromGoogleSheets() {
+            const config = loadSheetsConfig();
+            if (!config.url) {
+                // Google Sheets 미설정 시 로컬 데이터만 표시
+                console.log('ℹ️ Google Sheets 미설정 - 로컬 데이터만 표시');
+                refreshTable();
+                return;
+            }
+
+            try {
+                console.log('🔄 Google Sheets에서 자동 동기화 중...');
+                
+                const response = await fetch(config.url + '?action=load', {
+                    method: 'GET'
+                });
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    saveData(result.data);
+                    console.log('✅ Google Sheets 동기화 완료: ' + result.data.length + '건');
+                    refreshTable();
+                    refreshStats();
+                } else {
+                    console.warn('⚠️ Google Sheets 동기화 실패:', result.message || '데이터 없음');
+                    refreshTable(); // 실패해도 로컬 데이터 표시
+                }
+            } catch (error) {
+                console.error('❌ Google Sheets 동기화 오류:', error);
+                refreshTable(); // 오류 발생 시도 로컬 데이터 표시
+            }
+        }
+
+        // 수동 불러오기 (기존 기능 유지)
         async function loadFromGoogleSheets() {
             const config = loadSheetsConfig();
             if (!config.url) {
