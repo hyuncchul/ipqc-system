@@ -742,6 +742,7 @@
                                 <option value="">선택</option>
                                 <option value="OK">OK</option>
                                 <option value="NG">NG</option>
+                                <option value="Waive">Waive</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -839,6 +840,7 @@
                                 <option value="OK">OK</option>
                                 <option value="NG">NG</option>
                                 <option value="HOLD">HOLD</option>
+                                <option value="Waive">Waive</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -931,6 +933,10 @@
                 <div class="stat-card">
                     <h4>HOLD 건수</h4>
                     <div class="number" id="hold-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <h4>Waive 건수</h4>
+                    <div class="number" id="waive-count">0</div>
                 </div>
             </div>
             <div id="stats-detail"></div>
@@ -1058,6 +1064,7 @@
                 okCount: 'OK 건수',
                 ngCount: 'NG 건수',
                 holdCount: 'HOLD 건수',
+                waiveCount: 'Waive 건수',
                 select: '선택',
                 required: '필수',
                 materialName: '원료명',
@@ -1140,6 +1147,7 @@
                 okCount: 'OK Count',
                 ngCount: 'NG Count',
                 holdCount: 'HOLD Count',
+                waiveCount: 'Waive Count',
                 select: 'Select',
                 required: 'Required',
                 materialName: 'Material Name',
@@ -1222,6 +1230,7 @@
                 okCount: 'OK 數量',
                 ngCount: 'NG 數量',
                 holdCount: 'HOLD 數量',
+                waiveCount: 'Waive 數量',
                 select: '選擇',
                 required: '必填',
                 materialName: '原料名稱',
@@ -1412,11 +1421,12 @@
             
             // 통계 카드
             const statCards = document.querySelectorAll('.stat-card h4');
-            if (statCards.length >= 4) {
+            if (statCards.length >= 5) {
                 statCards[0].textContent = t.totalCount;
                 statCards[1].textContent = t.okCount;
                 statCards[2].textContent = t.ngCount;
                 statCards[3].textContent = t.holdCount;
+                statCards[4].textContent = t.waiveCount;
             }
             
             // 현장 작업 임시저장 버튼
@@ -2050,7 +2060,7 @@
                     <td>${item['QC inspector 檢驗員'] || '-'}</td>
                     <td>${item['M/C 機台'] || '-'}</td>
                     <td>${item['Customer'] || '-'}</td>
-                    <td><span style="padding: 5px 10px; background: ${item['RESULT結果'] === 'OK' ? '#666' : item['RESULT結果'] === 'NG' ? '#999' : '#ccc'}; color: ${item['RESULT結果'] === 'HOLD' ? '#333' : 'white'}; font-weight: bold;">${item['RESULT結果'] || '-'}</span></td>
+                    <td><span style="padding: 5px 10px; background: ${item['RESULT結果'] === 'OK' ? '#666' : item['RESULT結果'] === 'NG' ? '#999' : item['RESULT結果'] === 'Waive' ? '#aaa' : '#ccc'}; color: ${item['RESULT結果'] === 'HOLD' || item['RESULT結果'] === 'Waive' ? '#333' : 'white'}; font-weight: bold;">${item['RESULT結果'] || '-'}</span></td>
                     <td><button class="btn-danger" onclick="deleteItem(${item._id})">삭제</button></td>
                 `;
             });
@@ -2283,26 +2293,29 @@ function applyDateFilter() {
             const ok = data.filter(item => item['RESULT結果'] === 'OK').length;
             const ng = data.filter(item => item['RESULT結果'] === 'NG').length;
             const hold = data.filter(item => item['RESULT結果'] === 'HOLD').length;
+            const waive = data.filter(item => item['RESULT結果'] === 'Waive').length;
 
             document.getElementById('total-count').textContent = total;
             document.getElementById('ok-count').textContent = ok;
             document.getElementById('ng-count').textContent = ng;
             document.getElementById('hold-count').textContent = hold;
+            document.getElementById('waive-count').textContent = waive;
 
             const inspectorStats = {};
             data.forEach(item => {
                 const inspector = item['QC inspector 檢驗員'] || '미지정';
                 if (!inspectorStats[inspector]) {
-                    inspectorStats[inspector] = { total: 0, ok: 0, ng: 0, hold: 0 };
+                    inspectorStats[inspector] = { total: 0, ok: 0, ng: 0, hold: 0, waive: 0 };
                 }
                 inspectorStats[inspector].total++;
                 if (item['RESULT結果'] === 'OK') inspectorStats[inspector].ok++;
                 if (item['RESULT結果'] === 'NG') inspectorStats[inspector].ng++;
                 if (item['RESULT結果'] === 'HOLD') inspectorStats[inspector].hold++;
+                if (item['RESULT結果'] === 'Waive') inspectorStats[inspector].waive++;
             });
 
             const detailDiv = document.getElementById('stats-detail');
-            let detailHTML = '<h3 style="color: #667eea; margin: 20px 0;">검사원별 통계</h3><div class="data-table"><table><thead><tr><th>검사원</th><th>총 검사</th><th>OK</th><th>NG</th><th>HOLD</th><th>합격률</th></tr></thead><tbody>';
+            let detailHTML = '<h3 style="color: #667eea; margin: 20px 0;">검사원별 통계</h3><div class="data-table"><table><thead><tr><th>검사원</th><th>총 검사</th><th>OK</th><th>NG</th><th>HOLD</th><th>Waive</th><th>합격률</th></tr></thead><tbody>';
             
             for (const [inspector, stats] of Object.entries(inspectorStats)) {
                 const passRate = ((stats.ok / stats.total) * 100).toFixed(1);
@@ -2313,6 +2326,7 @@ function applyDateFilter() {
                         <td style="color: #28a745; font-weight: bold;">${stats.ok}</td>
                         <td style="color: #dc3545; font-weight: bold;">${stats.ng}</td>
                         <td style="color: #ffc107; font-weight: bold;">${stats.hold}</td>
+                        <td style="color: #999; font-weight: bold;">${stats.waive}</td>
                         <td>${passRate}%</td>
                     </tr>
                 `;
