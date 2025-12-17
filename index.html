@@ -731,17 +731,16 @@
 
                 <!-- 사무실 작업 섹션 (일괄 입력 방식) -->
                 <div class="form-section office-section">
-                    <h3>🏢 사무실 작업 <span class="section-badge office-badge">STEP 2</span></h3>
+                    <h3>🏢 전체 입력 <span class="section-badge office-badge">가로 스프레드시트</span></h3>
                     <div class="progress-info">
-                        ℹ️ 사무실에서 <strong>"임시저장 불러오기"</strong>로 현장 데이터를 불러온 후, Tray 수량을 선택하고 측정 항목별로 일괄 입력해주세요.
+                        ℹ️ 검사 설비 수를 선택하면 가로 스프레드시트가 생성됩니다. Excel처럼 항목별로 입력하세요!
                     </div>
 
-                    <!-- Tray 수량 선택 -->
-                    <div style="background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #ddd;">
-                        <h4 style="margin: 0 0 15px 0; font-size: 16px;">📦 측정 Tray 수량</h4>
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <label style="font-weight: bold; font-size: 14px;">Tray 개수:</label>
-                            <select id="tray-count-select" onchange="generateBatchInputFields()" style="padding: 10px; font-size: 16px; border: 1px solid #d0d0d0; border-radius: 3px; min-width: 120px;">
+                    <!-- 설비 수 선택 -->
+                    <div style="background: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 8px; border: 2px solid #333;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <h4 style="margin: 0; font-size: 16px;">📊 검사 설비 수:</h4>
+                            <select id="equipment-count-select" onchange="generateHorizontalTable()" style="padding: 10px 15px; font-size: 16px; border: 2px solid #333; border-radius: 5px; min-width: 120px; font-weight: bold;">
                                 <option value="1">1개</option>
                                 <option value="2">2개</option>
                                 <option value="3">3개</option>
@@ -773,39 +772,24 @@
                                 <option value="29">29개</option>
                                 <option value="30">30개</option>
                             </select>
-                            <span style="color: #666; font-size: 14px;">선택한 개수만큼 각 항목별 입력 필드가 생성됩니다.</span>
+                            <button type="button" onclick="fillCommonData()" class="btn-secondary" style="padding: 10px 15px;">
+                                ⚡ 공통 정보 자동 채우기
+                            </button>
+                            <span style="color: #666; font-size: 14px;">
+                                ← 우측으로 Data 열이 생성됩니다
+                            </span>
                         </div>
                     </div>
 
-                    <!-- 일괄 입력 컨테이너 -->
-                    <div id="batch-input-container">
+                    <!-- 가로 스프레드시트 컨테이너 -->
+                    <div id="horizontal-table-container" style="margin: 20px 0;">
                         <!-- JavaScript로 동적 생성 -->
                     </div>
 
-                    <h4 style="margin: 20px 0 15px 0; font-size: 16px;">✅ 검사 결과</h4>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>RESULT結果 <span class="required">*</span></label>
-                            <select name="RESULT結果" required>
-                                <option value="">선택</option>
-                                <option value="OK">OK</option>
-                                <option value="NG">NG</option>
-                                <option value="HOLD">HOLD</option>
-                                <option value="Waive">Waive</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Approval 審核者</label>
-                            <input type="text" name="Approval 審核者">
-                        </div>
-                        <div class="form-group">
-                            <label>備註</label>
-                            <textarea name="備註" rows="3" style="resize: vertical;"></textarea>
-                        </div>
-                    </div>
-
                     <div style="text-align: center; margin-top: 30px;">
-                        <button type="submit" class="btn-primary">✅ 최종 저장 (완료)</button>
+                        <button type="submit" class="btn-primary" style="padding: 15px 40px; font-size: 16px;">
+                            ✅ 최종 저장 (완료)
+                        </button>
                     </div>
                 </div>
 
@@ -2192,6 +2176,64 @@
             const formElement = this;
             const formData = new FormData(formElement);
             
+            // 가로 스프레드시트 모드 확인
+            const horizontalTable = document.getElementById('horizontal-input-table');
+            if (horizontalTable) {
+                console.log('📊 가로 스프레드시트 모드 저장');
+                
+                const equipmentCount = parseInt(document.getElementById('equipment-count-select').value);
+                const savedData = [];
+                const existingData = loadData();
+                
+                // 각 Data별로 개별 데이터 생성
+                for (let i = 1; i <= equipmentCount; i++) {
+                    const data = {
+                        _id: Date.now() + i,
+                        _timestamp: new Date().toISOString()
+                    };
+                    
+                    // 각 필드의 값 추출
+                    allFields.forEach(field => {
+                        const fieldId = `${field.name}_data${i}`;
+                        const element = document.getElementById(fieldId);
+                        
+                        if (element) {
+                            const value = element.value;
+                            if (value !== null && value !== '') {
+                                data[field.name] = value;
+                            }
+                        }
+                    });
+                    
+                    savedData.push(data);
+                    console.log(`Data ${i}:`, data);
+                }
+                
+                // 데이터 저장
+                const newData = [...existingData, ...savedData];
+                saveData(newData);
+                
+                console.log(`✅ ${savedData.length}개 데이터 저장 완료`);
+                
+                // 폼 초기화
+                formElement.reset();
+                generateHorizontalTable(); // 테이블 재생성
+                
+                // UI 업데이트
+                refreshTable();
+                refreshStats();
+                
+                // Google Sheets 자동 동기화
+                autoSyncIfEnabled();
+                
+                showToast(`✅ 최종 저장 완료! ${savedData.length}개 데이터 생성`);
+                alert(`✅ 최종 저장 완료!\n\n${savedData.length}개의 개별 데이터가 생성되었습니다.`);
+                
+                // 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            
             // 일괄 불러오기 모드인지 확인
             if (batchLoadedDrafts.length > 0) {
                 console.log(`🔄 일괄 저장 모드: ${batchLoadedDrafts.length}개 Tray`);
@@ -2641,70 +2683,37 @@ function applyDateFilter() {
                 return;
             }
 
-            const ws_data = [
-                ['DATE 日期', 'TIME 時間', 'M/C 機台', 'SHIFT 班別', 'QC inspector 檢驗員', 
-                 'Description 料號', 'Customer', 'MOLD 模號', 'Datecode', 'LTC No. 批號',
-                 'VISUAL外觀', 'OL總長', 'OW總寬', 'ST外疊合高', 'Warpage彎度', 'Where 位置',
-                 'C/C 凹凸度', 'SR表面電阻', 'Weight重量', 'RESULT結果', 'Approval 審核者',
-                 'TSMC EL 3點 最大值', '一般客戶 EL', 'TSMC SKH 量測10點結果', 'TSMC SKH 量測4點結果',
-                 'TSMC 20片 ST 量測4點 最大值', 'TSMC 20片 ST 量測4點 最小值', 
-                 'TTSMC 單片ST  量測4點 最大值', 'TSMC 單片ST  量測4點 最小值',
-                 'ASE / SPIL SKH 量測 4點結果', 'AASEK SR表面電阻 (2pin)', '備註',
-                 'SESS SR表面電阻 (Trek 152-1) 10V', 'SESS SR表面電阻 (Trek 152-1) 100V',
-                 '원료명', '원료 Lot', '원료 ETC']
-            ];
-
-            data.forEach(item => {
-                ws_data.push([
-                    item['DATE 日期'] || '',
-                    item['TIME 時間'] || '',
-                    item['M/C 機台'] || '',
-                    item['SHIFT 班別'] || '',
-                    item['QC inspector 檢驗員'] || '',
-                    item['Description 料號'] || '',
-                    item['Customer'] || '',
-                    item['MOLD 模號'] || '',
-                    item['Datecode'] || '',
-                    item['LTC No. 批號'] || '',
-                    item['VISUAL外觀'] || '',
-                    item['OL總長'] || '',
-                    item['OW總寬'] || '',
-                    item['ST外疊合高'] || '',
-                    item['Warpage彎度'] || '',
-                    item['Where 位置'] || '',
-                    item['C/C 凹凸度'] || '',
-                    item['SR表面電阻'] || '',
-                    item['Weight重量'] || '',
-                    item['RESULT結果'] || '',
-                    item['Approval 審核者'] || '',
-                    item['TSMC EL 3點 最大值'] || '',
-                    item['一般客戶 EL'] || '',
-                    item['TSMC SKH 量測10點結果'] || '',
-                    item['TSMC SKH 量測4點結果'] || '',
-                    item['TSMC 20片 ST 量測4點 最大值'] || '',
-                    item['TSMC 20片 ST 量測4點 最小值'] || '',
-                    item['TTSMC 單片ST  量測4點 最大值'] || '',
-                    item['TSMC 單片ST  量測4點 最小值'] || '',
-                    item['ASE / SPIL SKH 量測 4點結果'] || '',
-                    item['AASEK SR表面電阻 (2pin)'] || '',
-                    item['備註'] || '',
-                    item['SESS SR表面電阻 (Trek 152-1) 10V'] || '',
-                    item['SESS SR表面電阻 (Trek 152-1) 100V'] || '',
-                    item['원료명'] || '',
-                    item['원료 Lot'] || '',
-                    item['원료 ETC'] || ''
-                ]);
+            console.log('📥 Excel 가로 형식 내보내기');
+            
+            // 가로 형식으로 변환
+            const ws_data = [];
+            
+            // 헤더 행: 항목 / Item, Data 1, Data 2, ...
+            const headerRow = ['항목 / Item'];
+            data.forEach((item, index) => {
+                headerRow.push(`Data ${index + 1}`);
+            });
+            ws_data.push(headerRow);
+            
+            // 각 필드별 행 생성
+            allFields.forEach(field => {
+                const row = [field.name];
+                data.forEach(item => {
+                    row.push(item[field.name] || '');
+                });
+                ws_data.push(row);
             });
 
             const ws = XLSX.utils.aoa_to_sheet(ws_data);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            XLSX.utils.book_append_sheet(wb, ws, 'IPQC Data');
 
             const today = new Date().toISOString().split('T')[0];
-            const filename = `IPQC_${today}.xlsx`;
+            const filename = `IPQC_Horizontal_${today}.xlsx`;
 
             XLSX.writeFile(wb, filename);
-            showToast('📥 엑셀 파일이 다운로드되었습니다!');
+            console.log(`✅ Excel 내보내기 완료: ${data.length}개 데이터`);
+            showToast(`📥 엑셀 파일이 다운로드되었습니다! (가로 형식)`);
         }
 
         // Google Sheets 설정 불러오기
@@ -2883,34 +2892,180 @@ function applyDateFilter() {
         }
 
         // 측정 항목 정의 (항목명, 타입, 카테고리)
-        const measurementItems = [
-            // 기본 검사 항목
-            { name: 'VISUAL外觀', type: 'select', category: '🔬 기본 검사 항목', options: ['', 'OK', 'NG', 'Waive'] },
-            { name: 'OL總長', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'OW總寬', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'ST外疊合高', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'Warpage彎度', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'Where 位置', type: 'text', category: '🔬 기본 검사 항목' },
-            { name: 'C/C 凹凸度', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'SR表面電阻', type: 'number', category: '🔬 기본 검사 항목' },
-            { name: 'Weight重量', type: 'number', category: '🔬 기본 검사 항목' },
+        // 전체 필드 정의 (가로 스프레드시트용)
+        const allFields = [
+            { name: 'DATE 日期', type: 'date', category: 'basic' },
+            { name: 'TIME 時間', type: 'time', category: 'basic' },
+            { name: 'M/C 機台', type: 'text', category: 'basic' },
+            { name: 'SHIFT 班別', type: 'text', category: 'basic' },
+            { name: 'QC inspector 檢驗員', type: 'text', category: 'basic' },
+            { name: 'Description 料號', type: 'text', category: 'basic' },
+            { name: 'Customer', type: 'text', category: 'basic' },
+            { name: 'MOLD 模號', type: 'text', category: 'basic' },
+            { name: 'Datecode', type: 'text', category: 'basic' },
+            { name: 'LTC No. 批號', type: 'text', category: 'basic' },
+            { name: '원료명', type: 'text', category: 'basic' },
+            { name: '원료 Lot', type: 'text', category: 'basic' },
+            { name: '원료 ETC', type: 'text', category: 'basic' },
             
-            // 고객별 특수 검사
-            { name: 'TSMC EL 3點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: '一般客戶 EL', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'TSMC SKH 量測10點結果', type: 'text', category: '🏭 고객별 특수 검사' },
-            { name: 'TSMC SKH 量測4點結果', type: 'text', category: '🏭 고객별 특수 검사' },
-            { name: 'TSMC 20片 ST 量測4點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'TSMC 20片 ST 量測4點 最小值', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'TTSMC 單片ST  量測4點 最大值', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'TSMC 單片ST  量測4點 最小值', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'ASE / SPIL SKH 量測 4點結果', type: 'text', category: '🏭 고객별 특수 검사' },
-            { name: 'AASEK SR表面電阻 (2pin)', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'number', category: '🏭 고객별 특수 검사' },
-            { name: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'number', category: '🏭 고객별 특수 검사' }
+            { name: 'VISUAL外觀', type: 'select', category: 'inspection', options: ['', 'OK', 'NG', 'Waive'] },
+            { name: 'OL總長', type: 'number', category: 'inspection' },
+            { name: 'OW總寬', type: 'number', category: 'inspection' },
+            { name: 'ST外疊合高', type: 'number', category: 'inspection' },
+            { name: 'Warpage彎度', type: 'number', category: 'inspection' },
+            { name: 'Where 位置', type: 'text', category: 'inspection' },
+            { name: 'C/C 凹凸度', type: 'number', category: 'inspection' },
+            { name: 'SR表面電阻', type: 'number', category: 'inspection' },
+            { name: 'Weight重量', type: 'number', category: 'inspection' },
+            
+            { name: 'TSMC EL 3點 最大值', type: 'number', category: 'special' },
+            { name: '一般客戶 EL', type: 'number', category: 'special' },
+            { name: 'TSMC SKH 量測10點結果', type: 'text', category: 'special' },
+            { name: 'TSMC SKH 量測4點結果', type: 'text', category: 'special' },
+            { name: 'TSMC 20片 ST 量測4點 最大值', type: 'number', category: 'special' },
+            { name: 'TSMC 20片 ST 量測4點 最小值', type: 'number', category: 'special' },
+            { name: 'TTSMC 單片ST  量測4點 最大值', type: 'number', category: 'special' },
+            { name: 'TSMC 單片ST  量測4點 最小值', type: 'number', category: 'special' },
+            { name: 'ASE / SPIL SKH 量測 4點結果', type: 'text', category: 'special' },
+            { name: 'AASEK SR表面電阻 (2pin)', type: 'number', category: 'special' },
+            { name: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'number', category: 'special' },
+            { name: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'number', category: 'special' },
+            
+            { name: 'RESULT結果', type: 'select', category: 'result', options: ['', 'OK', 'NG', 'HOLD', 'Waive'] },
+            { name: 'Approval 審核者', type: 'text', category: 'result' },
+            { name: '備註', type: 'textarea', category: 'result' }
         ];
+        
+        // 호환성을 위한 기존 measurementItems (일괄 불러오기 기능용)
+        const measurementItems = allFields.filter(f => f.category === 'inspection' || f.category === 'special');
 
-        // 일괄 입력 필드 생성
+        // 가로 스프레드시트 테이블 생성
+        function generateHorizontalTable() {
+            const equipmentCount = parseInt(document.getElementById('equipment-count-select').value);
+            const container = document.getElementById('horizontal-table-container');
+            
+            console.log(`📊 가로 테이블 생성: ${equipmentCount}개 설비`);
+            
+            let html = `
+                <div style="overflow-x: auto; max-width: 100%; border: 2px solid #333; border-radius: 8px; background: white;">
+                    <table id="horizontal-input-table" style="width: auto; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #333; color: white; position: sticky; top: 0; z-index: 10;">
+                                <th style="position: sticky; left: 0; background: #333; color: white; padding: 12px; border: 1px solid #555; min-width: 200px; text-align: left; z-index: 11;">
+                                    항목 / Item
+                                </th>
+            `;
+            
+            // 헤더: Data 1, Data 2, ...
+            for (let i = 1; i <= equipmentCount; i++) {
+                html += `
+                    <th style="padding: 12px; border: 1px solid #555; min-width: 150px; text-align: center; white-space: nowrap;">
+                        <strong>Data ${i}</strong>
+                    </th>
+                `;
+            }
+            
+            html += `
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // 각 필드별 행 생성
+            allFields.forEach((field, fieldIndex) => {
+                const isEvenRow = fieldIndex % 2 === 0;
+                const rowBg = isEvenRow ? '#fafafa' : '#ffffff';
+                
+                html += `
+                    <tr style="background: ${rowBg};">
+                        <td style="position: sticky; left: 0; background: ${rowBg}; padding: 10px; border: 1px solid #ddd; font-weight: 600; color: #333; z-index: 1;">
+                            ${field.name}
+                        </td>
+                `;
+                
+                // 각 Data별 입력 필드
+                for (let i = 1; i <= equipmentCount; i++) {
+                    const fieldId = `${field.name}_data${i}`;
+                    let inputHtml = '';
+                    
+                    if (field.type === 'select') {
+                        inputHtml = `
+                            <select id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                                ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                        `;
+                    } else if (field.type === 'textarea') {
+                        inputHtml = `
+                            <textarea id="${fieldId}" name="${fieldId}" rows="2" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px; resize: vertical;"></textarea>
+                        `;
+                    } else if (field.type === 'number') {
+                        inputHtml = `
+                            <input type="number" step="0.01" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                        `;
+                    } else if (field.type === 'date') {
+                        const today = new Date().toISOString().split('T')[0];
+                        inputHtml = `
+                            <input type="date" id="${fieldId}" name="${fieldId}" value="${today}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                        `;
+                    } else if (field.type === 'time') {
+                        const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+                        inputHtml = `
+                            <input type="time" id="${fieldId}" name="${fieldId}" value="${now}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                        `;
+                    } else {
+                        inputHtml = `
+                            <input type="text" id="${fieldId}" name="${fieldId}" style="width: 100%; padding: 6px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 13px;">
+                        `;
+                    }
+                    
+                    html += `
+                        <td style="padding: 8px; border: 1px solid #ddd;">
+                            ${inputHtml}
+                        </td>
+                    `;
+                }
+                
+                html += `
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            console.log(`✅ 가로 테이블 생성 완료: ${equipmentCount}개`);
+        }
+        
+        // 공통 데이터 자동 채우기
+        function fillCommonData() {
+            const equipmentCount = parseInt(document.getElementById('equipment-count-select').value);
+            
+            // 공통으로 입력할 필드들
+            const commonFields = ['QC inspector 檢驗員', 'Customer', '원료명', '원료 Lot', '원료 ETC', 'Description 料號'];
+            
+            commonFields.forEach(fieldName => {
+                const firstInput = document.getElementById(`${fieldName}_data1`);
+                if (firstInput && firstInput.value) {
+                    const value = firstInput.value;
+                    
+                    // 나머지 Data에 복사
+                    for (let i = 2; i <= equipmentCount; i++) {
+                        const targetInput = document.getElementById(`${fieldName}_data${i}`);
+                        if (targetInput) {
+                            targetInput.value = value;
+                        }
+                    }
+                }
+            });
+            
+            alert('✅ 공통 정보가 모든 Data에 복사되었습니다!');
+        }
+
+        // 일괄 입력 필드 생성 (호환성을 위해 유지)
         function generateBatchInputFields() {
             const trayCount = parseInt(document.getElementById('tray-count-select').value);
             const container = document.getElementById('batch-input-container');
@@ -3002,8 +3157,14 @@ function applyDateFilter() {
             updateCurrentDraftInfo();
             updateSheetsButtons();
             
-            // 일괄 입력 필드 생성
+            // 가로 스프레드시트 테이블 초기화
             setTimeout(() => {
+                if (document.getElementById('horizontal-table-container')) {
+                    generateHorizontalTable();
+                    console.log('✅ 가로 테이블 초기화 완료');
+                }
+                
+                // 일괄 입력 필드 생성 (호환성)
                 if (document.getElementById('batch-input-container')) {
                     generateBatchInputFields();
                 }
