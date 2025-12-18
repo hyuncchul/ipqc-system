@@ -700,57 +700,97 @@
 
         <!-- 데이터 조회 탭 -->
         <div id="view-tab" class="tab-content">
-            <!-- Google Sheets URL 입력 -->
-            <div style="background: white; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #4CAF50;">
-                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
-                    <label style="font-weight: bold; color: #4CAF50; min-width: 100px;">📊 Sheets URL:</label>
-                    <input type="text" id="quick-sheets-url" placeholder="Google Sheets Web App URL" 
-                           style="flex: 1; min-width: 250px; padding: 10px; border: 1px solid #4CAF50; border-radius: 3px; font-size: 14px;">
-                    <button onclick="saveQuickSheetsUrl()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">💾 저장</button>
-                    <span id="sheets-url-status" style="color: #666; font-size: 12px; font-weight: bold;"></span>
-                </div>
-                <div style="font-size: 11px; color: #666;">
-                    💡 Apps Script URL을 저장하면 "📡 Sheets에서 불러오기" 버튼으로 데이터를 불러올 수 있습니다.
-                </div>
-            </div>
-            
-            <!-- 기간 필터 -->
-            <div class="filter-section" style="background: #f5f5f5; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #d0d0d0;">
+            <!-- Google Sheets URL 설정 -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: white; margin: 0 0 15px 0; font-size: 18px;">📊 Google Sheets 연결 설정</h3>
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <label style="font-weight: bold; color: #333;">📅 조회 기간:</label>
-                    <input type="date" id="filter-start-date" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
-                    <span style="color: #666;">~</span>
-                    <input type="date" id="filter-end-date" style="padding: 8px; border: 1px solid #d0d0d0; border-radius: 3px; font-size: 14px;">
-                    <button onclick="applyDateFilter()" style="padding: 8px 20px; background: #333; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">🔍 검색</button>
-                    <button onclick="clearDateFilter()" style="padding: 8px 20px; background: #999; color: white; border: none; border-radius: 3px; cursor: pointer;">↻ 전체 보기</button>
-                    <span id="filter-status" style="color: #666; font-size: 13px; margin-left: 10px;"></span>
+                    <input type="text" id="sheets-url-input" placeholder="Apps Script Web App URL을 입력하세요" 
+                           style="flex: 1; min-width: 300px; padding: 12px; border: none; border-radius: 5px; font-size: 14px;">
+                    <button onclick="saveAndTestSheetsUrl()" style="padding: 12px 24px; background: white; color: #667eea; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px;">🔗 연결 테스트</button>
                 </div>
+                <div id="sheets-connection-status" style="margin-top: 10px; color: white; font-size: 13px;"></div>
             </div>
             
-            <div class="action-buttons">
-                <button class="btn-secondary" onclick="openSheetsSettings()">📋 Google Sheets 설정</button>
-                <button class="btn-secondary" id="load-sheets-btn" onclick="loadFromGoogleSheets()" style="display: none;">📂 Sheets에서 불러오기</button>
-                <button class="btn-secondary" onclick="exportToExcel()">📥 엑셀로 내보내기</button>
-                <button class="btn-secondary" onclick="showDebugInfo()" style="background: #ff9800;">🔍 디버그 정보</button>
-                <button class="btn-danger" onclick="clearAllData()">🗑️ 모든 데이터 삭제</button>
+            <!-- 조회 조건 -->
+            <div style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="margin: 0 0 20px 0; color: #333; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">🔍 조회 조건 설정</h3>
+                
+                <!-- 기간 조회 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; color: #555; margin-bottom: 8px;">📅 기간 조회</label>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <input type="date" id="search-start-date" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                        <span style="color: #999; font-weight: bold;">~</span>
+                        <input type="date" id="search-end-date" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                    </div>
+                </div>
+                
+                <!-- Description 조회 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; color: #555; margin-bottom: 8px;">📝 Description</label>
+                    <input type="text" id="search-description" placeholder="Description 검색 (부분 일치 가능)" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                </div>
+                
+                <!-- Customer 조회 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; color: #555; margin-bottom: 8px;">🏭 Customer</label>
+                    <input type="text" id="search-customer" placeholder="Customer 검색 (부분 일치 가능)" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                </div>
+                
+                <!-- Material 조회 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; color: #555; margin-bottom: 8px;">🧩 Material</label>
+                    <input type="text" id="search-material" placeholder="Material 검색 (부분 일치 가능)" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;">
+                </div>
+                
+                <!-- 조회 버튼 -->
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
+                    <button onclick="searchFromSheets()" style="flex: 1; padding: 14px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px;">
+                        🔎 Google Sheets에서 조회
+                    </button>
+                    <button onclick="clearSearchConditions()" style="padding: 14px 24px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px;">
+                        ↻ 초기화
+                    </button>
+                </div>
+                
+                <!-- 조회 결과 상태 -->
+                <div id="search-result-status" style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 5px; color: #666; font-size: 13px; display: none;"></div>
             </div>
-            <div class="data-table">
-                <table id="data-table">
-                    <thead>
-                        <tr>
-                            <th>순번</th>
-                            <th>날짜</th>
-                            <th>시간</th>
-                            <th>검사원</th>
-                            <th>기계</th>
-                            <th>고객</th>
-                            <th>결과</th>
-                            <th>작업</th>
-                        </tr>
-                    </thead>
-                    <tbody id="data-body">
-                    </tbody>
-                </table>
+            
+            <!-- 데이터 테이블 -->
+            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: #333; font-size: 18px;">📊 조회 결과</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="exportToExcel()" style="padding: 8px 16px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 13px;">
+                            📥 Excel 내보내기
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table" style="overflow-x: auto;">
+                    <table id="data-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">순번</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">날짜</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Description</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Customer</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Material</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">결과</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-body">
+                            <tr>
+                                <td colspan="6" style="padding: 60px 20px; text-align: center; color: #999; font-size: 16px;">
+                                    🔍 조회 조건을 설정하고 "Google Sheets에서 조회" 버튼을 클릭하세요.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -2714,10 +2754,181 @@ function applyDateFilter() {
         // 저장된 URL 표시
         function updateQuickSheetsUrlDisplay() {
             var config = loadSheetsConfig();
-            var input = document.getElementById('quick-sheets-url');
+            var input = document.getElementById('sheets-url-input');
             if (input && config.url) {
                 input.value = config.url;
             }
+        }
+        
+        // Google Sheets URL 저장 및 테스트
+        async function saveAndTestSheetsUrl() {
+            var url = document.getElementById('sheets-url-input').value.trim();
+            var statusDiv = document.getElementById('sheets-connection-status');
+            
+            if (!url) {
+                statusDiv.innerHTML = '⚠️ URL을 입력해주세요.';
+                statusDiv.style.color = '#ffeb3b';
+                return;
+            }
+            
+            if (!url.includes('script.google.com')) {
+                statusDiv.innerHTML = '⚠️ 올바른 Google Apps Script URL이 아닙니다.';
+                statusDiv.style.color = '#ffeb3b';
+                return;
+            }
+            
+            statusDiv.innerHTML = '🔄 연결 테스트 중...';
+            statusDiv.style.color = 'white';
+            
+            try {
+                var response = await fetch(url);
+                var data = await response.json();
+                
+                saveSheetsConfig(url, true);
+                statusDiv.innerHTML = '✅ 연결 성공! ' + (data.length || 0) + '건의 데이터를 찾았습니다.';
+                statusDiv.style.color = '#4CAF50';
+                showToast('✅ Google Sheets 연결에 성공했습니다!');
+            } catch (error) {
+                statusDiv.innerHTML = '❌ 연결 실패: ' + error.message;
+                statusDiv.style.color = '#f44336';
+                console.error('연결 오류:', error);
+            }
+        }
+        
+        // Google Sheets에서 조회 (조건 포함)
+        async function searchFromSheets() {
+            var config = loadSheetsConfig();
+            if (!config.url) {
+                alert('경고: Google Sheets URL을 먼저 설정해주세요.');
+                return;
+            }
+            
+            var startDate = document.getElementById('search-start-date').value;
+            var endDate = document.getElementById('search-end-date').value;
+            var description = document.getElementById('search-description').value.trim().toLowerCase();
+            var customer = document.getElementById('search-customer').value.trim().toLowerCase();
+            var material = document.getElementById('search-material').value.trim().toLowerCase();
+            
+            var statusDiv = document.getElementById('search-result-status');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '🔄 Google Sheets에서 데이터를 불러오는 중...';
+            statusDiv.style.background = '#e3f2fd';
+            statusDiv.style.color = '#1976d2';
+            
+            try {
+                var response = await fetch(config.url);
+                var allData = await response.json();
+                
+                console.log('전체 데이터:', allData.length + '건');
+                
+                // 필터링
+                var filteredData = allData.filter(function(item) {
+                    // 기간 필터
+                    if (startDate && endDate) {
+                        var itemDate = item['DATE 日期'] || item.DATE || item.date || '';
+                        if (itemDate < startDate || itemDate > endDate) {
+                            return false;
+                        }
+                    }
+                    
+                    // Description 필터
+                    if (description) {
+                        var itemDesc = (item.Description || item.description || '').toLowerCase();
+                        if (!itemDesc.includes(description)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Customer 필터
+                    if (customer) {
+                        var itemCustomer = (item.Customer || item.customer || '').toLowerCase();
+                        if (!itemCustomer.includes(customer)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Material 필터
+                    if (material) {
+                        var itemMaterial = (item.Material || item.material || '').toLowerCase();
+                        if (!itemMaterial.includes(material)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+                
+                console.log('필터링된 데이터:', filteredData.length + '건');
+                
+                // 결과 표시
+                displaySearchResults(filteredData);
+                
+                statusDiv.innerHTML = '✅ 조회 완료: 총 ' + allData.length + '건 중 ' + filteredData.length + '건을 찾았습니다.';
+                statusDiv.style.background = '#e8f5e9';
+                statusDiv.style.color = '#2e7d32';
+                
+                showToast('✅ ' + filteredData.length + '건의 데이터를 찾았습니다!', 'success');
+                
+            } catch (error) {
+                console.error('조회 오류:', error);
+                statusDiv.innerHTML = '❌ 조회 실패: ' + error.message;
+                statusDiv.style.background = '#ffebee';
+                statusDiv.style.color = '#c62828';
+                showToast('❌ 조회에 실패했습니다.', 'error');
+            }
+        }
+        
+        // 검색 결과 표시
+        function displaySearchResults(data) {
+            var tbody = document.getElementById('data-body');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="padding: 60px 20px; text-align: center; color: #999; font-size: 16px;">🔍 조회 조건에 맞는 데이터가 없습니다.</td></tr>';
+                return;
+            }
+            
+            data.forEach(function(item, index) {
+                var row = document.createElement('tr');
+                row.style.borderBottom = '1px solid #dee2e6';
+                row.innerHTML = '
+                    <td style="padding: 12px;">' + (index + 1) + '</td>
+                    <td style="padding: 12px;">' + (item['DATE 日期'] || item.DATE || item.date || '-') + '</td>
+                    <td style="padding: 12px;">' + (item.Description || item.description || '-') + '</td>
+                    <td style="padding: 12px;">' + (item.Customer || item.customer || '-') + '</td>
+                    <td style="padding: 12px;">' + (item.Material || item.material || '-') + '</td>
+                    <td style="padding: 12px;"><span style="padding: 4px 12px; background: ' + getResultColor(item['RESULT結果'] || item.RESULT || item.result) + '; color: white; border-radius: 3px; font-size: 12px; font-weight: bold;">' + (item['RESULT結果'] || item.RESULT || item.result || '-') + '</span></td>
+                ';
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 결과에 따른 색상
+        function getResultColor(result) {
+            if (!result) return '#95a5a6';
+            var r = result.toUpperCase();
+            if (r === 'OK') return '#27ae60';
+            if (r === 'NG') return '#e74c3c';
+            if (r === 'HOLD') return '#f39c12';
+            if (r === 'WAIVE') return '#3498db';
+            return '#95a5a6';
+        }
+        
+        // 검색 조건 초기화
+        function clearSearchConditions() {
+            document.getElementById('search-start-date').value = '';
+            document.getElementById('search-end-date').value = '';
+            document.getElementById('search-description').value = '';
+            document.getElementById('search-customer').value = '';
+            document.getElementById('search-material').value = '';
+            
+            var statusDiv = document.getElementById('search-result-status');
+            statusDiv.style.display = 'none';
+            
+            var tbody = document.getElementById('data-body');
+            tbody.innerHTML = '<tr><td colspan="6" style="padding: 60px 20px; text-align: center; color: #999; font-size: 16px;">🔍 조회 조건을 설정하고 "Google Sheets에서 조회" 버튼을 클릭하세요.</td></tr>';
+            
+            showToast('↻ 검색 조건이 초기화되었습니다.');
         }
 
         // Google Sheets 버튼 표시 업데이트
