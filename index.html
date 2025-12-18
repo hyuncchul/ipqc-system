@@ -887,6 +887,7 @@
                 filterSearch: '검색',
                 filterViewAll: '전체 보기',
                 filterNoData: '해당 기간에 데이터가 없습니다.',
+                filterNoDataAll: '저장된 데이터가 없습니다.',
                 filterAlert1: '시작일과 종료일을 모두 입력해주세요.',
                 filterAlert2: '시작일이 종료일보다 늦을 수 없습니다.',
                 filterStatus: '총',
@@ -970,6 +971,7 @@
                 filterSearch: 'Search',
                 filterViewAll: 'View All',
                 filterNoData: 'No data in this period.',
+                filterNoDataAll: 'No saved data.',
                 filterAlert1: 'Please enter both start and end dates.',
                 filterAlert2: 'Start date cannot be later than end date.',
                 filterStatus: 'Total',
@@ -1214,6 +1216,7 @@
                 filterSearch: 'Cari',
                 filterViewAll: 'Tampilkan Semua',
                 filterNoData: 'Tidak ada data dalam periode ini.',
+                filterNoDataAll: 'Tidak ada data tersimpan.',
                 filterAlert1: 'Harap masukkan tanggal mulai dan tanggal akhir.',
                 filterAlert2: 'Tanggal mulai tidak boleh lebih lambat dari tanggal akhir.',
                 filterStatus: 'Total',
@@ -2287,12 +2290,19 @@
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                const emptyMsg = dateFilterActive ? 
-                    translations[currentLanguage].filterNoData : 
-                    translations[currentLanguage].filterNoDataAll;
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">' + 
+                var emptyMsg = '저장된 데이터가 없습니다.';
+                if (dateFilterActive) {
+                    emptyMsg = '해당 기간에 데이터가 없습니다.';
+                }
+                if (translations[currentLanguage]) {
+                    emptyMsg = dateFilterActive ? 
+                        (translations[currentLanguage].filterNoData || emptyMsg) : 
+                        (translations[currentLanguage].filterNoDataAll || emptyMsg);
+                }
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999; font-size: 16px;">' + 
                     emptyMsg + 
                     '</td></tr>';
+                console.log('빈 데이터 메시지 표시:', emptyMsg);
                 return;
             }
 
