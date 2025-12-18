@@ -845,8 +845,7 @@ function doGet(e) {
                 for(let col = 0; col < count; col++) {
                     const entry = {
                         timestamp: new Date().toISOString(),
-                        dataColumn: col + 1,
-                        action: 'save'
+                        dataColumn: col + 1
                     };
                     
                     rows.forEach((row) => {
@@ -858,34 +857,56 @@ function doGet(e) {
                     data.push(entry);
                 }
 
-                // 각 데이터를 Google Sheets에 저장
+                // 각 데이터를 Google Sheets에 저장 (no-cors 모드)
                 let successCount = 0;
                 for (const entry of data) {
-                    const response = await fetch(googleScriptUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(entry)
-                    });
-                    successCount++;
+                    try {
+                        // no-cors 모드에서는 응답을 확인할 수 없지만 요청은 전송됨
+                        await fetch(googleScriptUrl, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            cache: 'no-cache',
+                            headers: {
+                                'Content-Type': 'text/plain',
+                            },
+                            body: JSON.stringify(entry)
+                        });
+                        successCount++;
+                    } catch (err) {
+                        console.warn('개별 저장 오류:', err);
+                    }
                 }
 
                 // 로컬에도 저장
                 savedData = savedData.concat(data);
                 localStorage.setItem('ipqcData', JSON.stringify(savedData));
 
-                alert(`✓ Google Sheets에 성공적으로 저장되었습니다!\n총 ${successCount}건의 데이터`);
+                alert(`✓ Google Sheets에 저장 요청을 보냈습니다!\n총 ${successCount}건의 데이터\n\n⚠️ Note: CORS 정책으로 인해 저장 성공 여부를 확인할 수 없습니다.\nGoogle Sheets에서 직접 확인해주세요.`);
                 updateQueryTable();
                 updateStatistics();
                 
             } catch (error) {
                 console.error('저장 오류:', error);
-                alert('⚠️ Google Sheets 저장 중 오류가 발생했습니다.\n로컬 저장소에만 저장되었습니다.');
+                alert('⚠️ Google Sheets 저장 중 오류가 발생했습니다.\n로컬 저장소에는 저장되었습니다.\n\n오류: ' + error.message);
                 
-                // 로컬에라도 저장
-                saveData();
+                // 로컬에는 저장
+                const rows = document.querySelectorAll('#tableBody tr');
+                const count = parseInt(document.getElementById('equipmentCount').value);
+                const data = [];
+                for(let col = 0; col < count; col++) {
+                    const entry = {
+                        timestamp: new Date().toISOString(),
+                        dataColumn: col + 1
+                    };
+                    rows.forEach((row) => {
+                        const label = row.querySelector('td.item-label').textContent;
+                        const inputs = row.querySelectorAll('input, select, textarea');
+                        entry[label] = inputs[col] ? inputs[col].value : '';
+                    });
+                    data.push(entry);
+                }
+                savedData = savedData.concat(data);
+                localStorage.setItem('ipqcData', JSON.stringify(savedData));
             } finally {
                 document.getElementById('saveLoading').classList.remove('show');
             }
