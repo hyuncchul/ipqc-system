@@ -1239,7 +1239,6 @@
         
         // 언어 변경 함수
         function changeLanguage(lang) {
-            alert('언어 변경 호출: ' + lang);  // 테스트용
             console.log('언어 변경 시도:', currentLanguage, '->', lang);
             currentLanguage = lang;
             localStorage.setItem('ipqc_language', lang);
@@ -1610,7 +1609,6 @@
 
         // 탭 전환
         function switchTab(tabName) {
-            alert('탭 전환 호출: ' + tabName);  // 테스트용
             console.log('탭 전환:', tabName);
             
             // 모든 탭 버튼의 active 클래스 제거
@@ -1626,26 +1624,19 @@
             if (inputTab) inputTab.classList.remove('active');
             if (viewTab) viewTab.classList.remove('active');
             if (statsTab) statsTab.classList.remove('active');
-            
-            alert('모든 탭 active 제거 완료');
 
             // 클릭한 버튼에 active 추가
             const clickedBtn = document.getElementById('tab-' + tabName);
             if (clickedBtn) {
                 clickedBtn.classList.add('active');
-                alert('버튼 active 추가됨: tab-' + tabName);
-            } else {
-                alert('버튼을 찾을 수 없음: tab-' + tabName);
             }
             
             // 탭 컨텐츠 표시
             const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) {
                 targetTab.classList.add('active');
-                alert('탭 컨텐츠 active 추가됨: ' + tabName + '-tab');
                 console.log('탭 표시 성공:', tabName);
             } else {
-                alert('탭 컨텐츠를 찾을 수 없음: ' + tabName + '-tab');
                 console.error('탭을 찾을 수 없음:', tabName);
             }
 
