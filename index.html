@@ -112,14 +112,14 @@
         }
 
         .tab-content {
-            display: none;
+            display: none !important;
             background: white;
             padding: 25px;
             border-top: 1px solid #e0e0e0;
         }
 
         .tab-content.active {
-            display: block;
+            display: block !important;
         }
 
         .save-load-section {
@@ -1599,9 +1599,21 @@
             alert('탭 전환 호출: ' + tabName);  // 테스트용
             console.log('탭 전환:', tabName);
             
-            // 모든 탭 버튼과 컨텐츠의 active 클래스 제거
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            // 모든 탭 버튼의 active 클래스 제거
+            document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            
+            // 모든 탭 컨텐츠의 active 클래스 제거 (명시적)
+            var inputTab = document.getElementById('input-tab');
+            var viewTab = document.getElementById('view-tab');
+            var statsTab = document.getElementById('stats-tab');
+            
+            if (inputTab) inputTab.classList.remove('active');
+            if (viewTab) viewTab.classList.remove('active');
+            if (statsTab) statsTab.classList.remove('active');
+            
+            alert('모든 탭 active 제거 완료');
 
             // 클릭한 버튼에 active 추가
             const clickedBtn = document.getElementById('tab-' + tabName);
