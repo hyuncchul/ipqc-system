@@ -725,6 +725,20 @@
             <details open style="margin-bottom: 15px;">
                 <summary style="cursor: pointer; padding: 12px 15px; background: #f5f5f5; border-radius: 5px; font-weight: bold; color: #333; border: 1px solid #d0d0d0;">🔍 고급 필터 (기간/항목 조회)</summary>
             <div class="filter-section" style="background: #f5f5f5; padding: 15px; margin-top: 10px; border-radius: 5px; border: 1px solid #d0d0d0;">
+                <!-- Google Sheets URL 입력 -->
+                <div style="margin-bottom: 15px; padding: 12px; background: white; border-radius: 5px; border: 1px solid #4CAF50;">
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <label style="font-weight: bold; color: #4CAF50; min-width: 120px;">📊 Sheets URL:</label>
+                        <input type="text" id="quick-sheets-url" placeholder="Google Sheets Web App URL을 입력하세요" 
+                               style="flex: 1; min-width: 300px; padding: 10px; border: 1px solid #4CAF50; border-radius: 3px; font-size: 14px;">
+                        <button onclick="saveQuickSheetsUrl()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;">💾 저장</button>
+                        <span id="sheets-url-status" style="color: #666; font-size: 12px;"></span>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #666;">
+                        💡 팁: Apps Script Web App URL을 입력하면 "📡 Sheets에서 조회" 버튼으로 데이터를 불러올 수 있습니다.
+                    </div>
+                </div>
+                
                 <!-- 기간 필터 -->
                 <div style="margin-bottom: 15px;">
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -2847,7 +2861,46 @@ function applyDateFilter() {
             saveSheetsConfig(url, true); // autoSync는 항상 true로 설정
             closeSheetsSettings();
             updateSheetsButtons();
+            updateQuickSheetsUrlDisplay();
             showToast('✅ Google Sheets 설정이 저장되었습니다! Final Save 시 자동으로 동기화됩니다.');
+        }
+        
+        // 데이터 조회 페이지의 빠른 Sheets URL 저장
+        function saveQuickSheetsUrl() {
+            const url = document.getElementById('quick-sheets-url').value.trim();
+            const statusSpan = document.getElementById('sheets-url-status');
+            
+            if (!url) {
+                statusSpan.textContent = '⚠️ URL을 입력해주세요.';
+                statusSpan.style.color = '#f44336';
+                return;
+            }
+            
+            if (!url.includes('script.google.com')) {
+                statusSpan.textContent = '⚠️ 올바른 Google Apps Script URL이 아닙니다.';
+                statusSpan.style.color = '#f44336';
+                return;
+            }
+            
+            saveSheetsConfig(url, true);
+            updateSheetsButtons();
+            statusSpan.textContent = '✅ 저장 완료!';
+            statusSpan.style.color = '#4CAF50';
+            showToast('✅ Google Sheets URL이 저장되었습니다!');
+            
+            // 3초 후 메시지 삭제
+            setTimeout(function() {
+                statusSpan.textContent = '';
+            }, 3000);
+        }
+        
+        // 페이지 로드 시 저장된 URL 표시
+        function updateQuickSheetsUrlDisplay() {
+            const config = loadSheetsConfig();
+            const input = document.getElementById('quick-sheets-url');
+            if (input && config.url) {
+                input.value = config.url;
+            }
         }
 
         // Google Sheets 버튼 표시 업데이트
@@ -2860,6 +2913,9 @@ function applyDateFilter() {
             } else {
                 loadBtn.style.display = 'none';
             }
+            
+            // 데이터 조회 페이지의 URL 입력란도 업데이트
+            updateQuickSheetsUrlDisplay();
         }
 
         // Google Sheets에 동기화
@@ -3252,6 +3308,7 @@ function applyDateFilter() {
             updateDraftCount();
             updateCurrentDraftInfo();
             updateSheetsButtons();
+            updateQuickSheetsUrlDisplay();
             
             // 가로 스프레드시트 테이블 초기화
             // 초기 테이블은 설비 수 선택 시 생성
