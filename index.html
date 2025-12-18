@@ -688,7 +688,7 @@ function doPost(e) {
       data['M/C 機台'] || '',
       data['Customer'] || '',
       data['Description 料號'] || '',
-      data['RESULT測量'] || '',
+      data['RESULT結果'] || '',
       JSON.stringify(data)
     ];
     sheet.appendRow(row);
@@ -744,45 +744,45 @@ function doGet(e) {
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // 검사 항목 필드 정의
+        // 검사 항목 필드 정의 (구글 시트와 동일)
         const inspectionFields = [
             { label: 'DATE 日期', type: 'date', common: true },
             { label: 'TIME 時間', type: 'time', common: true },
             { label: 'M/C 機台', type: 'text', common: true },
             { label: 'SHIFT 班別', type: 'text', common: true },
-            { label: 'QC Inspector 檢驗員', type: 'text', common: true },
+            { label: 'QC inspector 檢驗員', type: 'text', common: true },
             { label: 'Description 料號', type: 'text', common: true },
             { label: 'Customer', type: 'text', common: true },
             { label: 'MOLD 模號', type: 'text', common: true },
             { label: 'Datecode', type: 'text', common: true },
             { label: 'LTC No. 批號', type: 'text', common: true },
-            { label: '판도장', type: 'text', common: false },
-            { label: '한운 Lot', type: 'text', common: false },
-            { label: '한운 ETC', type: 'text', common: false },
             { label: 'VISUAL外觀', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'OL翹曲', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'DW彎曲', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'DT疊層厚度', type: 'number', common: false },
-            { label: 'Warpage翹曲', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'Where 包膠', type: 'text', common: false },
-            { label: 'C/C 核心厚', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'SR銅厚測量', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'Weight重量', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'TSMC EL 銅厚/X顯像', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: '일반銅厚 EL', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'TSMC SKH 량측IDA銅厚', type: 'text', common: false },
-            { label: 'TSMC SKH 량측A銅厚銅層', type: 'text', common: false },
-            { label: 'TSMC 2DR-ST 량측背銅厚/銅X光', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'TSMC 2DR-ST 량측背銅厚/面/X光', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'ITSMC M/JST 량측/背/線間/銅X光', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'TSMC M/JST 량측/線間/背/X光', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'ASE / SPIL SKH 량측背 X銅側視', type: 'text', common: false },
-            { label: 'AASEK SR銅厚測量 (Zpm)', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'SESS SR銅厚測量 (Trek 152-1) 10V', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'SESS SR銅厚測量 (Trek 152-1) 100V', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'RESULT測量', type: 'select', options: ['OK', 'NG', '-'], common: false },
+            { label: 'OL總長', type: 'number', common: false },
+            { label: 'OW總寬', type: 'number', common: false },
+            { label: 'ST外疊合高', type: 'number', common: false },
+            { label: 'Warpage彎度', type: 'number', common: false },
+            { label: 'Where 位置', type: 'text', common: false },
+            { label: 'C/C 凹凸度', type: 'number', common: false },
+            { label: 'SR表面電阻', type: 'text', common: false },
+            { label: 'Weight重量', type: 'number', common: false },
+            { label: 'RESULT結果', type: 'select', options: ['OK', 'NG', '-'], common: false },
             { label: 'Approval 審核者', type: 'text', common: false },
-            { label: '備註', type: 'textarea', common: false }
+            { label: 'TSMC EL 3點 最大值', type: 'number', common: false },
+            { label: '一般客戶 EL', type: 'text', common: false },
+            { label: 'TSMC SKH 量測10點結果', type: 'text', common: false },
+            { label: 'TSMC SKH 量測4點結果', type: 'text', common: false },
+            { label: 'TSMC 20片 ST 量測4點 最大值', type: 'number', common: false },
+            { label: 'TSMC 20片 ST 量測4點 最小值', type: 'number', common: false },
+            { label: 'TTSMC 單片ST 量測4點 最大值', type: 'number', common: false },
+            { label: 'TSMC 單片ST 量測4點 最小值', type: 'number', common: false },
+            { label: 'ASE / SPIL SKH 量測 4點結果', type: 'text', common: false },
+            { label: 'AASEK SR表面電阻 (2pin)', type: 'text', common: false },
+            { label: '備註', type: 'textarea', common: false },
+            { label: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'text', common: false },
+            { label: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'text', common: false },
+            { label: '원료명', type: 'text', common: false },
+            { label: '원료 Lot', type: 'text', common: false },
+            { label: '원료 ETC', type: 'text', common: false }
         ];
 
         let savedData = [];
@@ -1188,8 +1188,8 @@ function doGet(e) {
             
             const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
             
-            const okCount = data.filter(d => d['RESULT測量'] === 'OK').length;
-            const ngCount = data.filter(d => d['RESULT測量'] === 'NG').length;
+            const okCount = data.filter(d => d['RESULT結果'] === 'OK').length;
+            const ngCount = data.filter(d => d['RESULT結果'] === 'NG').length;
             const otherCount = data.length - okCount - ngCount;
             
             chartInstance = new Chart(ctx, {
