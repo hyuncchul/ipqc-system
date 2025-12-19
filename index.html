@@ -13,22 +13,22 @@
 
         body {
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+            background: #ffffff;
+            padding: 0;
+            margin: 0;
         }
 
         .container {
             max-width: 1600px;
             margin: 0 auto;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
         }
 
         .header {
-            background: white;
-            padding: 20px;
-            border-bottom: 2px solid #e0e0e0;
+            background: #fafafa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .title-section {
@@ -49,19 +49,19 @@
         }
 
         .version-badge {
-            background: black;
+            background: #333;
             color: white;
-            padding: 4px 12px;
-            font-size: 12px;
-            border-radius: 3px;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid #333;
         }
 
         .cloud-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4px 12px;
-            font-size: 12px;
-            border-radius: 3px;
+            background: white;
+            color: #333;
+            padding: 4px 10px;
+            font-size: 11px;
+            border: 1px solid #333;
         }
 
         .subtitle {
@@ -90,8 +90,9 @@
         }
 
         .lang-tab.active {
-            background: black;
+            background: #333;
             color: white;
+            border-bottom: 2px solid #333;
         }
 
         .lang-tab:hover:not(.active) {
@@ -115,7 +116,7 @@
         }
 
         .main-tab.active {
-            background: black;
+            background: #333;
             color: white;
         }
 
@@ -128,19 +129,18 @@
         }
 
         .info-box {
-            background: #f0f8ff;
-            border-left: 4px solid #2196F3;
+            background: #f9f9f9;
+            border-left: 3px solid #666;
             padding: 15px;
             margin-bottom: 25px;
-            border-radius: 4px;
         }
 
         .cloud-status {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px;
+            background: #f5f5f5;
+            color: #333;
+            padding: 15px 20px;
             margin-bottom: 20px;
-            border-radius: 8px;
+            border: 1px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -154,27 +154,23 @@
         }
 
         .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #4CAF50;
-            animation: pulse 2s infinite;
+            background: #666;
+            border: 2px solid #999;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+
 
         .info-box .icon {
-            color: #2196F3;
+            color: #666;
             margin-right: 8px;
         }
 
         .control-section {
-            background: #e8e8e8;
-            border: 2px solid #ccc;
-            border-radius: 8px;
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
             padding: 20px;
             margin-bottom: 25px;
         }
@@ -217,48 +213,51 @@
         }
 
         .btn-primary {
-            background: #ff9800;
+            background: #333;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #f57c00;
+            background: #555;
         }
 
         .btn-success {
-            background: #4CAF50;
+            background: #333;
             color: white;
             padding: 15px 40px;
             font-size: 16px;
+            border: 2px solid #333;
         }
 
         .btn-success:hover {
-            background: #45a049;
+            background: #000;
+            border-color: #000;
         }
 
         .btn-cloud {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: white;
+            color: #333;
+            border: 1px solid #333;
         }
 
         .btn-cloud:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+            background: #f5f5f5;
         }
 
         .save-section {
-            background: black;
-            color: white;
+            background: #fafafa;
+            color: #333;
             padding: 20px;
             text-align: center;
-            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            border-top: 2px solid #333;
             margin-top: 20px;
         }
 
         .spreadsheet-container {
             overflow-x: auto;
             margin-top: 20px;
-            border: 2px solid #666;
-            border-radius: 4px;
+            border: 1px solid #ddd;
             background: white;
         }
 
@@ -275,27 +274,29 @@
         }
 
         th {
-            background: #f5f5f5;
+            background: #f9f9f9;
             font-weight: 600;
             position: sticky;
             top: 0;
             z-index: 10;
             text-align: center;
+            border-bottom: 2px solid #333;
         }
 
         th.header-data {
-            background: #6b8dd6;
+            background: #333;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         td.item-label {
-            background: #444;
-            color: white;
-            font-weight: 500;
+            background: #f5f5f5;
+            color: #333;
+            font-weight: 600;
             text-align: left;
             padding-left: 15px;
             min-width: 200px;
+            border-right: 2px solid #ddd;
         }
 
         td input, td textarea {
@@ -308,8 +309,8 @@
         }
 
         td input:focus, td textarea:focus {
-            outline: 2px solid #2196F3;
-            background: #fffbf0;
+            outline: 1px solid #333;
+            background: #f9f9f9;
         }
 
         td select {
@@ -332,7 +333,6 @@
             padding: 20px;
             background: white;
             border: 1px solid #ddd;
-            border-radius: 8px;
         }
 
         .hidden {
@@ -347,23 +347,34 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: white;
+            color: #333;
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #e0e0e0;
         }
 
         .stat-card h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-            opacity: 0.9;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
         }
 
         .stat-card .value {
-            font-size: 36px;
-            font-weight: bold;
+            font-size: 42px;
+            font-weight: 700;
             margin-bottom: 5px;
+            color: #000;
+        }
+        
+        .stat-card div:last-child {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
         }
 
         .query-controls {
@@ -403,7 +414,7 @@
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 8px;
+            border: 2px solid #333;
             max-width: 600px;
             width: 90%;
             max-height: 80vh;
@@ -431,16 +442,15 @@
         }
 
         .setup-step {
-            background: #f9f9f9;
+            background: #fafafa;
             padding: 15px;
             margin-bottom: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #2196F3;
+            border-left: 3px solid #666;
         }
 
         .setup-step h4 {
             margin-bottom: 10px;
-            color: #2196F3;
+            color: #333;
         }
 
         .setup-step code {
@@ -463,7 +473,7 @@
 
         .spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            border-top: 3px solid #333;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -627,22 +637,22 @@
                 <h2>📊 통계 분석</h2>
                 
                 <div class="stats-grid">
-                    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="stat-card">
                         <h3>총 검사 건수</h3>
                         <div class="value" id="totalInspections">0</div>
                         <div>건</div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="stat-card">
                         <h3>합격률</h3>
                         <div class="value" id="passRate">0</div>
                         <div>%</div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="stat-card">
                         <h3>불량 건수</h3>
                         <div class="value" id="failCount">0</div>
                         <div>건</div>
                     </div>
-                    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="stat-card">
                         <h3>금주 검사 건수</h3>
                         <div class="value" id="weeklyCount">0</div>
                         <div>건</div>
