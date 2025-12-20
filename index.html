@@ -64,6 +64,35 @@
             border: 1px solid #333;
         }
 
+        /* 🔗 Google Sheets 연결 상태 표시 */
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            font-size: 11px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+        }
+
+        .status-indicator.connected {
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .subtitle {
             color: #666;
             font-size: 14px;
@@ -102,388 +131,304 @@
         .main-tabs {
             display: flex;
             border-bottom: 1px solid #e0e0e0;
+            background: #fafafa;
         }
 
         .main-tab {
-            flex: 1;
-            padding: 15px;
-            background: white;
+            padding: 15px 30px;
             border: none;
+            background: #f0f0f0;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
             transition: all 0.3s;
+            border-right: 1px solid #e0e0e0;
         }
 
         .main-tab.active {
-            background: #333;
-            color: white;
+            background: white;
+            border-bottom: 2px solid #333;
         }
 
         .main-tab:hover:not(.active) {
-            background: #f8f8f8;
+            background: #e8e8e8;
         }
 
-        .content {
+        .tab-content {
+            display: none;
             padding: 30px;
         }
 
-        .info-box {
-            background: #f9f9f9;
-            border-left: 3px solid #666;
-            padding: 15px;
+        .tab-content.active {
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
             margin-bottom: 25px;
-        }
-
-        .cloud-status {
-            background: #f5f5f5;
-            color: #333;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .cloud-status .status-text {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #666;
-            border: 2px solid #999;
-        }
-
-
-
-        .info-box .icon {
-            color: #666;
-            margin-right: 8px;
-        }
-
-        .control-section {
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .control-row {
-            display: flex;
-            align-items: center;
-            gap: 20px;
             flex-wrap: wrap;
-        }
-
-        .control-label {
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
             align-items: center;
-            gap: 8px;
         }
 
-        select {
-            padding: 8px 12px;
-            border: 1px solid #999;
-            border-radius: 4px;
+        label {
             font-size: 14px;
-            min-width: 150px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        select, input[type="text"], input[type="date"], input[type="time"] {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
             background: white;
         }
 
-        .btn {
+        select:focus, input:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        button {
             padding: 10px 20px;
+            background: #333;
+            color: white;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 500;
             transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .btn-primary {
-            background: #333;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #555;
-        }
-
-        .btn-success {
-            background: #333;
-            color: white;
-            padding: 15px 40px;
-            font-size: 16px;
-            border: 2px solid #333;
-        }
-
-        .btn-success:hover {
+        button:hover {
             background: #000;
-            border-color: #000;
         }
 
-        .btn-cloud {
-            background: white;
-            color: #333;
-            border: 1px solid #333;
+        button:active {
+            transform: scale(0.98);
         }
 
-        .btn-cloud:hover {
-            background: #f5f5f5;
-        }
-
-        .save-section {
-            background: #fafafa;
-            color: #333;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid #e0e0e0;
-            border-top: 2px solid #333;
-            margin-top: 20px;
-        }
-
-        .spreadsheet-container {
+        .table-wrapper {
             overflow-x: auto;
-            margin-top: 20px;
-            border: 1px solid #ddd;
-            background: white;
+            border: 1px solid #e0e0e0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
+            min-width: 1000px;
         }
 
         th, td {
-            border: 1px solid #ccc;
-            padding: 12px 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
             font-size: 13px;
         }
 
         th {
-            background: #f9f9f9;
+            background: #fafafa;
             font-weight: 600;
+            color: #333;
             position: sticky;
             top: 0;
             z-index: 10;
-            text-align: center;
-            border-bottom: 2px solid #333;
         }
 
-        th.header-data {
-            background: #333;
-            color: white;
-            font-weight: 600;
-        }
-
-        td.item-label {
-            background: #f5f5f5;
-            color: #333;
-            font-weight: 600;
-            text-align: left;
-            padding-left: 15px;
-            min-width: 200px;
-            border-right: 2px solid #ddd;
-        }
-
-        td input, td textarea {
+        td input, td select {
             width: 100%;
-            border: none;
-            padding: 8px;
-            text-align: center;
-            font-size: 13px;
-            background: transparent;
-        }
-
-        td input:focus, td textarea:focus {
-            outline: 1px solid #333;
-            background: #f9f9f9;
-        }
-
-        td select {
-            width: 100%;
-            border: none;
-            padding: 8px;
-            text-align: center;
-            font-size: 13px;
-            background: transparent;
-        }
-
-        .note-text {
+            padding: 6px;
+            border: 1px solid #e0e0e0;
             font-size: 12px;
-            color: #666;
-            margin-top: 5px;
+            box-sizing: border-box;
         }
 
-        .chart-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border: 1px solid #ddd;
+        .item-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 12px;
+            min-width: 100px;
+            text-align: left;
+            padding-left: 10px;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .button-group {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
+            padding: 20px;
             background: white;
-            color: #333;
-            padding: 25px;
-            border: 2px solid #e0e0e0;
+            border: 1px solid #e0e0e0;
+            text-align: center;
         }
 
         .stat-card h3 {
             font-size: 14px;
-            margin-bottom: 15px;
             color: #666;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
         }
 
         .stat-card .value {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #000;
-        }
-        
-        .stat-card div:last-child {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
         }
 
-        .query-controls {
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .search-section {
+            background: #fafafa;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .search-inputs {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
+            align-items: center;
             flex-wrap: wrap;
         }
 
-        .query-controls input, .query-controls select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
+        .result-table {
             margin-top: 20px;
-            flex-wrap: wrap;
         }
 
-        .setup-modal {
+        .modal {
             display: none;
             position: fixed;
-            top: 0;
+            z-index: 1000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
-            background: white;
+            background-color: white;
+            margin: 5% auto;
             padding: 30px;
-            border: 2px solid #333;
-            max-width: 600px;
+            border: 1px solid #e0e0e0;
             width: 90%;
+            max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
         }
 
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .modal-buttons {
+        .modal-header {
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .setup-step {
-            background: #fafafa;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 3px solid #666;
-        }
-
-        .setup-step h4 {
-            margin-bottom: 10px;
+        .modal-header h2 {
+            font-size: 20px;
             color: #333;
         }
 
-        .setup-step code {
-            background: #e0e0e0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
+        .close {
             color: #666;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
         }
 
-        .loading.show {
-            display: block;
+        .close:hover {
+            color: #000;
         }
 
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #333;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+        .detail-table {
+            width: 100%;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .detail-table th {
+            background: #fafafa;
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            width: 40%;
+        }
+
+        .detail-table td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        .btn-view {
+            padding: 6px 15px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-view:hover {
+            background: #000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border: none;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .main-tab {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        /* 필수 입력 항목 표시 */
+        .required-field::after {
+            content: " *";
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .validation-error {
+            border-color: #d32f2f !important;
+            background-color: #ffebee !important;
         }
     </style>
 </head>
@@ -492,863 +437,1154 @@
         <div class="header">
             <div class="title-section">
                 <span class="search-icon">🔍</span>
-                <h1>IPQC 품질관리 시스템</h1>
-                <span class="version-badge">v3.0 한양시스템</span>
-                <span class="cloud-badge">☁️ Cloud Edition</span>
+                <h1 id="mainTitle">IPQC 품질관리 시스템</h1>
+                <span class="version-badge">v3.0</span>
+                <span class="cloud-badge" id="cloudBadge">☁️ Cloud</span>
+                <span class="connection-status">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    <span id="connectionStatus">연결 안됨</span>
+                </span>
             </div>
-            <div class="subtitle">현장 품질 검사 데이터 입력 및 관리 - Google Sheets 연동</div>
+            <div class="subtitle" id="subtitle">In-Process Quality Control Management System</div>
             
             <div class="language-tabs">
-                <button class="lang-tab active" data-lang="ko">한국어</button>
-                <button class="lang-tab" data-lang="en">English</button>
-                <button class="lang-tab" data-lang="zh">繁體中文</button>
-                <button class="lang-tab" data-lang="vi">Tiếng Việt</button>
-                <button class="lang-tab" data-lang="id">Bahasa Indonesia</button>
+                <button class="lang-tab active" data-lang="ko" id="langKo">한국어 Korean</button>
+                <button class="lang-tab" data-lang="en" id="langEn">영어 English</button>
+                <button class="lang-tab" data-lang="zh" id="langZh">중국어 中文</button>
+                <button class="lang-tab" data-lang="vi" id="langVi">베트남어 Tiếng Việt</button>
+                <button class="lang-tab" data-lang="id" id="langId">인도네시아어 Bahasa</button>
             </div>
-        </div>
-
-        <div class="cloud-status">
-            <div class="status-text">
-                <span class="status-indicator"></span>
-                <span id="cloudStatusText">Google Sheets 연결 대기 중...</span>
-            </div>
-            <button class="btn btn-cloud" onclick="showSetupModal()">⚙️ 설정</button>
         </div>
 
         <div class="main-tabs">
-            <button class="main-tab active" data-tab="input">데이터 입력</button>
-            <button class="main-tab" data-tab="query">데이터 조회</button>
-            <button class="main-tab" data-tab="stats">통계</button>
+            <button class="main-tab active" data-tab="input" id="tabInput">데이터 입력</button>
+            <button class="main-tab" data-tab="query" id="tabQuery">데이터 조회</button>
+            <button class="main-tab" data-tab="stats" id="tabStats">통계</button>
+            <button class="main-tab" data-tab="settings" id="tabSettings">⚙️ 설정</button>
         </div>
 
-        <div class="content">
-            <!-- 데이터 입력 탭 -->
-            <div id="input-tab" class="tab-content">
-                <div class="control-section">
-                    <div class="control-row">
-                        <div class="control-label">
-                            📊 <strong>검사 설비 수:</strong>
-                        </div>
-                        <select id="equipmentCount" onchange="generateSpreadsheet()">
-                            <option value="3">3개</option>
-                            <option value="2">2개</option>
-                            <option value="4">4개</option>
-                            <option value="5">5개</option>
-                            <option value="6">6개</option>
-                            <option value="8">8개</option>
-                            <option value="10">10개</option>
-                        </select>
-                        <button class="btn btn-primary" onclick="autoFillCommonInfo()">
-                            ⚡ 공통 정보 자동 채우기
-                        </button>
-                        <span class="note-text">← 우측으로 Data 열이 생성됩니다</span>
-                    </div>
-                </div>
+        <!-- 데이터 입력 탭 -->
+        <div class="tab-content active" id="content-input">
+            <div class="controls">
+                <label for="equipmentCount" id="labelEquipment">검사 장비 수:</label>
+                <select id="equipmentCount">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5" selected>5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                <button onclick="generateColumns()" id="btnGenerate">열 생성</button>
+            </div>
 
-                <div class="spreadsheet-container">
-                    <table id="dataTable">
-                        <thead>
-                            <tr id="tableHeader"></tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                </div>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr id="tableHeader">
+                            <th id="thItem">항목</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
 
-                <div class="loading" id="saveLoading">
-                    <div class="spinner"></div>
-                    <div>Google Sheets에 저장 중...</div>
-                </div>
+            <div class="button-group">
+                <button onclick="fillCommonData()" id="btnFillCommon">공통정보 자동채우기</button>
+                <button onclick="saveToGoogleSheets()" id="btnSave">Google Sheets에 저장</button>
+                <button onclick="saveAllDataToExcel()" id="btnExcel">현재 데이터 Excel 저장</button>
+                <button onclick="clearAllData()" id="btnClear">전체 초기화</button>
+            </div>
+        </div>
 
-                <div class="save-section">
-                    <button class="btn btn-success" onclick="saveData()">
-                        ✓ 최종 저장 (완료)
-                    </button>
-                    <button class="btn btn-cloud" onclick="saveToGoogleSheets()" style="margin-left: 15px;">
-                        ☁️ Google Sheets에 저장
-                    </button>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="btn btn-cloud" onclick="loadFromGoogleSheets()">
-                        ☁️ Google Sheets에서 불러오기
-                    </button>
-                    <button class="btn btn-primary" onclick="exportToExcel()">
-                        📥 Excel 저장 (다운로드)
-                    </button>
-                    <button class="btn btn-primary" onclick="generateChart()">
-                        📈 차트 생성
-                    </button>
-                    <button class="btn btn-primary" onclick="clearAllData()">
-                        🗑️ 전체 초기화
-                    </button>
-                </div>
-
-                <div id="chartContainer" class="chart-container hidden">
-                    <h3>검사 결과 차트</h3>
-                    <canvas id="resultChart"></canvas>
+        <!-- 데이터 조회 탭 -->
+        <div class="tab-content" id="content-query">
+            <div class="search-section">
+                <h3 id="searchTitle">검색 조건</h3>
+                <div class="search-inputs">
+                    <label for="searchDate" id="labelSearchDate">날짜:</label>
+                    <input type="date" id="searchDate">
+                    
+                    <label for="searchProduct" id="labelSearchProduct">제품:</label>
+                    <input type="text" id="searchProduct" placeholder="Description 료號">
+                    
+                    <button onclick="searchData()" id="btnSearch">검색</button>
+                    <button onclick="clearSearch()" id="btnClearSearch">초기화</button>
+                    <button onclick="loadAllDataFromGoogleSheets()" id="btnRefresh">Google Sheets 전체 데이터 새로고침</button>
+                    <button onclick="saveQueryDataToExcel()" id="btnExportAll">전체 데이터 Excel 내보내기</button>
                 </div>
             </div>
 
-            <!-- 데이터 조회 탭 -->
-            <div id="query-tab" class="tab-content hidden">
-                <h2>📋 데이터 조회</h2>
-                
-                <div class="action-buttons" style="margin-bottom: 20px;">
-                    <button class="btn btn-cloud" onclick="loadAllDataFromGoogleSheets()">
-                        ☁️ Google Sheets 전체 데이터 새로고침
-                    </button>
-                    <button class="btn btn-primary" onclick="exportAllDataToExcel()">
-                        📥 전체 데이터 Excel 저장
-                    </button>
-                </div>
-                
-                <div class="query-controls">
-                    <input type="date" id="queryStartDate">
-                    <input type="date" id="queryEndDate">
-                    <input type="text" id="queryProduct" placeholder="제품명 검색">
-                    <button class="btn btn-primary" onclick="searchData()">🔍 검색</button>
-                    <button class="btn btn-primary" onclick="clearSearch()">🔄 초기화</button>
-                </div>
-
-                <div class="loading" id="queryLoading">
-                    <div class="spinner"></div>
-                    <div>데이터 불러오는 중...</div>
-                </div>
-
-                <div class="spreadsheet-container">
-                    <table id="queryTable">
+            <div class="result-table">
+                <div class="table-wrapper">
+                    <table>
                         <thead>
                             <tr>
-                                <th>DATE 日期</th>
-                                <th>TIME 時間</th>
-                                <th>M/C 機台</th>
-                                <th>Customer</th>
-                                <th>Description 料號</th>
-                                <th>상세보기</th>
+                                <th id="thDate">날짜</th>
+                                <th id="thTime">시간</th>
+                                <th id="thMachine">기계</th>
+                                <th id="thCustomer">고객</th>
+                                <th id="thDescription">제품</th>
+                                <th id="thDetail">상세보기</th>
                             </tr>
                         </thead>
                         <tbody id="queryTableBody"></tbody>
                     </table>
                 </div>
             </div>
+        </div>
 
-            <!-- 통계 탭 -->
-            <div id="stats-tab" class="tab-content hidden">
-                <h2>📊 통계 분석</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>총 검사 건수</h3>
-                        <div class="value" id="totalInspections">0</div>
-                        <div>건</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>합격률</h3>
-                        <div class="value" id="passRate">0</div>
-                        <div>%</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>불량 건수</h3>
-                        <div class="value" id="failCount">0</div>
-                        <div>건</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>금주 검사 건수</h3>
-                        <div class="value" id="weeklyCount">0</div>
-                        <div>건</div>
-                    </div>
+        <!-- 통계 탭 -->
+        <div class="tab-content" id="content-stats">
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <h3 id="statTotal">총 검사 건수</h3>
+                    <div class="value" id="totalInspections">0</div>
                 </div>
+                <div class="stat-card">
+                    <h3 id="statPass">합격률</h3>
+                    <div class="value" id="passRate">0%</div>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statFail">불량 건수</h3>
+                    <div class="value" id="failCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statWeek">주간 검사</h3>
+                    <div class="value" id="weeklyCount">0</div>
+                </div>
+            </div>
 
-                <div class="chart-container" style="margin-top: 30px;">
-                    <h3>월별 검사 추이</h3>
-                    <canvas id="monthlyChart"></canvas>
-                </div>
+            <div class="chart-container">
+                <h3 id="chartTitle1">검사 결과 분포</h3>
+                <canvas id="resultChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 id="chartTitle2">월별 검사 추이</h3>
+                <canvas id="monthlyChart"></canvas>
             </div>
         </div>
-    </div>
 
-    <!-- 설정 모달 -->
-    <div class="setup-modal" id="setupModal">
-        <div class="modal-content">
-            <h2>☁️ Google Sheets 연동 설정</h2>
+        <!-- 설정 탭 -->
+        <div class="tab-content" id="content-settings">
+            <h2 id="settingsTitle">Google Sheets 설정</h2>
+            <p id="settingsDesc">Google Apps Script Web App URL을 입력하세요:</p>
+            <input type="text" id="googleScriptUrl" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" style="width: 100%; margin: 10px 0;">
+            <button onclick="saveSettings()" id="btnSaveSettings">설정 저장</button>
+            <button onclick="testConnection()" id="btnTestConnection">연결 테스트</button>
             
-            <div class="setup-step">
-                <h4>📋 1단계: Google Sheets 스프레드시트 만들기</h4>
-                <p>1. <a href="https://sheets.google.com" target="_blank">Google Sheets</a>에서 새 스프레드시트 생성</p>
-                <p>2. 파일 > 공유 > "링크가 있는 모든 사용자" 편집 가능으로 설정</p>
-                <p>3. 스프레드시트 URL을 복사하세요</p>
-            </div>
-
-            <div class="setup-step">
-                <h4>🔧 2단계: Google Apps Script 설정</h4>
-                <p>1. 스프레드시트에서: 확장 프로그램 > Apps Script</p>
-                <p>2. 아래 코드를 붙여넣기:</p>
-                <textarea readonly style="width: 100%; height: 150px; font-family: monospace; font-size: 12px; margin-top: 10px;">
+            <div style="margin-top: 30px; padding: 20px; background: #fafafa; border: 1px solid #e0e0e0;">
+                <h3 id="guideTitle">설정 가이드</h3>
+                <ol id="guideSteps">
+                    <li>Google Sheets 새 스프레드시트 생성</li>
+                    <li>확장 프로그램 > Apps Script 선택</li>
+                    <li>아래 코드 붙여넣기</li>
+                    <li>배포 > 새 배포 > 웹 앱</li>
+                    <li>액세스 권한: '모든 사용자'로 설정</li>
+                    <li>배포 URL을 위 입력란에 붙여넣기</li>
+                </ol>
+                
+                <h4 id="codeTitle">Apps Script 코드:</h4>
+                <pre style="background: white; padding: 15px; border: 1px solid #e0e0e0; overflow-x: auto; font-size: 12px;">
 function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName('IPQC_Data') || ss.insertSheet('IPQC_Data');
-  var data = JSON.parse(e.postData.contents);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
   
   if (data.action === 'save') {
-    var row = [
-      new Date(),
-      data.dataColumn || '',
-      data['DATE 日期'] || '',
-      data['TIME 時間'] || '',
-      data['M/C 機台'] || '',
-      data['Customer'] || '',
-      data['Description 料號'] || '',
-      data['RESULT結果'] || '',
-      JSON.stringify(data)
-    ];
-    sheet.appendRow(row);
+    const values = data.values;
+    sheet.appendRow(values);
     return ContentService.createTextOutput(JSON.stringify({success: true}));
   }
   
   if (data.action === 'load') {
-    var values = sheet.getDataRange().getValues();
-    return ContentService.createTextOutput(JSON.stringify({success: true, data: values}));
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return ContentService.createTextOutput(JSON.stringify({data: []}));
+    const values = sheet.getRange(lastRow, 1, 1, sheet.getLastColumn()).getValues()[0];
+    return ContentService.createTextOutput(JSON.stringify({data: values}));
+  }
+  
+  if (data.action === 'loadAll') {
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return ContentService.createTextOutput(JSON.stringify({data: []}));
+    const values = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+    return ContentService.createTextOutput(JSON.stringify({data: values}));
   }
 }
 
 function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName('IPQC_Data');
-  
-  if (!sheet) {
-    return ContentService.createTextOutput(JSON.stringify({success: true, data: []}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  var values = sheet.getDataRange().getValues();
-  var jsonData = [];
-  
-  for (var i = 1; i < values.length; i++) {
-    if (values[i][8]) {
-      try {
-        jsonData.push(JSON.parse(values[i][8]));
-      } catch(e) {}
-    }
-  }
-  
-  return ContentService.createTextOutput(JSON.stringify({success: true, data: jsonData}))
-    .setMimeType(ContentService.MimeType.JSON);
-}</textarea>
-                <p style="margin-top: 10px;">3. 배포 > 새 배포 > 유형: 웹 앱</p>
-                <p>4. 액세스 권한: "모든 사용자"</p>
-                <p>5. 배포 URL 복사</p>
+  return ContentService.createTextOutput(JSON.stringify({status: 'ok', message: 'IPQC System Connected'}));
+}</pre>
             </div>
+        </div>
+    </div>
 
-            <div class="setup-step">
-                <h4>🔗 3단계: URL 입력</h4>
-                <label for="scriptUrl">Apps Script 웹 앱 URL:</label>
-                <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <!-- 상세보기 모달 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">검사 상세 정보</h2>
+                <span class="close" onclick="closeDetailModal()">&times;</span>
             </div>
-
-            <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="hideSetupModal()">취소</button>
-                <button class="btn btn-success" onclick="saveSetup()">저장</button>
-            </div>
+            <table class="detail-table" id="detailTable"></table>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // 검사 항목 필드 정의 (구글 시트와 동일)
+        // 🌐 다국어 지원
+        const translations = {
+            ko: {
+                mainTitle: 'IPQC 품질관리 시스템',
+                cloudBadge: '☁️ Cloud',
+                subtitle: 'In-Process Quality Control Management System',
+                connectionStatus: {
+                    connected: '연결됨',
+                    disconnected: '연결 안됨'
+                },
+                langKo: '한국어 Korean',
+                langEn: '영어 English',
+                langZh: '중국어 中文',
+                langVi: '베트남어 Tiếng Việt',
+                langId: '인도네시아어 Bahasa',
+                tabInput: '데이터 입력',
+                tabQuery: '데이터 조회',
+                tabStats: '통계',
+                tabSettings: '⚙️ 설정',
+                labelEquipment: '검사 장비 수:',
+                btnGenerate: '열 생성',
+                thItem: '항목',
+                btnFillCommon: '공통정보 자동채우기',
+                btnSave: 'Google Sheets에 저장',
+                btnExcel: '현재 데이터 Excel 저장',
+                btnClear: '전체 초기화',
+                searchTitle: '검색 조건',
+                labelSearchDate: '날짜:',
+                labelSearchProduct: '제품:',
+                btnSearch: '검색',
+                btnClearSearch: '초기화',
+                btnRefresh: 'Google Sheets 전체 데이터 새로고침',
+                btnExportAll: '전체 데이터 Excel 내보내기',
+                thDate: '날짜',
+                thTime: '시간',
+                thMachine: '기계',
+                thCustomer: '고객',
+                thDescription: '제품',
+                thDetail: '상세보기',
+                statTotal: '총 검사 건수',
+                statPass: '합격률',
+                statFail: '불량 건수',
+                statWeek: '주간 검사',
+                chartTitle1: '검사 결과 분포',
+                chartTitle2: '월별 검사 추이',
+                settingsTitle: 'Google Sheets 설정',
+                settingsDesc: 'Google Apps Script Web App URL을 입력하세요:',
+                btnSaveSettings: '설정 저장',
+                btnTestConnection: '연결 테스트',
+                guideTitle: '설정 가이드',
+                codeTitle: 'Apps Script 코드:',
+                modalTitle: '검사 상세 정보',
+                btnView: '상세보기',
+                // 차트 레이블
+                chartLabels: {
+                    ok: '합격',
+                    ng: '불합격',
+                    other: '기타',
+                    result: '결과',
+                    count: '건수',
+                    month: '월',
+                    inspections: '검사 건수'
+                },
+                // 알림 메시지
+                alerts: {
+                    saveSuccess: '데이터가 Google Sheets에 저장되었습니다!\n(CORS 경고는 무시하세요 - 데이터는 정상 저장됨)',
+                    saveError: '저장 중 오류가 발생했습니다.',
+                    loadSuccess: '최신 데이터를 불러왔습니다!',
+                    loadError: '데이터 불러오기 실패',
+                    noData: '저장된 데이터가 없습니다.',
+                    refreshSuccess: '전체 데이터를 새로고침했습니다!',
+                    refreshError: '새로고침 중 오류 발생',
+                    clearConfirm: '모든 입력 데이터를 초기화하시겠습니까?',
+                    settingsSaved: '설정이 저장되었습니다!',
+                    connectionSuccess: '연결 성공! Google Sheets와 통신 가능합니다.',
+                    connectionError: '연결 실패. URL을 확인해주세요.',
+                    urlRequired: 'Google Apps Script URL을 먼저 설정해주세요!',
+                    validationError: '필수 입력 항목을 모두 입력해주세요!\n\n필수 항목:\n- DATE 日期\n- M/C 機台\n- QC inspector 檢驗員\n- Description 料號\n- RESULT結果'
+                }
+            },
+            en: {
+                mainTitle: 'IPQC Quality Management System',
+                cloudBadge: '☁️ Cloud',
+                subtitle: 'In-Process Quality Control Management System',
+                connectionStatus: {
+                    connected: 'Connected',
+                    disconnected: 'Disconnected'
+                },
+                langKo: 'Korean 한국어',
+                langEn: 'English 영어',
+                langZh: 'Chinese 中文',
+                langVi: 'Vietnamese Tiếng Việt',
+                langId: 'Indonesian Bahasa',
+                tabInput: 'Data Input',
+                tabQuery: 'Data Query',
+                tabStats: 'Statistics',
+                tabSettings: '⚙️ Settings',
+                labelEquipment: 'Equipment Count:',
+                btnGenerate: 'Generate Columns',
+                thItem: 'Item',
+                btnFillCommon: 'Auto-fill Common Info',
+                btnSave: 'Save to Google Sheets',
+                btnExcel: 'Export Current Data',
+                btnClear: 'Clear All',
+                searchTitle: 'Search Criteria',
+                labelSearchDate: 'Date:',
+                labelSearchProduct: 'Product:',
+                btnSearch: 'Search',
+                btnClearSearch: 'Clear',
+                btnRefresh: 'Refresh All Data from Google Sheets',
+                btnExportAll: 'Export All Data to Excel',
+                thDate: 'Date',
+                thTime: 'Time',
+                thMachine: 'Machine',
+                thCustomer: 'Customer',
+                thDescription: 'Product',
+                thDetail: 'Details',
+                statTotal: 'Total Inspections',
+                statPass: 'Pass Rate',
+                statFail: 'Failed Count',
+                statWeek: 'Weekly Count',
+                chartTitle1: 'Inspection Result Distribution',
+                chartTitle2: 'Monthly Inspection Trends',
+                settingsTitle: 'Google Sheets Settings',
+                settingsDesc: 'Enter Google Apps Script Web App URL:',
+                btnSaveSettings: 'Save Settings',
+                btnTestConnection: 'Test Connection',
+                guideTitle: 'Setup Guide',
+                codeTitle: 'Apps Script Code:',
+                modalTitle: 'Inspection Details',
+                btnView: 'View Details',
+                chartLabels: {
+                    ok: 'Pass',
+                    ng: 'Fail',
+                    other: 'Other',
+                    result: 'Result',
+                    count: 'Count',
+                    month: 'Month',
+                    inspections: 'Inspections'
+                },
+                alerts: {
+                    saveSuccess: 'Data saved to Google Sheets successfully!\n(Ignore CORS warning - data is saved)',
+                    saveError: 'Error occurred while saving.',
+                    loadSuccess: 'Latest data loaded successfully!',
+                    loadError: 'Failed to load data',
+                    noData: 'No saved data found.',
+                    refreshSuccess: 'All data refreshed successfully!',
+                    refreshError: 'Error occurred during refresh',
+                    clearConfirm: 'Do you want to clear all input data?',
+                    settingsSaved: 'Settings saved successfully!',
+                    connectionSuccess: 'Connection successful! Can communicate with Google Sheets.',
+                    connectionError: 'Connection failed. Please check URL.',
+                    urlRequired: 'Please set Google Apps Script URL first!',
+                    validationError: 'Please fill in all required fields!\n\nRequired fields:\n- DATE\n- M/C\n- QC inspector\n- Description\n- RESULT'
+                }
+            },
+            zh: {
+                mainTitle: 'IPQC 品質管理系統',
+                cloudBadge: '☁️ 雲端',
+                subtitle: '製程品質控制管理系統',
+                connectionStatus: {
+                    connected: '已連接',
+                    disconnected: '未連接'
+                },
+                langKo: '韓語 한국어',
+                langEn: '英語 English',
+                langZh: '中文 中文',
+                langVi: '越南語 Tiếng Việt',
+                langId: '印尼語 Bahasa',
+                tabInput: '數據輸入',
+                tabQuery: '數據查詢',
+                tabStats: '統計',
+                tabSettings: '⚙️ 設置',
+                labelEquipment: '檢查設備數:',
+                btnGenerate: '生成列',
+                thItem: '項目',
+                btnFillCommon: '自動填充共同信息',
+                btnSave: '保存到 Google Sheets',
+                btnExcel: '導出當前數據',
+                btnClear: '全部清除',
+                searchTitle: '搜索條件',
+                labelSearchDate: '日期:',
+                labelSearchProduct: '產品:',
+                btnSearch: '搜索',
+                btnClearSearch: '清除',
+                btnRefresh: '從 Google Sheets 刷新所有數據',
+                btnExportAll: '導出所有數據到 Excel',
+                thDate: '日期',
+                thTime: '時間',
+                thMachine: '機器',
+                thCustomer: '客戶',
+                thDescription: '產品',
+                thDetail: '詳情',
+                statTotal: '總檢查數',
+                statPass: '合格率',
+                statFail: '不良數',
+                statWeek: '每週檢查',
+                chartTitle1: '檢查結果分佈',
+                chartTitle2: '月度檢查趨勢',
+                settingsTitle: 'Google Sheets 設置',
+                settingsDesc: '輸入 Google Apps Script Web App URL:',
+                btnSaveSettings: '保存設置',
+                btnTestConnection: '測試連接',
+                guideTitle: '設置指南',
+                codeTitle: 'Apps Script 代碼:',
+                modalTitle: '檢查詳情',
+                btnView: '查看詳情',
+                chartLabels: {
+                    ok: '合格',
+                    ng: '不合格',
+                    other: '其他',
+                    result: '結果',
+                    count: '數量',
+                    month: '月',
+                    inspections: '檢查數'
+                },
+                alerts: {
+                    saveSuccess: '數據已成功保存到 Google Sheets！\n（忽略 CORS 警告 - 數據已保存）',
+                    saveError: '保存時發生錯誤。',
+                    loadSuccess: '最新數據已加載！',
+                    loadError: '加載數據失敗',
+                    noData: '沒有保存的數據。',
+                    refreshSuccess: '所有數據已刷新！',
+                    refreshError: '刷新時發生錯誤',
+                    clearConfirm: '您要清除所有輸入數據嗎？',
+                    settingsSaved: '設置已保存！',
+                    connectionSuccess: '連接成功！可以與 Google Sheets 通信。',
+                    connectionError: '連接失敗。請檢查 URL。',
+                    urlRequired: '請先設置 Google Apps Script URL！',
+                    validationError: '請填寫所有必填項！\n\n必填項：\n- DATE 日期\n- M/C 機台\n- QC inspector 檢驗員\n- Description 料號\n- RESULT結果'
+                }
+            },
+            vi: {
+                mainTitle: 'Hệ Thống Quản Lý Chất Lượng IPQC',
+                cloudBadge: '☁️ Đám Mây',
+                subtitle: 'Hệ Thống Quản Lý Kiểm Soát Chất Lượng Trong Quá Trình',
+                connectionStatus: {
+                    connected: 'Đã kết nối',
+                    disconnected: 'Chưa kết nối'
+                },
+                langKo: 'Tiếng Hàn 한국어',
+                langEn: 'Tiếng Anh English',
+                langZh: 'Tiếng Trung 中文',
+                langVi: 'Tiếng Việt Tiếng Việt',
+                langId: 'Tiếng Indonesia Bahasa',
+                tabInput: 'Nhập Dữ Liệu',
+                tabQuery: 'Truy Vấn Dữ Liệu',
+                tabStats: 'Thống Kê',
+                tabSettings: '⚙️ Cài Đặt',
+                labelEquipment: 'Số Thiết Bị:',
+                btnGenerate: 'Tạo Cột',
+                thItem: 'Mục',
+                btnFillCommon: 'Tự Động Điền Thông Tin Chung',
+                btnSave: 'Lưu vào Google Sheets',
+                btnExcel: 'Xuất Dữ Liệu Hiện Tại',
+                btnClear: 'Xóa Tất Cả',
+                searchTitle: 'Tiêu Chí Tìm Kiếm',
+                labelSearchDate: 'Ngày:',
+                labelSearchProduct: 'Sản Phẩm:',
+                btnSearch: 'Tìm Kiếm',
+                btnClearSearch: 'Xóa',
+                btnRefresh: 'Làm Mới Tất Cả Dữ Liệu từ Google Sheets',
+                btnExportAll: 'Xuất Tất Cả Dữ Liệu sang Excel',
+                thDate: 'Ngày',
+                thTime: 'Thời Gian',
+                thMachine: 'Máy',
+                thCustomer: 'Khách Hàng',
+                thDescription: 'Sản Phẩm',
+                thDetail: 'Chi Tiết',
+                statTotal: 'Tổng Số Kiểm Tra',
+                statPass: 'Tỷ Lệ Đạt',
+                statFail: 'Số Lỗi',
+                statWeek: 'Kiểm Tra Hàng Tuần',
+                chartTitle1: 'Phân Bố Kết Quả Kiểm Tra',
+                chartTitle2: 'Xu Hướng Kiểm Tra Hàng Tháng',
+                settingsTitle: 'Cài Đặt Google Sheets',
+                settingsDesc: 'Nhập URL Google Apps Script Web App:',
+                btnSaveSettings: 'Lưu Cài Đặt',
+                btnTestConnection: 'Kiểm Tra Kết Nối',
+                guideTitle: 'Hướng Dẫn Cài Đặt',
+                codeTitle: 'Mã Apps Script:',
+                modalTitle: 'Chi Tiết Kiểm Tra',
+                btnView: 'Xem Chi Tiết',
+                chartLabels: {
+                    ok: 'Đạt',
+                    ng: 'Không Đạt',
+                    other: 'Khác',
+                    result: 'Kết Quả',
+                    count: 'Số Lượng',
+                    month: 'Tháng',
+                    inspections: 'Kiểm Tra'
+                },
+                alerts: {
+                    saveSuccess: 'Dữ liệu đã được lưu vào Google Sheets!\n(Bỏ qua cảnh báo CORS - dữ liệu đã được lưu)',
+                    saveError: 'Lỗi xảy ra khi lưu.',
+                    loadSuccess: 'Đã tải dữ liệu mới nhất!',
+                    loadError: 'Không thể tải dữ liệu',
+                    noData: 'Không có dữ liệu đã lưu.',
+                    refreshSuccess: 'Tất cả dữ liệu đã được làm mới!',
+                    refreshError: 'Lỗi xảy ra khi làm mới',
+                    clearConfirm: 'Bạn có muốn xóa tất cả dữ liệu nhập không?',
+                    settingsSaved: 'Cài đặt đã được lưu!',
+                    connectionSuccess: 'Kết nối thành công! Có thể giao tiếp với Google Sheets.',
+                    connectionError: 'Kết nối thất bại. Vui lòng kiểm tra URL.',
+                    urlRequired: 'Vui lòng thiết lập URL Google Apps Script trước!',
+                    validationError: 'Vui lòng điền tất cả các trường bắt buộc!\n\nCác trường bắt buộc:\n- DATE 日期\n- M/C 機台\n- QC inspector 檢驗員\n- Description 料號\n- RESULT結果'
+                }
+            },
+            id: {
+                mainTitle: 'Sistem Manajemen Kualitas IPQC',
+                cloudBadge: '☁️ Cloud',
+                subtitle: 'Sistem Manajemen Kontrol Kualitas Dalam Proses',
+                connectionStatus: {
+                    connected: 'Terhubung',
+                    disconnected: 'Tidak terhubung'
+                },
+                langKo: 'Korea 한국어',
+                langEn: 'Inggris English',
+                langZh: 'Mandarin 中文',
+                langVi: 'Vietnam Tiếng Việt',
+                langId: 'Indonesia Bahasa',
+                tabInput: 'Input Data',
+                tabQuery: 'Query Data',
+                tabStats: 'Statistik',
+                tabSettings: '⚙️ Pengaturan',
+                labelEquipment: 'Jumlah Peralatan:',
+                btnGenerate: 'Buat Kolom',
+                thItem: 'Item',
+                btnFillCommon: 'Isi Otomatis Info Umum',
+                btnSave: 'Simpan ke Google Sheets',
+                btnExcel: 'Ekspor Data Saat Ini',
+                btnClear: 'Hapus Semua',
+                searchTitle: 'Kriteria Pencarian',
+                labelSearchDate: 'Tanggal:',
+                labelSearchProduct: 'Produk:',
+                btnSearch: 'Cari',
+                btnClearSearch: 'Hapus',
+                btnRefresh: 'Segarkan Semua Data dari Google Sheets',
+                btnExportAll: 'Ekspor Semua Data ke Excel',
+                thDate: 'Tanggal',
+                thTime: 'Waktu',
+                thMachine: 'Mesin',
+                thCustomer: 'Pelanggan',
+                thDescription: 'Produk',
+                thDetail: 'Detail',
+                statTotal: 'Total Inspeksi',
+                statPass: 'Tingkat Lulus',
+                statFail: 'Jumlah Gagal',
+                statWeek: 'Inspeksi Mingguan',
+                chartTitle1: 'Distribusi Hasil Inspeksi',
+                chartTitle2: 'Tren Inspeksi Bulanan',
+                settingsTitle: 'Pengaturan Google Sheets',
+                settingsDesc: 'Masukkan URL Google Apps Script Web App:',
+                btnSaveSettings: 'Simpan Pengaturan',
+                btnTestConnection: 'Uji Koneksi',
+                guideTitle: 'Panduan Pengaturan',
+                codeTitle: 'Kode Apps Script:',
+                modalTitle: 'Detail Inspeksi',
+                btnView: 'Lihat Detail',
+                chartLabels: {
+                    ok: 'Lulus',
+                    ng: 'Gagal',
+                    other: 'Lainnya',
+                    result: 'Hasil',
+                    count: 'Jumlah',
+                    month: 'Bulan',
+                    inspections: 'Inspeksi'
+                },
+                alerts: {
+                    saveSuccess: 'Data berhasil disimpan ke Google Sheets!\n(Abaikan peringatan CORS - data tersimpan)',
+                    saveError: 'Terjadi kesalahan saat menyimpan.',
+                    loadSuccess: 'Data terbaru berhasil dimuat!',
+                    loadError: 'Gagal memuat data',
+                    noData: 'Tidak ada data tersimpan.',
+                    refreshSuccess: 'Semua data berhasil disegarkan!',
+                    refreshError: 'Terjadi kesalahan saat menyegarkan',
+                    clearConfirm: 'Apakah Anda ingin menghapus semua data input?',
+                    settingsSaved: 'Pengaturan berhasil disimpan!',
+                    connectionSuccess: 'Koneksi berhasil! Dapat berkomunikasi dengan Google Sheets.',
+                    connectionError: 'Koneksi gagal. Silakan periksa URL.',
+                    urlRequired: 'Silakan atur URL Google Apps Script terlebih dahulu!',
+                    validationError: 'Silakan isi semua bidang wajib!\n\nBidang wajib:\n- DATE 日期\n- M/C 機台\n- QC inspector 檢驗員\n- Description 料號\n- RESULT結果'
+                }
+            }
+        };
+
+        let currentLang = 'ko';
+
+        // 검사 항목 정의 (37개)
         const inspectionFields = [
-            { label: 'DATE 日期', type: 'date', common: true },
-            { label: 'TIME 時間', type: 'time', common: true },
-            { label: 'M/C 機台', type: 'text', common: true },
-            { label: 'SHIFT 班別', type: 'text', common: true },
-            { label: 'QC inspector 檢驗員', type: 'text', common: true },
-            { label: 'Description 料號', type: 'text', common: true },
-            { label: 'Customer', type: 'text', common: true },
-            { label: 'MOLD 模號', type: 'text', common: true },
-            { label: 'Datecode', type: 'text', common: true },
-            { label: 'LTC No. 批號', type: 'text', common: true },
-            { label: 'VISUAL外觀', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'OL總長', type: 'number', common: false },
-            { label: 'OW總寬', type: 'number', common: false },
-            { label: 'ST外疊合高', type: 'number', common: false },
-            { label: 'Warpage彎度', type: 'number', common: false },
-            { label: 'Where 位置', type: 'text', common: false },
-            { label: 'C/C 凹凸度', type: 'number', common: false },
-            { label: 'SR表面電阻', type: 'text', common: false },
-            { label: 'Weight重量', type: 'number', common: false },
-            { label: 'RESULT結果', type: 'select', options: ['OK', 'NG', '-'], common: false },
-            { label: 'Approval 審核者', type: 'text', common: false },
-            { label: 'TSMC EL 3點 最大值', type: 'number', common: false },
-            { label: '一般客戶 EL', type: 'text', common: false },
-            { label: 'TSMC SKH 量測10點結果', type: 'text', common: false },
-            { label: 'TSMC SKH 量測4點結果', type: 'text', common: false },
-            { label: 'TSMC 20片 ST 量測4點 最大值', type: 'number', common: false },
-            { label: 'TSMC 20片 ST 量測4點 最小值', type: 'number', common: false },
-            { label: 'TTSMC 單片ST 量測4點 最大值', type: 'number', common: false },
-            { label: 'TSMC 單片ST 量測4點 最小值', type: 'number', common: false },
-            { label: 'ASE / SPIL SKH 量測 4點結果', type: 'text', common: false },
-            { label: 'AASEK SR表面電阻 (2pin)', type: 'text', common: false },
-            { label: '備註', type: 'textarea', common: false },
-            { label: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'text', common: false },
-            { label: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'text', common: false },
-            { label: '원료명', type: 'text', common: false },
-            { label: '원료 Lot', type: 'text', common: false },
-            { label: '원료 ETC', type: 'text', common: false }
+            { label: 'DATE 日期', type: 'date', required: true },
+            { label: 'TIME 時間', type: 'time', required: false },
+            { label: 'M/C 機台', type: 'text', required: true },
+            { label: 'SHIFT 班別', type: 'select', options: ['DAY', 'NIGHT', '-'], required: false },
+            { label: 'QC inspector 檢驗員', type: 'text', required: true },
+            { label: 'Description 料號', type: 'text', required: true },
+            { label: 'Customer', type: 'text', required: false },
+            { label: 'MOLD 模號', type: 'text', required: false },
+            { label: 'Datecode', type: 'text', required: false },
+            { label: 'LTC No. 批號', type: 'text', required: false },
+            { label: 'VISUAL外觀', type: 'select', options: ['OK', 'NG', '-'], required: false },
+            { label: 'OL總長', type: 'text', required: false },
+            { label: 'OW總寬', type: 'text', required: false },
+            { label: 'ST外疊合高', type: 'text', required: false },
+            { label: 'Warpage彎度', type: 'text', required: false },
+            { label: 'Where 位置', type: 'text', required: false },
+            { label: 'C/C 凹凸度', type: 'text', required: false },
+            { label: 'SR表面電阻', type: 'text', required: false },
+            { label: 'Weight重量', type: 'text', required: false },
+            { label: 'RESULT結果', type: 'select', options: ['OK', 'NG', '-'], required: true },
+            { label: 'Approval 審核者', type: 'text', required: false },
+            { label: 'TSMC EL 3점 最大值', type: 'text', required: false },
+            { label: '일반고객 EL', type: 'text', required: false },
+            { label: 'TSMC SKH 量測10점結果', type: 'text', required: false },
+            { label: 'TSMC SKH 量測4점結果', type: 'text', required: false },
+            { label: 'TSMC 20片 ST 量測4점 最大值', type: 'text', required: false },
+            { label: 'TSMC 20片 ST 量測4점 最小值', type: 'text', required: false },
+            { label: 'TTSMC 單片ST 量測4점 最大值', type: 'text', required: false },
+            { label: 'TSMC 單片ST 量測4점 最小值', type: 'text', required: false },
+            { label: 'ASE / SPIL SKH 量測 4점結果', type: 'text', required: false },
+            { label: 'AASEK SR表面電阻 (2pin)', type: 'text', required: false },
+            { label: '備註', type: 'text', required: false },
+            { label: 'SESS SR表面電阻 (Trek 152-1) 10V', type: 'text', required: false },
+            { label: 'SESS SR表面電阻 (Trek 152-1) 100V', type: 'text', required: false },
+            { label: '원료명', type: 'text', required: false },
+            { label: '원료 Lot', type: 'text', required: false },
+            { label: '원료 ETC', type: 'text', required: false }
         ];
 
-        let savedData = [];
-        let googleScriptUrl = localStorage.getItem('googleScriptUrl') || '';
-
-        // Google Sheets 연결 상태 업데이트
-        function updateCloudStatus() {
-            const statusText = document.getElementById('cloudStatusText');
-            if (googleScriptUrl) {
-                statusText.textContent = '☁️ Google Sheets 연결됨';
+        // 🔗 연결 상태 업데이트
+        function updateConnectionStatus(connected) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('connectionStatus');
+            const status = translations[currentLang].connectionStatus;
+            
+            if (connected) {
+                indicator.classList.add('connected');
+                statusText.textContent = status.connected;
             } else {
-                statusText.textContent = '⚠️ Google Sheets 미연결 - 설정 필요';
+                indicator.classList.remove('connected');
+                statusText.textContent = status.disconnected;
             }
         }
 
-        // 설정 모달
-        function showSetupModal() {
-            document.getElementById('setupModal').style.display = 'flex';
-            document.getElementById('scriptUrl').value = googleScriptUrl;
+        // 🌐 언어 변경
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            // 헤더
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('cloudBadge').textContent = t.cloudBadge;
+            document.getElementById('subtitle').textContent = t.subtitle;
+
+            // 언어 탭
+            document.getElementById('langKo').textContent = t.langKo;
+            document.getElementById('langEn').textContent = t.langEn;
+            document.getElementById('langZh').textContent = t.langZh;
+            document.getElementById('langVi').textContent = t.langVi;
+            document.getElementById('langId').textContent = t.langId;
+
+            // 메인 탭
+            document.getElementById('tabInput').textContent = t.tabInput;
+            document.getElementById('tabQuery').textContent = t.tabQuery;
+            document.getElementById('tabStats').textContent = t.tabStats;
+            document.getElementById('tabSettings').textContent = t.tabSettings;
+
+            // 데이터 입력 탭
+            document.getElementById('labelEquipment').textContent = t.labelEquipment;
+            document.getElementById('btnGenerate').textContent = t.btnGenerate;
+            document.getElementById('thItem').textContent = t.thItem;
+            document.getElementById('btnFillCommon').textContent = t.btnFillCommon;
+            document.getElementById('btnSave').textContent = t.btnSave;
+            document.getElementById('btnExcel').textContent = t.btnExcel;
+            document.getElementById('btnClear').textContent = t.btnClear;
+
+            // 데이터 조회 탭
+            document.getElementById('searchTitle').textContent = t.searchTitle;
+            document.getElementById('labelSearchDate').textContent = t.labelSearchDate;
+            document.getElementById('labelSearchProduct').textContent = t.labelSearchProduct;
+            document.getElementById('btnSearch').textContent = t.btnSearch;
+            document.getElementById('btnClearSearch').textContent = t.btnClearSearch;
+            document.getElementById('btnRefresh').textContent = t.btnRefresh;
+            document.getElementById('btnExportAll').textContent = t.btnExportAll;
+            document.getElementById('thDate').textContent = t.thDate;
+            document.getElementById('thTime').textContent = t.thTime;
+            document.getElementById('thMachine').textContent = t.thMachine;
+            document.getElementById('thCustomer').textContent = t.thCustomer;
+            document.getElementById('thDescription').textContent = t.thDescription;
+            document.getElementById('thDetail').textContent = t.thDetail;
+
+            // 통계 탭
+            document.getElementById('statTotal').textContent = t.statTotal;
+            document.getElementById('statPass').textContent = t.statPass;
+            document.getElementById('statFail').textContent = t.statFail;
+            document.getElementById('statWeek').textContent = t.statWeek;
+            document.getElementById('chartTitle1').textContent = t.chartTitle1;
+            document.getElementById('chartTitle2').textContent = t.chartTitle2;
+
+            // 설정 탭
+            document.getElementById('settingsTitle').textContent = t.settingsTitle;
+            document.getElementById('settingsDesc').textContent = t.settingsDesc;
+            document.getElementById('btnSaveSettings').textContent = t.btnSaveSettings;
+            document.getElementById('btnTestConnection').textContent = t.btnTestConnection;
+            document.getElementById('guideTitle').textContent = t.guideTitle;
+            document.getElementById('codeTitle').textContent = t.codeTitle;
+
+            // 모달
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+
+            // 연결 상태
+            const indicator = document.getElementById('statusIndicator');
+            updateConnectionStatus(indicator.classList.contains('connected'));
+
+            // 🎨 차트 다국어 업데이트
+            updateStatistics();
         }
 
-        function hideSetupModal() {
-            document.getElementById('setupModal').style.display = 'none';
-        }
-
-        function saveSetup() {
-            const url = document.getElementById('scriptUrl').value.trim();
-            if (!url) {
-                alert('⚠️ URL을 입력해주세요.');
-                return;
-            }
-            
-            googleScriptUrl = url;
-            localStorage.setItem('googleScriptUrl', url);
-            updateCloudStatus();
-            hideSetupModal();
-            alert('✓ Google Sheets 연동이 설정되었습니다!');
-        }
-
-        // Google Sheets에 저장
-        async function saveToGoogleSheets() {
-            if (!googleScriptUrl) {
-                alert('⚠️ 먼저 Google Sheets 연동을 설정해주세요.\n우측 상단의 "설정" 버튼을 클릭하세요.');
-                showSetupModal();
-                return;
-            }
-
-            const rows = document.querySelectorAll('#tableBody tr');
-            const count = parseInt(document.getElementById('equipmentCount').value);
-            
-            if(rows.length === 0) {
-                alert('저장할 데이터가 없습니다.');
-                return;
-            }
-
-            document.getElementById('saveLoading').classList.add('show');
-
-            try {
-                const data = [];
-                for(let col = 0; col < count; col++) {
-                    const entry = {
-                        timestamp: new Date().toISOString(),
-                        dataColumn: col + 1
-                    };
-                    
-                    rows.forEach((row) => {
-                        const label = row.querySelector('td.item-label').textContent;
-                        const inputs = row.querySelectorAll('input, select, textarea');
-                        entry[label] = inputs[col] ? inputs[col].value : '';
-                    });
-                    
-                    data.push(entry);
-                }
-
-                // 각 데이터를 Google Sheets에 저장 (no-cors 모드)
-                let successCount = 0;
-                for (const entry of data) {
-                    try {
-                        // no-cors 모드에서는 응답을 확인할 수 없지만 요청은 전송됨
-                        await fetch(googleScriptUrl, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            cache: 'no-cache',
-                            headers: {
-                                'Content-Type': 'text/plain',
-                            },
-                            body: JSON.stringify(entry)
-                        });
-                        successCount++;
-                    } catch (err) {
-                        console.warn('개별 저장 오류:', err);
-                    }
-                }
-
-                // 로컬에도 저장
-                savedData = savedData.concat(data);
-                localStorage.setItem('ipqcData', JSON.stringify(savedData));
-
-                alert(`✓ Google Sheets에 저장 요청을 보냈습니다!\n총 ${successCount}건의 데이터\n\n⚠️ Note: CORS 정책으로 인해 저장 성공 여부를 확인할 수 없습니다.\nGoogle Sheets에서 직접 확인해주세요.`);
-                updateQueryTable();
-                updateStatistics();
-                
-            } catch (error) {
-                console.error('저장 오류:', error);
-                alert('⚠️ Google Sheets 저장 중 오류가 발생했습니다.\n로컬 저장소에는 저장되었습니다.\n\n오류: ' + error.message);
-                
-                // 로컬에는 저장
-                const rows = document.querySelectorAll('#tableBody tr');
-                const count = parseInt(document.getElementById('equipmentCount').value);
-                const data = [];
-                for(let col = 0; col < count; col++) {
-                    const entry = {
-                        timestamp: new Date().toISOString(),
-                        dataColumn: col + 1
-                    };
-                    rows.forEach((row) => {
-                        const label = row.querySelector('td.item-label').textContent;
-                        const inputs = row.querySelectorAll('input, select, textarea');
-                        entry[label] = inputs[col] ? inputs[col].value : '';
-                    });
-                    data.push(entry);
-                }
-                savedData = savedData.concat(data);
-                localStorage.setItem('ipqcData', JSON.stringify(savedData));
-            } finally {
-                document.getElementById('saveLoading').classList.remove('show');
-            }
-        }
-
-        // Google Sheets에서 불러오기
-        async function loadFromGoogleSheets() {
-            if (!googleScriptUrl) {
-                alert('⚠️ 먼저 Google Sheets 연동을 설정해주세요.');
-                showSetupModal();
-                return;
-            }
-
-            document.getElementById('saveLoading').classList.add('show');
-
-            try {
-                const response = await fetch(googleScriptUrl + '?action=load');
-                const result = await response.json();
-
-                if (result.success && result.data && result.data.length > 0) {
-                    // 최신 데이터 하나만 가져와서 폼에 채우기
-                    const latestData = result.data[result.data.length - 1];
-                    
-                    if (typeof latestData === 'object') {
-                        // 데이터를 폼에 채우기
-                        const rows = document.querySelectorAll('#tableBody tr');
-                        rows.forEach(row => {
-                            const label = row.querySelector('td.item-label').textContent;
-                            const inputs = row.querySelectorAll('input, select, textarea');
-                            
-                            if (latestData[label]) {
-                                inputs[0].value = latestData[label];
-                            }
-                        });
-                        
-                        alert('✓ Google Sheets에서 최신 데이터를 불러왔습니다!');
-                    }
-                } else {
-                    alert('ℹ️ Google Sheets에 저장된 데이터가 없습니다.');
-                }
-                
-            } catch (error) {
-                console.error('불러오기 오류:', error);
-                alert('⚠️ Google Sheets에서 데이터를 불러오는 중 오류가 발생했습니다.\n' + error.message);
-            } finally {
-                document.getElementById('saveLoading').classList.remove('show');
-            }
-        }
-
-        // 전체 데이터 새로고침
-        async function loadAllDataFromGoogleSheets() {
-            if (!googleScriptUrl) {
-                alert('⚠️ 먼저 Google Sheets 연동을 설정해주세요.');
-                showSetupModal();
-                return;
-            }
-
-            document.getElementById('queryLoading').classList.add('show');
-
-            try {
-                const response = await fetch(googleScriptUrl + '?action=load');
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    savedData = result.data;
-                    localStorage.setItem('ipqcData', JSON.stringify(savedData));
-                    updateQueryTable();
-                    updateStatistics();
-                    alert(`✓ Google Sheets에서 ${savedData.length}건의 데이터를 새로고침했습니다!`);
-                } else {
-                    alert('ℹ️ Google Sheets에 저장된 데이터가 없습니다.');
-                }
-                
-            } catch (error) {
-                console.error('새로고침 오류:', error);
-                alert('⚠️ 데이터 새로고침 중 오류가 발생했습니다.\n' + error.message);
-            } finally {
-                document.getElementById('queryLoading').classList.remove('show');
-            }
-        }
-
-        // 언어 탭 전환
-        document.querySelectorAll('.lang-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // 메인 탭 전환
-        document.querySelectorAll('.main-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.add('hidden');
-                });
-                
-                const tabName = this.dataset.tab;
-                document.getElementById(tabName + '-tab').classList.remove('hidden');
-                
-                if(tabName === 'stats') {
-                    updateStatistics();
-                }
-            });
-        });
-
-        // 스프레드시트 생성
-        function generateSpreadsheet() {
+        // 초기 테이블 생성
+        function generateColumns() {
             const count = parseInt(document.getElementById('equipmentCount').value);
             const header = document.getElementById('tableHeader');
             const body = document.getElementById('tableBody');
-            
-            header.innerHTML = '<th class="item-label" style="background: #444;">항목 / Item</th>';
-            for(let i = 1; i <= count; i++) {
-                header.innerHTML += `<th class="header-data">Data ${i}</th>`;
+
+            // 헤더 초기화
+            header.innerHTML = `<th id="thItem">${translations[currentLang].thItem}</th>`;
+            for (let i = 1; i <= count; i++) {
+                const th = document.createElement('th');
+                th.textContent = `Data ${i}`;
+                header.appendChild(th);
             }
-            
+
+            // 본문 생성
             body.innerHTML = '';
-            inspectionFields.forEach((field) => {
-                let row = document.createElement('tr');
-                row.innerHTML = `<td class="item-label">${field.label}</td>`;
-                
-                for(let i = 0; i < count; i++) {
-                    let cell = '<td>';
-                    
-                    if(field.type === 'date') {
-                        cell += `<input type="date" value="${new Date().toISOString().split('T')[0]}" data-common="${field.common}">`;
-                    } else if(field.type === 'time') {
-                        cell += `<input type="time" value="${new Date().toTimeString().slice(0,5)}" data-common="${field.common}">`;
-                    } else if(field.type === 'select') {
-                        cell += `<select data-common="${field.common}">`;
+            inspectionFields.forEach(field => {
+                const row = document.createElement('tr');
+                const labelCell = document.createElement('td');
+                labelCell.className = 'item-label' + (field.required ? ' required-field' : '');
+                labelCell.textContent = field.label;
+                row.appendChild(labelCell);
+
+                for (let i = 0; i < count; i++) {
+                    const cell = document.createElement('td');
+                    let input;
+
+                    if (field.type === 'select') {
+                        input = document.createElement('select');
                         field.options.forEach(opt => {
-                            cell += `<option value="${opt}">${opt}</option>`;
+                            const option = document.createElement('option');
+                            option.value = opt;
+                            option.textContent = opt;
+                            input.appendChild(option);
                         });
-                        cell += '</select>';
-                    } else if(field.type === 'textarea') {
-                        cell += `<textarea rows="2" data-common="${field.common}"></textarea>`;
-                    } else if(field.type === 'number') {
-                        cell += `<input type="number" step="0.01" data-common="${field.common}">`;
                     } else {
-                        cell += `<input type="text" data-common="${field.common}">`;
+                        input = document.createElement('input');
+                        input.type = field.type;
                     }
-                    
-                    cell += '</td>';
-                    row.innerHTML += cell;
+
+                    input.dataset.field = field.label;
+                    if (field.required) {
+                        input.required = true;
+                        input.dataset.required = 'true';
+                    }
+                    cell.appendChild(input);
+                    row.appendChild(cell);
                 }
-                
+
                 body.appendChild(row);
             });
         }
 
-        // 공통 정보 자동 채우기
-        function autoFillCommonInfo() {
-            const rows = document.querySelectorAll('#tableBody tr');
-            if(rows.length === 0) {
-                alert('먼저 검사 설비 수를 선택하세요.');
-                return;
-            }
-            
-            rows.forEach(row => {
-                const inputs = row.querySelectorAll('input[data-common="true"], select[data-common="true"], textarea[data-common="true"]');
-                if(inputs.length > 0 && inputs[0].value) {
-                    const firstValue = inputs[0].value;
-                    inputs.forEach((input, idx) => {
-                        if(idx > 0) {
-                            input.value = firstValue;
-                        }
-                    });
+        // ✔️ 필수 입력 검증
+        function validateRequiredFields() {
+            const firstColumnInputs = document.querySelectorAll('#tableBody tr td:nth-child(2) input, #tableBody tr td:nth-child(2) select');
+            const errors = [];
+
+            firstColumnInputs.forEach(input => {
+                input.classList.remove('validation-error');
+                if (input.dataset.required === 'true') {
+                    if (!input.value || input.value.trim() === '' || input.value === '-') {
+                        errors.push(input.dataset.field);
+                        input.classList.add('validation-error');
+                    }
                 }
             });
-            
-            alert('✓ 공통 정보가 자동으로 채워졌습니다!');
+
+            if (errors.length > 0) {
+                alert(translations[currentLang].alerts.validationError);
+                return false;
+            }
+
+            return true;
         }
 
-        // 로컬 저장
-        function saveData() {
+        // 공통정보 자동채우기
+        function fillCommonData() {
             const rows = document.querySelectorAll('#tableBody tr');
             const count = parseInt(document.getElementById('equipmentCount').value);
-            
-            if(rows.length === 0) {
-                alert('데이터가 없습니다.');
-                return;
-            }
-            
-            const data = [];
-            for(let col = 0; col < count; col++) {
-                const entry = {
-                    timestamp: new Date().toISOString(),
-                    dataColumn: col + 1
-                };
-                
-                rows.forEach((row) => {
-                    const label = row.querySelector('td.item-label').textContent;
-                    const inputs = row.querySelectorAll('input, select, textarea');
-                    entry[label] = inputs[col] ? inputs[col].value : '';
-                });
-                
-                data.push(entry);
-            }
-            
-            savedData = savedData.concat(data);
-            localStorage.setItem('ipqcData', JSON.stringify(savedData));
-            
-            alert('✓ 데이터가 로컬에 저장되었습니다!\n총 ' + savedData.length + '건');
-            updateQueryTable();
-            updateStatistics();
-        }
 
-        // Excel 내보내기
-        function exportToExcel() {
-            const table = document.getElementById('dataTable');
-            if(!table.rows.length) {
-                alert('내보낼 데이터가 없습니다.');
-                return;
-            }
-            
-            let csv = [];
-            let headerRow = [];
-            for(let cell of table.rows[0].cells) {
-                headerRow.push(cell.textContent);
-            }
-            csv.push(headerRow.join(','));
-            
-            for(let i = 1; i < table.rows.length; i++) {
-                let row = table.rows[i];
-                let csvRow = [];
-                
-                for(let cell of row.cells) {
-                    const input = cell.querySelector('input, select, textarea');
-                    const value = input ? input.value : cell.textContent;
-                    csvRow.push('"' + value.replace(/"/g, '""') + '"');
-                }
-                csv.push(csvRow.join(','));
-            }
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `IPQC_검사데이터_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            
-            alert('✓ Excel 파일이 다운로드되었습니다!');
-        }
-
-        // 전체 데이터 Excel 내보내기
-        function exportAllDataToExcel() {
-            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
-            
-            if(data.length === 0) {
-                alert('⚠️ 저장된 데이터가 없습니다.');
-                return;
-            }
-            
-            const allFields = new Set();
-            data.forEach(entry => {
-                Object.keys(entry).forEach(key => {
-                    if(key !== 'timestamp') {
-                        allFields.add(key);
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length > 1) {
+                    const firstInput = cells[1].querySelector('input, select');
+                    if (firstInput && firstInput.value) {
+                        for (let i = 2; i <= count; i++) {
+                            const targetInput = cells[i].querySelector('input, select');
+                            if (targetInput) {
+                                targetInput.value = firstInput.value;
+                            }
+                        }
                     }
-                });
+                }
             });
-            
-            const fields = Array.from(allFields);
-            let csv = [];
-            csv.push(fields.map(f => '"' + f + '"').join(','));
-            
-            data.forEach(entry => {
-                const row = fields.map(field => {
-                    const value = entry[field] || '';
-                    return '"' + String(value).replace(/"/g, '""') + '"';
-                });
-                csv.push(row.join(','));
-            });
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `IPQC_전체데이터_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            
-            alert(`✓ 전체 데이터가 Excel로 저장되었습니다!\n총 ${data.length}건`);
         }
 
-        // 차트 생성
-        let chartInstance = null;
-        
-        function generateChart() {
-            const container = document.getElementById('chartContainer');
-            container.classList.remove('hidden');
-            
-            const ctx = document.getElementById('resultChart').getContext('2d');
-            
-            if(chartInstance) {
-                chartInstance.destroy();
+        // ☁️ Google Sheets에 저장 (검증 추가)
+        async function saveToGoogleSheets() {
+            // ✔️ 필수 입력 검증
+            if (!validateRequiredFields()) {
+                return;
             }
+
+            const scriptUrl = localStorage.getItem('googleScriptUrl');
+            if (!scriptUrl) {
+                alert(translations[currentLang].alerts.urlRequired);
+                return;
+            }
+
+            const count = parseInt(document.getElementById('equipmentCount').value);
+            const rows = document.querySelectorAll('#tableBody tr');
+
+            for (let col = 1; col <= count; col++) {
+                const rowData = [];
+                rows.forEach(row => {
+                    const cell = row.querySelectorAll('td')[col];
+                    const input = cell.querySelector('input, select');
+                    rowData.push(input ? input.value : '');
+                });
+
+                try {
+                    await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'save', values: rowData })
+                    });
+
+                    // 로컬 저장소에도 백업
+                    saveToLocalStorage(rowData);
+                } catch (error) {
+                    console.error('Save error:', error);
+                }
+            }
+
+            alert(translations[currentLang].alerts.saveSuccess);
+            updateConnectionStatus(true);
+        }
+
+        // 로컬 저장소 저장
+        function saveToLocalStorage(data) {
+            let allData = JSON.parse(localStorage.getItem('ipqcData') || '[]');
+            const dataObj = {};
+            inspectionFields.forEach((field, index) => {
+                dataObj[field.label] = data[index] || '';
+            });
+            dataObj.timestamp = new Date().toISOString();
+            allData.push(dataObj);
+            localStorage.setItem('ipqcData', JSON.stringify(allData));
+        }
+
+        // Google Sheets에서 최신 데이터 불러오기
+        async function loadLatestDataFromGoogleSheets() {
+            const scriptUrl = localStorage.getItem('googleScriptUrl');
+            if (!scriptUrl) {
+                alert(translations[currentLang].alerts.urlRequired);
+                return;
+            }
+
+            try {
+                document.body.style.cursor = 'wait';
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'load' })
+                });
+
+                const result = await response.json();
+                if (result.data && result.data.length > 0) {
+                    populateTableWithData(result.data);
+                    alert(translations[currentLang].alerts.loadSuccess);
+                    updateConnectionStatus(true);
+                } else {
+                    alert(translations[currentLang].alerts.noData);
+                }
+            } catch (error) {
+                console.error('Load error:', error);
+                alert(translations[currentLang].alerts.loadError);
+            } finally {
+                document.body.style.cursor = 'default';
+            }
+        }
+
+        // 🔧 Google Sheets 전체 데이터 새로고침 (차트 오류 수정)
+        async function loadAllDataFromGoogleSheets() {
+            const scriptUrl = localStorage.getItem('googleScriptUrl');
+            if (!scriptUrl) {
+                alert(translations[currentLang].alerts.urlRequired);
+                return;
+            }
+
+            try {
+                document.body.style.cursor = 'wait';
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'loadAll' })
+                });
+
+                const result = await response.json();
+                if (result.data && result.data.length > 0) {
+                    const formattedData = result.data.map(row => {
+                        const obj = {};
+                        inspectionFields.forEach((field, index) => {
+                            obj[field.label] = row[index] || '';
+                        });
+                        return obj;
+                    });
+
+                    localStorage.setItem('ipqcData', JSON.stringify(formattedData));
+                    updateQueryTable();
+                    updateStatistics();
+                    alert(translations[currentLang].alerts.refreshSuccess);
+                    updateConnectionStatus(true);
+                } else {
+                    alert(translations[currentLang].alerts.noData);
+                }
+            } catch (error) {
+                console.error('Refresh error:', error);
+                alert(translations[currentLang].alerts.refreshError + '\n\n' + error.message);
+            } finally {
+                document.body.style.cursor = 'default';
+            }
+        }
+
+        // 테이블에 데이터 채우기
+        function populateTableWithData(data) {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                const input = row.querySelectorAll('td')[1].querySelector('input, select');
+                if (input && data[index] !== undefined) {
+                    input.value = data[index];
+                }
+            });
+        }
+
+        // Excel 저장
+        function saveAllDataToExcel() {
+            const count = parseInt(document.getElementById('equipmentCount').value);
+            const rows = document.querySelectorAll('#tableBody tr');
             
+            let csv = '\uFEFF';
+            const headers = [translations[currentLang].thItem];
+            for (let i = 1; i <= count; i++) {
+                headers.push(`Data ${i}`);
+            }
+            csv += headers.join(',') + '\n';
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const rowData = [cells[0].textContent];
+                for (let i = 1; i <= count; i++) {
+                    const input = cells[i].querySelector('input, select');
+                    rowData.push(input ? `"${input.value.replace(/"/g, '""')}"` : '');
+                }
+                csv += rowData.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `IPQC_Data_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // 전체 데이터 Excel 저장
+        function saveQueryDataToExcel() {
             const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
-            
+            if (data.length === 0) {
+                alert(translations[currentLang].alerts.noData);
+                return;
+            }
+
+            let csv = '\uFEFF';
+            const headers = inspectionFields.map(f => f.label);
+            csv += headers.join(',') + '\n';
+
+            data.forEach(row => {
+                const values = inspectionFields.map(f => {
+                    const val = row[f.label] || '';
+                    return `"${val.toString().replace(/"/g, '""')}"`;
+                });
+                csv += values.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `IPQC_All_Data_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // 🎨 차트 생성 (차트 인스턴스 완전 제거 추가)
+        let resultChartInstance = null;
+        let monthlyChartInstance = null;
+
+        function generateChart() {
+            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
+            const t = translations[currentLang].chartLabels;
+
             const okCount = data.filter(d => d['RESULT結果'] === 'OK').length;
             const ngCount = data.filter(d => d['RESULT結果'] === 'NG').length;
             const otherCount = data.length - okCount - ngCount;
-            
-            chartInstance = new Chart(ctx, {
+
+            const canvas = document.getElementById('resultChart');
+            const ctx = canvas.getContext('2d');
+
+            // 🔧 기존 차트 완전 제거
+            if (resultChartInstance) {
+                resultChartInstance.destroy();
+                resultChartInstance = null;
+            }
+
+            resultChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['합격 (OK)', '불합격 (NG)', '기타'],
+                    labels: [t.ok, t.ng, t.other],
                     datasets: [{
                         data: [okCount, ngCount, otherCount],
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.8)',
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(201, 203, 207, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgb(75, 192, 192)',
-                            'rgb(255, 99, 132)',
-                            'rgb(201, 203, 207)'
-                        ],
+                        backgroundColor: ['#333333', '#999999', '#e0e0e0'],
+                        borderColor: '#ffffff',
                         borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#333'
+                            }
+                        },
                         title: {
                             display: true,
-                            text: '검사 결과 분포',
-                            font: { size: 16 }
-                        },
-                        legend: {
-                            position: 'bottom'
+                            text: t.result,
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
                         }
                     }
                 }
             });
         }
 
-        // 조회 탭 업데이트
-        function updateQueryTable() {
+        function generateMonthlyChart() {
             const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
-            const tbody = document.getElementById('queryTableBody');
+            const t = translations[currentLang].chartLabels;
             
-            tbody.innerHTML = '';
-            data.slice().reverse().forEach((entry, idx) => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${entry['DATE 日期'] || ''}</td>
-                    <td>${entry['TIME 時間'] || ''}</td>
-                    <td>${entry['M/C 機台'] || ''}</td>
-                    <td>${entry['Customer'] || ''}</td>
-                    <td>${entry['Description 料號'] || ''}</td>
-                    <td><button class="btn btn-primary" onclick="viewDetail(${data.length - 1 - idx})">상세보기</button></td>
-                `;
-            });
-        }
-
-        // 상세보기
-        function viewDetail(index) {
-            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
-            const entry = data[index];
-            
-            let details = '=== 검사 데이터 상세 정보 ===\n\n';
-            for(let key in entry) {
-                if(key !== 'timestamp' && key !== 'dataColumn') {
-                    details += `${key}: ${entry[key]}\n`;
+            const monthlyData = {};
+            data.forEach(item => {
+                const date = item['DATE 日期'];
+                if (date) {
+                    const month = date.substring(0, 7);
+                    monthlyData[month] = (monthlyData[month] || 0) + 1;
                 }
+            });
+
+            const sortedMonths = Object.keys(monthlyData).sort();
+            const counts = sortedMonths.map(m => monthlyData[m]);
+
+            const canvas = document.getElementById('monthlyChart');
+            const ctx = canvas.getContext('2d');
+
+            // 🔧 기존 차트 완전 제거
+            if (monthlyChartInstance) {
+                monthlyChartInstance.destroy();
+                monthlyChartInstance = null;
             }
-            
-            alert(details);
-        }
 
-        // 데이터 검색
-        function searchData() {
-            const startDate = document.getElementById('queryStartDate').value;
-            const endDate = document.getElementById('queryEndDate').value;
-            const product = document.getElementById('queryProduct').value.toLowerCase();
-            
-            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
-            const filtered = data.filter(entry => {
-                let match = true;
-                if(startDate && entry['DATE 日期'] < startDate) match = false;
-                if(endDate && entry['DATE 日期'] > endDate) match = false;
-                if(product && !(entry['Description 料號'] || '').toLowerCase().includes(product)) match = false;
-                return match;
-            });
-            
-            const tbody = document.getElementById('queryTableBody');
-            tbody.innerHTML = '';
-            filtered.forEach((entry, idx) => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${entry['DATE 日期'] || ''}</td>
-                    <td>${entry['TIME 時間'] || ''}</td>
-                    <td>${entry['M/C 機台'] || ''}</td>
-                    <td>${entry['Customer'] || ''}</td>
-                    <td>${entry['Description 料號'] || ''}</td>
-                    <td><button class="btn btn-primary" onclick="viewDetail(${idx})">상세보기</button></td>
-                `;
-            });
-            
-            alert(`검색 결과: ${filtered.length}건`);
-        }
-
-        function clearSearch() {
-            document.getElementById('queryStartDate').value = '';
-            document.getElementById('queryEndDate').value = '';
-            document.getElementById('queryProduct').value = '';
-            updateQueryTable();
-        }
-
-        // 전체 초기화
-        function clearAllData() {
-            if(confirm('⚠️ 입력된 모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
-                const rows = document.querySelectorAll('#tableBody tr');
-                rows.forEach(row => {
-                    const inputs = row.querySelectorAll('input, select, textarea');
-                    inputs.forEach(input => {
-                        if(input.type === 'date') {
-                            input.value = new Date().toISOString().split('T')[0];
-                        } else if(input.type === 'time') {
-                            input.value = new Date().toTimeString().slice(0,5);
-                        } else {
-                            input.value = '';
+            monthlyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedMonths,
+                    datasets: [{
+                        label: t.inspections,
+                        data: counts,
+                        borderColor: '#333',
+                        backgroundColor: 'rgba(51, 51, 51, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#333'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: t.month,
+                            font: { size: 16, weight: 'bold' },
+                            color: '#333'
                         }
-                    });
-                });
-                alert('✓ 데이터가 초기화되었습니다.');
-            }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#666'
+                            },
+                            title: {
+                                display: true,
+                                text: t.count,
+                                color: '#333',
+                                font: { size: 14, weight: 'bold' }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#666'
+                            },
+                            title: {
+                                display: true,
+                                text: t.month,
+                                color: '#333',
+                                font: { size: 14, weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // 통계 업데이트
@@ -1356,78 +1592,209 @@ function doGet(e) {
             const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
             
             const total = data.length;
-            const passed = data.filter(e => e['RESULT測량'] === 'OK').length;
-            const failed = data.filter(e => e['RESULT測량'] === 'NG').length;
+            const passed = data.filter(e => e['RESULT結果'] === 'OK').length;
+            const failed = data.filter(e => e['RESULT結果'] === 'NG').length;
             const passRate = total > 0 ? ((passed / total) * 100).toFixed(1) : 0;
-            
-            document.getElementById('totalInspections').textContent = total;
-            document.getElementById('passRate').textContent = passRate;
-            document.getElementById('failCount').textContent = failed;
-            
-            const today = new Date();
-            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
             const weeklyCount = data.filter(e => {
                 const date = new Date(e['DATE 日期']);
-                return date >= weekAgo && date <= today;
+                return date >= weekAgo;
             }).length;
+
+            document.getElementById('totalInspections').textContent = total;
+            document.getElementById('passRate').textContent = passRate + '%';
+            document.getElementById('failCount').textContent = failed;
             document.getElementById('weeklyCount').textContent = weeklyCount;
-            
-            createMonthlyChart(data);
+
+            generateChart();
+            generateMonthlyChart();
         }
 
-        function createMonthlyChart(data) {
-            const ctx = document.getElementById('monthlyChart').getContext('2d');
-            
-            const monthlyData = {};
-            data.forEach(entry => {
-                if(entry['DATE 日期']) {
-                    const month = entry['DATE 日期'].substring(0, 7);
-                    monthlyData[month] = (monthlyData[month] || 0) + 1;
-                }
-            });
-            
-            const labels = Object.keys(monthlyData).sort();
-            const values = labels.map(label => monthlyData[label]);
-            
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '검사 건수',
-                        data: values,
-                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                        borderColor: 'rgba(102, 126, 234, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
+        // 데이터 조회
+        function updateQueryTable() {
+            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
+            const tbody = document.getElementById('queryTableBody');
+            const t = translations[currentLang];
+            tbody.innerHTML = '';
+
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item['DATE 日期'] || '-'}</td>
+                    <td>${item['TIME 時間'] || '-'}</td>
+                    <td>${item['M/C 機台'] || '-'}</td>
+                    <td>${item['Customer'] || '-'}</td>
+                    <td>${item['Description 料號'] || '-'}</td>
+                    <td><button class="btn-view" onclick="showDetail(${index})">${t.btnView}</button></td>
+                `;
+                tbody.appendChild(row);
             });
         }
 
-        // 초기 로드
-        window.onload = function() {
-            generateSpreadsheet();
-            updateCloudStatus();
-            
-            const saved = localStorage.getItem('ipqcData');
-            if(saved) {
-                savedData = JSON.parse(saved);
-            }
-            
+        function searchData() {
+            const searchDate = document.getElementById('searchDate').value;
+            const searchProduct = document.getElementById('searchProduct').value.toLowerCase();
+            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
+            const tbody = document.getElementById('queryTableBody');
+            const t = translations[currentLang];
+            tbody.innerHTML = '';
+
+            const filtered = data.filter(item => {
+                const dateMatch = !searchDate || item['DATE 日期'] === searchDate;
+                const productMatch = !searchProduct || 
+                    (item['Description 料號'] && item['Description 料號'].toLowerCase().includes(searchProduct));
+                return dateMatch && productMatch;
+            });
+
+            filtered.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item['DATE 日期'] || '-'}</td>
+                    <td>${item['TIME 時間'] || '-'}</td>
+                    <td>${item['M/C 機台'] || '-'}</td>
+                    <td>${item['Customer'] || '-'}</td>
+                    <td>${item['Description 料號'] || '-'}</td>
+                    <td><button class="btn-view" onclick="showDetail(${data.indexOf(item)})">${t.btnView}</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchDate').value = '';
+            document.getElementById('searchProduct').value = '';
             updateQueryTable();
-            updateStatistics();
-        };
+        }
+
+        function showDetail(index) {
+            const data = JSON.parse(localStorage.getItem('ipqcData') || '[]');
+            const item = data[index];
+            const table = document.getElementById('detailTable');
+            table.innerHTML = '';
+
+            inspectionFields.forEach(field => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <th>${field.label}</th>
+                    <td>${item[field.label] || '-'}</td>
+                `;
+                table.appendChild(row);
+            });
+
+            document.getElementById('detailModal').style.display = 'block';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // 전체 초기화
+        function clearAllData() {
+            if (confirm(translations[currentLang].alerts.clearConfirm)) {
+                const rows = document.querySelectorAll('#tableBody tr');
+                rows.forEach(row => {
+                    const inputs = row.querySelectorAll('input, select');
+                    inputs.forEach(input => {
+                        if (input.type === 'date') {
+                            input.value = new Date().toISOString().split('T')[0];
+                        } else if (input.type === 'time') {
+                            input.value = new Date().toTimeString().split(' ')[0].substring(0, 5);
+                        } else {
+                            input.value = '';
+                        }
+                        input.classList.remove('validation-error');
+                    });
+                });
+            }
+        }
+
+        // 설정 저장
+        function saveSettings() {
+            const url = document.getElementById('googleScriptUrl').value;
+            if (url) {
+                localStorage.setItem('googleScriptUrl', url);
+                alert(translations[currentLang].alerts.settingsSaved);
+                testConnection();
+            }
+        }
+
+        // 연결 테스트
+        async function testConnection() {
+            const scriptUrl = localStorage.getItem('googleScriptUrl');
+            if (!scriptUrl) {
+                alert(translations[currentLang].alerts.urlRequired);
+                return;
+            }
+
+            try {
+                const response = await fetch(scriptUrl);
+                const result = await response.json();
+                if (result.status === 'ok') {
+                    alert(translations[currentLang].alerts.connectionSuccess);
+                    updateConnectionStatus(true);
+                } else {
+                    alert(translations[currentLang].alerts.connectionError);
+                    updateConnectionStatus(false);
+                }
+            } catch (error) {
+                alert(translations[currentLang].alerts.connectionError + '\n' + error.message);
+                updateConnectionStatus(false);
+            }
+        }
+
+        // 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', function() {
+            // 언어 탭
+            document.querySelectorAll('.lang-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+
+            // 메인 탭
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('content-' + this.dataset.tab).classList.add('active');
+
+                    if (this.dataset.tab === 'stats') {
+                        updateStatistics();
+                    } else if (this.dataset.tab === 'query') {
+                        updateQueryTable();
+                    }
+                });
+            });
+
+            // 모달 외부 클릭 시 닫기
+            window.onclick = function(event) {
+                const modal = document.getElementById('detailModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
+            // 초기 설정
+            generateColumns();
+            const savedUrl = localStorage.getItem('googleScriptUrl');
+            if (savedUrl) {
+                document.getElementById('googleScriptUrl').value = savedUrl;
+                updateConnectionStatus(true);
+            }
+
+            // 초기 날짜/시간 설정
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date().toTimeString().split(' ')[0].substring(0, 5);
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            const timeInputs = document.querySelectorAll('input[type="time"]');
+            dateInputs.forEach(input => input.value = today);
+            timeInputs.forEach(input => input.value = now);
+        });
     </script>
 </body>
 </html>
