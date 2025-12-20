@@ -579,16 +579,30 @@
             
             <div style="margin-top: 30px; padding: 20px; background: #fafafa; border: 1px solid #e0e0e0;">
                 <h3 id="guideTitle">설정 가이드</h3>
-                <ol id="guideSteps">
-                    <li>Google Sheets 새 스프레드시트 생성</li>
-                    <li>확장 프로그램 > Apps Script 선택</li>
-                    <li>아래 코드 붙여넣기</li>
-                    <li>배포 > 새 배포 > 웹 앱</li>
-                    <li>액세스 권한: '모든 사용자'로 설정</li>
-                    <li>배포 URL을 위 입력란에 붙여넣기</li>
+                <ol id="guideSteps" style="line-height: 1.8;">
+                    <li><strong>Google Sheets</strong> 새 스프레드시트 생성</li>
+                    <li><strong>확장 프로그램 > Apps Script</strong> 선택</li>
+                    <li>아래 코드 붙여넣기 (기존 코드 모두 삭제)</li>
+                    <li><strong>배포 > 새 배포 > 웹 앱</strong> 선택</li>
+                    <li><strong>액세스 권한: "모든 사용자"</strong>로 설정 (⚠️ 필수!)</li>
+                    <li>배포 URL을 복사하여 위 입력란에 붙여넣기</li>
+                    <li><strong>"연결 테스트"</strong> 버튼 클릭하여 확인</li>
                 </ol>
                 
+                <div style="margin: 20px 0; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+                    <strong>⚠️ 중요 주의사항:</strong>
+                    <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                        <li>URL은 반드시 <code style="background: white; padding: 2px 6px; border: 1px solid #e0e0e0;">/exec</code>로 끝나야 합니다</li>
+                        <li>액세스 권한을 "모든 사용자"로 설정하지 않으면 연결 실패</li>
+                        <li>배포 후 새 URL이 생성되면 여기에 다시 입력해야 함</li>
+                        <li>첫 연결 시 응답이 느릴 수 있음 (최대 30초 대기)</li>
+                    </ul>
+                </div>
+                
                 <h4 id="codeTitle">Apps Script 코드:</h4>
+                <div style="margin-bottom: 10px;">
+                    <button onclick="copyScriptCode()" style="padding: 8px 16px; font-size: 13px;">📋 코드 복사</button>
+                </div>
                 <pre style="background: white; padding: 15px; border: 1px solid #e0e0e0; overflow-x: auto; font-size: 12px;">
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -1337,7 +1351,7 @@ function doGet(e) {
             }
         }
 
-        // 🔧 Google Sheets 전체 데이터 새로고침 (차트 오류 수정)
+        // 🔧 Google Sheets 전체 데이터 새로고침 (개선된 오류 처리)
         async function loadAllDataFromGoogleSheets() {
             const scriptUrl = localStorage.getItem('googleScriptUrl');
             if (!scriptUrl) {
@@ -1345,15 +1359,37 @@ function doGet(e) {
                 return;
             }
 
+            // URL 형식 검증
+            if (!scriptUrl.includes('script.google.com')) {
+                alert('올바른 Google Apps Script URL이 아닙니다.\n\nURL은 다음 형식이어야 합니다:\nhttps://script.google.com/macros/s/YOUR_SCRIPT_ID/exec');
+                return;
+            }
+
             try {
                 document.body.style.cursor = 'wait';
+                
+                // 타임아웃 설정 (30초)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000);
+
                 const response = await fetch(scriptUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'loadAll' })
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'loadAll' }),
+                    signal: controller.signal
                 });
 
+                clearTimeout(timeoutId);
+
+                // 응답 상태 확인
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
+                
                 if (result.data && result.data.length > 0) {
                     const formattedData = result.data.map(row => {
                         const obj = {};
@@ -1370,10 +1406,26 @@ function doGet(e) {
                     updateConnectionStatus(true);
                 } else {
                     alert(translations[currentLang].alerts.noData);
+                    updateConnectionStatus(true); // 연결은 성공했지만 데이터 없음
                 }
             } catch (error) {
                 console.error('Refresh error:', error);
-                alert(translations[currentLang].alerts.refreshError + '\n\n' + error.message);
+                updateConnectionStatus(false);
+                
+                // 상세한 오류 메시지
+                let errorMsg = translations[currentLang].alerts.refreshError;
+                
+                if (error.name === 'AbortError') {
+                    errorMsg += '\n\n⏱️ 타임아웃: 30초 내에 응답이 없습니다.\n서버 응답이 느리거나 네트워크 연결을 확인해주세요.';
+                } else if (error.message.includes('HTTP')) {
+                    errorMsg += '\n\n🔗 ' + error.message + '\n\nGoogle Apps Script 배포 설정을 확인해주세요:\n1. 액세스 권한: "모든 사용자"\n2. 배포 상태: 활성화';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMsg += '\n\n🌐 네트워크 오류\n\n가능한 원인:\n1. 인터넷 연결 확인\n2. Google Apps Script URL 확인\n3. CORS 정책 - 브라우저 콘솔 확인\n\n💡 해결방법:\n• URL이 "/exec"로 끝나는지 확인\n• Apps Script 재배포 후 새 URL 사용';
+                } else {
+                    errorMsg += '\n\n' + error.message;
+                }
+                
+                alert(errorMsg);
             } finally {
                 document.body.style.cursor = 'default';
             }
@@ -1710,6 +1762,52 @@ function doGet(e) {
             }
         }
 
+        // 📋 코드 복사 기능
+        function copyScriptCode() {
+            const code = `function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+  
+  if (data.action === 'save') {
+    const values = data.values;
+    sheet.appendRow(values);
+    return ContentService.createTextOutput(JSON.stringify({success: true}));
+  }
+  
+  if (data.action === 'load') {
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return ContentService.createTextOutput(JSON.stringify({data: []}));
+    const values = sheet.getRange(lastRow, 1, 1, sheet.getLastColumn()).getValues()[0];
+    return ContentService.createTextOutput(JSON.stringify({data: values}));
+  }
+  
+  if (data.action === 'loadAll') {
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return ContentService.createTextOutput(JSON.stringify({data: []}));
+    const values = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+    return ContentService.createTextOutput(JSON.stringify({data: values}));
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({status: 'ok', message: 'IPQC System Connected'}));
+}`;
+
+            // 클립보드에 복사
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ 코드가 클립보드에 복사되었습니다!\n\nApps Script 편집기에 붙여넣어주세요.');
+            }).catch(err => {
+                // 복사 실패 시 대안 방법
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ 코드가 복사되었습니다!');
+            });
+        }
+
         // 설정 저장
         function saveSettings() {
             const url = document.getElementById('googleScriptUrl').value;
@@ -1720,7 +1818,7 @@ function doGet(e) {
             }
         }
 
-        // 연결 테스트
+        // 연결 테스트 (개선된 버전)
         async function testConnection() {
             const scriptUrl = localStorage.getItem('googleScriptUrl');
             if (!scriptUrl) {
@@ -1728,19 +1826,59 @@ function doGet(e) {
                 return;
             }
 
+            // URL 형식 검증
+            if (!scriptUrl.includes('script.google.com') || !scriptUrl.includes('/exec')) {
+                alert('❌ 올바른 Google Apps Script URL이 아닙니다.\n\n✅ 올바른 형식:\nhttps://script.google.com/macros/s/YOUR_SCRIPT_ID/exec\n\n현재 URL:\n' + scriptUrl);
+                updateConnectionStatus(false);
+                return;
+            }
+
             try {
-                const response = await fetch(scriptUrl);
+                document.body.style.cursor = 'wait';
+                
+                // GET 요청으로 테스트 (더 안정적)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+                const response = await fetch(scriptUrl, {
+                    method: 'GET',
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
+                
                 if (result.status === 'ok') {
-                    alert(translations[currentLang].alerts.connectionSuccess);
+                    alert('✅ ' + translations[currentLang].alerts.connectionSuccess + '\n\n서버 응답: ' + (result.message || 'OK'));
                     updateConnectionStatus(true);
                 } else {
-                    alert(translations[currentLang].alerts.connectionError);
-                    updateConnectionStatus(false);
+                    alert('⚠️ 연결됨, 하지만 예상치 못한 응답\n\n응답 내용: ' + JSON.stringify(result));
+                    updateConnectionStatus(true);
                 }
             } catch (error) {
-                alert(translations[currentLang].alerts.connectionError + '\n' + error.message);
+                console.error('Connection test error:', error);
                 updateConnectionStatus(false);
+                
+                let errorMsg = '❌ ' + translations[currentLang].alerts.connectionError;
+                
+                if (error.name === 'AbortError') {
+                    errorMsg += '\n\n⏱️ 타임아웃: 10초 내에 응답이 없습니다.';
+                } else if (error.message.includes('HTTP')) {
+                    errorMsg += '\n\n' + error.message;
+                } else {
+                    errorMsg += '\n\n' + error.message;
+                }
+                
+                errorMsg += '\n\n🔍 체크리스트:\n□ URL이 /exec로 끝나는가?\n□ Apps Script가 "웹 앱"으로 배포되었는가?\n□ 액세스 권한이 "모든 사용자"인가?\n□ 인터넷 연결이 정상인가?';
+                
+                alert(errorMsg);
+            } finally {
+                document.body.style.cursor = 'default';
             }
         }
 
